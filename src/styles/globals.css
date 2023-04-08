@@ -2,7 +2,6 @@
 @tailwind utilities;
 
 body {
-  @apply bg-gray-900 text-gray-200;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
@@ -14,15 +13,4 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-}
-
-.input-field {
-  @apply block  w-full rounded-lg
-    border border-gray-600 bg-gray-700 p-2.5 text-sm
-     text-white placeholder-gray-400 outline-none 
-     focus:border-blue-500 focus:ring-blue-500;
-}
-
-.input-errors {
-  @apply text-sm italic text-red-600;
 }

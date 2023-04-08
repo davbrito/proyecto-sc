@@ -9,11 +9,9 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 
 const theme = createTheme({
-  type: "light",
+  type: "dark",
   theme: {
-    colors: {
-      background: "#f5f5f5",
-    },
+    colors: {},
   },
 });
 

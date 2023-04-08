@@ -1,4 +1,4 @@
-import React from "react";
+import { Button, Card, Grid, Input, Text } from "@nextui-org/react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
 interface Inputs {
@@ -17,15 +17,11 @@ export const RegisterForm = () => {
     setError,
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (
-    { password, username },
-    event
-  ) => {
-    event?.preventDefault();
-    console.log({ username, password });
+  const onSubmit: SubmitHandler<Inputs> = async (values) => {
+    console.log(values);
     try {
       const post = await fetch("/api/auth/signin", {
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(values),
         headers: {
           "content-type": "application/json",
         },
@@ -44,85 +40,93 @@ export const RegisterForm = () => {
 
   return (
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-      <div>
-        <label>Username:</label>
-        <input
-          type="text"
-          {...register("username", {
-            required: { value: true, message: "field required" },
-          })}
-          className="input-field"
-          placeholder="Type your username..."
-        />
-        {errors.username && (
-          <span className="input-errors">{errors.username.message}</span>
-        )}
-      </div>
-
-      <div className="flex content-between gap-x-4">
-        <div className="w-full">
-          <label>Name:</label>
-          <input
-            type="text"
-            {...register("name", {
-              required: { value: true, message: "field required" },
-            })}
-            className="input-field"
-            placeholder="Type your name..."
-          />
-          {errors.name && (
-            <span className="input-errors">{errors.name.message}</span>
+    <Card as="form" onSubmit={handleSubmit(onSubmit)}>
+      <Card.Header>
+        <Text h3>Register Form</Text>
+      </Card.Header>
+      <Card.Divider />
+      <Card.Body>
+        <Grid.Container gap={2}>
+          <Grid xs={12}>
+            <Input
+              fullWidth
+              label="Nombre de usuario:"
+              placeholder="Escriba su nombre de usuario..."
+              bordered
+              {...register("username", {
+                required: { value: true, message: "campo requerido" },
+              })}
+              helperText={errors.username?.message}
+              helperColor="error"
+            />
+          </Grid>
+          <Grid xs={6}>
+            <Input
+              fullWidth
+              label="Nombre:"
+              placeholder="Escriba su nombre..."
+              bordered
+              {...register("name", {
+                required: { value: true, message: "campo requerido" },
+              })}
+              helperText={errors.name?.message}
+              helperColor="error"
+            />
+          </Grid>
+          <Grid xs={6}>
+            <Input
+              fullWidth
+              label="Apellido:"
+              placeholder="Escriba su apellido..."
+              bordered
+              {...register("lastName", {
+                required: { value: true, message: "campo requerido" },
+              })}
+              helperText={errors.lastName?.message}
+              helperColor="error"
+            />
+          </Grid>
+          <Grid xs={12}>
+            <Input
+              fullWidth
+              type="password"
+              label="Contraseña:"
+              placeholder="Escriba su contraseña..."
+              bordered
+              {...register("password", {
+                required: { value: true, message: "campo requerido" },
+                minLength: { value: 8, message: "mínimo 8 caracteres" },
+                pattern: {
+                  value:
+                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                  message:
+                    "la contraseña debe contener al menos 8 caracteres, al menos una letra, un número y un carácter especial",
+                },
+              })}
+              helperText={errors.password?.message}
+              helperColor="error"
+            />
+          </Grid>
+          {errors.root && (
+            <Grid xs={12}>
+              <Text em color="error">
+                {errors.root.message}
+              </Text>
+            </Grid>
           )}
-        </div>
-
-        <div className="w-full">
-          <label>Last name:</label>
-          <input
-            type="text"
-            {...register("lastName", {
-              required: { value: true, message: "field required" },
-            })}
-            className="input-field"
-            placeholder="Type your lastName..."
-          />
-          {errors.lastName && (
-            <span className="input-errors">{errors.lastName.message}</span>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <label>Password:</label>
-        <input
-          type="password"
-          {...register("password", {
-            required: { value: true, message: "field required" },
-            pattern: {
-              value:
-                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-              message:
-                "this field must contain 8 characters,at least one letter, one number and one special character",
-            },
-          })}
-          className="input-field"
-          placeholder="Type your password..."
-        />
-        {errors.password && (
-          <span className="input-errors">{errors.password.message}</span>
-        )}
-      </div>
-
-      {errors.root && (
-        <span className="input-errors">{errors.root.message}</span>
-      )}
-
-      <button
-        className="mx-auto rounded bg-blue-600 py-3 px-5 font-bold transition-all hover:bg-blue-500"
-        disabled={isSubmitting}
-      >
-        Register
-      </button>
-    </form>
+        </Grid.Container>
+      </Card.Body>
+      <Card.Divider />
+      <Card.Footer>
+        <Button
+          type="submit"
+          size="sm"
+          css={{ ml: "auto" }}
+          disabled={isSubmitting}
+        >
+          Registrarse
+        </Button>
+      </Card.Footer>
+    </Card>
   );
 };
