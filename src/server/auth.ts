@@ -1,15 +1,12 @@
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
-  type NextAuthOptions,
   type DefaultSession,
+  type NextAuthOptions,
 } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
-import LoginPage from "~/pages/login";
-
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -47,17 +44,18 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  session: {},
   adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
       name: "My credentials",
-      type: "credentials", 
+      type: "credentials",
       credentials: {
-        username: { label: "username", type: "text" ,placeholder: "blablal"},
+        username: { label: "username", type: "text", placeholder: "blablal" },
         password: { label: "password", type: "password" },
       },
       async authorize(credentials) {
-        console.log(credentials)
+        console.log(credentials);
         if (!credentials || !credentials.password || !credentials.username)
           return null;
 
@@ -69,7 +67,7 @@ export const authOptions: NextAuthOptions = {
         return user;
       },
     }),
-    
+
     /**
      * ...add more providers here.
      *

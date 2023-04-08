@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import { LoginForm } from "~/components/AuthForm";
 import { LayoutContent } from "~/components/Layout";
 

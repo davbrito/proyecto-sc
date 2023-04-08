@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
 interface Inputs {
   username: string;
@@ -24,13 +24,13 @@ export const RegisterForm = () => {
     event?.preventDefault();
     console.log({ username, password });
     try {
-      const post = await fetch("/api/auth/signin",{
+      const post = await fetch("/api/auth/signin", {
         body: JSON.stringify({ username, password }),
-        headers:{
-          "content-type": "application/json"
-        }
+        headers: {
+          "content-type": "application/json",
+        },
       });
-      console.log(post)
+      console.log(post);
     } catch (error) {
       setError("root", {
         message: "Error de servidor",
@@ -43,6 +43,7 @@ export const RegisterForm = () => {
   };
 
   return (
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
       <div>
         <label>Username:</label>
@@ -97,7 +98,12 @@ export const RegisterForm = () => {
           type="password"
           {...register("password", {
             required: { value: true, message: "field required" },
-            pattern: { value : /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/ , message:"this field must contain 8 characters,at least one letter, one number and one special character"}
+            pattern: {
+              value:
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+              message:
+                "this field must contain 8 characters,at least one letter, one number and one special character",
+            },
           })}
           className="input-field"
           placeholder="Type your password..."

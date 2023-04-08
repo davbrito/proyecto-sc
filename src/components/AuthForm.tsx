@@ -1,6 +1,6 @@
 import { signIn } from "next-auth/react";
 import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
 interface Inputs {
   username: string;
@@ -23,13 +23,13 @@ export const LoginForm = () => {
     event?.preventDefault();
     console.log({ username, password });
     try {
-      const res = await signIn("credentials",{
+      const res = await signIn("credentials", {
         username,
         password,
-        redirect:false
-      })
+        redirect: false,
+      });
 
-      console.log(res)
+      console.log(res);
     } catch (error) {
       console.log(error);
       setError("root", {
@@ -40,6 +40,7 @@ export const LoginForm = () => {
   };
 
   return (
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
       <div>
         <label>Username:</label>
