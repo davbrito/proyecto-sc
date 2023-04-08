@@ -1,3 +1,4 @@
+import { signIn } from "next-auth/react";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -22,8 +23,15 @@ export const LoginForm = () => {
     event?.preventDefault();
     console.log({ username, password });
     try {
-      const post = await fetch("http://jhasdj");
+      const res = await signIn("credentials",{
+        username,
+        password,
+        redirect:false
+      })
+
+      console.log(res)
     } catch (error) {
+      console.log(error);
       setError("root", {
         message: "Error de servidor",
       });

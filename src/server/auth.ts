@@ -4,10 +4,12 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
+import LoginPage from "~/pages/login";
+
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -47,10 +49,27 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    Credentials({
+      name: "My credentials",
+      type: "credentials", 
+      credentials: {
+        username: { label: "username", type: "text" ,placeholder: "blablal"},
+        password: { label: "password", type: "password" },
+      },
+      async authorize(credentials) {
+        console.log(credentials)
+        if (!credentials || !credentials.password || !credentials.username)
+          return null;
+
+        const user = await prisma.user.findUnique({
+          where: {
+            username: credentials.username,
+          },
+        });
+        return user;
+      },
     }),
+    
     /**
      * ...add more providers here.
      *

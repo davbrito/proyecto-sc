@@ -24,7 +24,13 @@ export const RegisterForm = () => {
     event?.preventDefault();
     console.log({ username, password });
     try {
-      const post = await fetch("http://jhasdj");
+      const post = await fetch("/api/auth/signin",{
+        body: JSON.stringify({ username, password }),
+        headers:{
+          "content-type": "application/json"
+        }
+      });
+      console.log(post)
     } catch (error) {
       setError("root", {
         message: "Error de servidor",
