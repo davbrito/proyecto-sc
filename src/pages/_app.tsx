@@ -11,7 +11,9 @@ import "~/styles/globals.css";
 const theme = createTheme({
   type: "dark",
   theme: {
-    colors: {},
+    colors: {
+      background: "#1e2225",
+    },
   },
 });
 
