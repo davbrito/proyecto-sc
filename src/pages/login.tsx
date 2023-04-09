@@ -1,8 +1,10 @@
 import { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import { LoginForm } from "~/components/AuthForm";
 import { LayoutContent } from "~/components/Layout";
 
 const LoginPage: NextPage = () => {
+  
   return (
     <LayoutContent>
       <div className=" w-full max-w-md rounded-md border border-gray-800 bg-gray-800 p-4  shadow mt-8">

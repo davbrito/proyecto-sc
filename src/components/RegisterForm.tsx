@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { api } from "~/utils/api";
 
 interface Inputs {
   username: string;
@@ -17,29 +18,29 @@ export const RegisterForm = () => {
     setError,
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (
-    { password, username },
-    event
-  ) => {
+  const { mutate, isLoading } = api.user.create.useMutation();
+
+  const onSubmit: SubmitHandler<Inputs> = async (data, event) => {
     event?.preventDefault();
-    console.log({ username, password });
-    try {
-      const post = await fetch("/api/auth/signin",{
-        body: JSON.stringify({ username, password }),
-        headers:{
-          "content-type": "application/json"
-        }
-      });
-      console.log(post)
-    } catch (error) {
-      setError("root", {
-        message: "Error de servidor",
-      });
-      reset(
-        { password: "", username: "", lastName: "", name: "" },
-        { keepErrors: true }
-      );
-    }
+
+    await mutate(data, {
+      onError(error) {
+        
+        setError("username", {
+          message:error.message,
+
+        })
+      },
+      onSuccess(data) {
+        console.log(data);
+        
+      },
+    });
+
+    reset(
+      { password: "", username: "", lastName: "", name: "" },
+      { keepErrors: true }
+    );
   };
 
   return (
@@ -97,7 +98,11 @@ export const RegisterForm = () => {
           type="password"
           {...register("password", {
             required: { value: true, message: "field required" },
-            pattern: { value : /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/ , message:"this field must contain 8 characters,at least one letter, one number and one special character"}
+            pattern: {
+              value:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
+              message:
+                "this field must contain 8 characters,at least one letter, one upper letter and one number ",
+            },
           })}
           className="input-field"
           placeholder="Type your password..."
@@ -113,7 +118,7 @@ export const RegisterForm = () => {
 
       <button
         className="mx-auto rounded bg-blue-600 py-3 px-5 font-bold transition-all hover:bg-blue-500"
-        disabled={isSubmitting}
+        disabled={isLoading}
       >
         Register
       </button>

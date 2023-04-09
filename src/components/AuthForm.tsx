@@ -1,4 +1,5 @@
-import { signIn } from "next-auth/react";
+import { signIn, useSession ,} from "next-auth/react";
+import { useRouter } from "next/router";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -15,6 +16,10 @@ export const LoginForm = () => {
     register,
     setError,
   } = useForm<Inputs>();
+  const session = useSession()
+  console.log(session)
+  const router = useRouter()
+
 
   const onSubmit: SubmitHandler<Inputs> = async (
     { password, username },
@@ -26,15 +31,33 @@ export const LoginForm = () => {
       const res = await signIn("credentials",{
         username,
         password,
-        redirect:false
+        redirect:false,
+        callbackUrl:"/"
       })
-
       console.log(res)
-    } catch (error) {
-      console.log(error);
-      setError("root", {
-        message: "Error de servidor",
-      });
+      if(res?.error) throw { message : res.error , status: res.status}
+      
+    } catch (error ) {
+      if(error){
+         const {message} = error as {message : string , status: number}
+        
+         setError("root", {
+           message ,
+         });
+        
+         setTimeout(() => {
+          setError("root", {
+            message :"",
+          });
+         },3000)
+
+      } 
+      else{
+        setError("root", {
+          message:  "Server Error",
+        });
+      }
+      
       reset({ password: "", username: "" }, { keepErrors: true });
     }
   };

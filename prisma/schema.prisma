@@ -51,7 +51,8 @@ model User {
     username String @unique
     image    String?
     lastName String
-
+    password String
+    
     accounts Account[]
     sessions Session[]
 }
@@ -62,4 +63,41 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+
+
+// CENSO 
+
+model Persona{
+    id BigInt @id()
+    nombre String
+    apellido String
+    nacionalidad String
+    numeroDocumento String
+    edad Int
+    fechaNacimiento DateTime
+    genero String
+    email String
+    telefono String
+    serialCarnetPatria String
+    codCarnetPatria String
+}
+
+model Casa{
+    id BigInt @id()
+    manzana String
+    casa String
+    calle String
+}
+
+
+model Censo {
+    cod String @id() 
+
+    cargaFamiliar Int
+    tipoFamilia String
+    cajasClapsPorRecibir Int
+    casaFamilia Int
+    familiaMultiple String
 }
