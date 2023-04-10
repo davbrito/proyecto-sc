@@ -1,51 +1,59 @@
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
-  type NextAuthOptions,
-  type DefaultSession,
+  type NextAuthOptions
 } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
-import LoginPage from "~/pages/login";
 import { comparePassword } from "~/utils/hashPassword";
-import { randomBytes, randomUUID } from "crypto";
+import { type DefaultSession  } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
-/**
- * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
- * object and keep type safety.
- *
- * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
- */
-declare module "next-auth" {
-  interface Session extends DefaultSession{
-    user: {
-      id: string;
-      username: string;
-      name: string;
-      // ...other properties
-      // role: UserRole;
-    } & DefaultSession["user"];
+declare module "next-auth/jwt"{
+  interface Token extends JWT {
+    username: string
   }
 }
 
-/**
- * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
- *
- * @see https://next-auth.js.org/configuration/options
- */
+
+declare module "next-auth" {
+  interface Session extends DefaultSession{
+    user: {
+      name:string
+      username:string
+    } 
+  }
+  interface User {
+    name:string
+    username:string
+  }
+
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: "BLABLA",
   callbacks: {
     async jwt({token, user}) {
-      if (user) {
+      if (user) { 
         token.accessToken = user.id;
         token.user = user; 
+        token.name = user.name
+        token.username = user.username
       }
       return token;
     },
+    session({session,token}){
+      if(session?.user){
+        session.user.username = token.username as string
+      }
+      return session
+    },
+  
+  },
+  pages:{
+    error: "/error"
   },
   providers: [
     Credentials({

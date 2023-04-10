@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -7,6 +8,16 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { hashPassword } from "~/utils/hashPassword";
+
+
+//utils
+
+const formatUserData = ({image,name,username,lastName}: User) => {
+    return{
+      image,name,username,lastName
+    }
+}
+
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
@@ -46,7 +57,7 @@ export const userRouter = createTRPCRouter({
       return newUser;
     }),
 
-  deleteById: publicProcedure
+  deleteById: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -64,7 +75,7 @@ export const userRouter = createTRPCRouter({
       return true;
     }),
 
-  updateDataInfoById: publicProcedure
+  updateDataInfoById: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -77,18 +88,37 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { id, image, lastName, name, username } = input;
 
+      const oldUser = await ctx.prisma.user.findFirst({
+        where:{
+          id
+        }
+      })
+
+      //
+      //  SUBIR IMAGEN AQUI
+      //
+
+      const newData = {
+          image: image || oldUser?.image,
+          lastName:lastName || oldUser?.lastName,
+          name:name || oldUser?.name,
+          username:username || oldUser?.username,
+      }
+
       const userFound = await ctx.prisma.user.update({
         where: {
           id,
         },
-        data: {
-          image,
-          lastName,
-          name,
-          username,
-        },
+        data: newData
       });
 
       return userFound
     }),
+
+    getUsers : protectedProcedure.query(async ({ctx}) => {
+      const user = await ctx.prisma.user.findMany({
+        take:100
+      })
+      return user.map(formatUserData)
+    })
 });

@@ -1,20 +1,19 @@
-import { type NextPage } from "next";
+import { GetServerSidePropsContext, type NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
-
 import { api } from "~/utils/api";
 import { LayoutContent } from "~/components/Layout";
-import Link from "next/link";
+import { verifySession } from "~/utils/verifySession";
 
 
 const Home: NextPage = () => {
-  const {data,status} = useSession()
+  const {data} = useSession()
 
   return <LayoutContent>
     <div>
         <h1 className="text-2xl">Proyecto de Censo 2023</h1>
     </div>
     <div>
-        {data && <p>Hola de nuevo, {data.user.id} {data.user.name}</p>
+        {data && <p>Hola de nuevo, {data.user.name}</p>
         }
     </div>
   </LayoutContent>;
@@ -47,3 +46,8 @@ const AuthShowcase: React.FC = () => {
    
   );
 };
+
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return (await verifySession(context))
+}
