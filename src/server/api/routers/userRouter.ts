@@ -1,23 +1,24 @@
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import {
   createTRPCRouter,
-  publicProcedure,
   protectedProcedure,
+  publicProcedure,
 } from "~/server/api/trpc";
 import { hashPassword } from "~/utils/hashPassword";
 
-
 //utils
 
-const formatUserData = ({image,name,username,lastName}: User) => {
-    return{
-      image,name,username,lastName
-    }
-}
-
+const formatUserData = ({ image, name, username, lastName }: User) => {
+  return {
+    image,
+    name,
+    username,
+    lastName,
+  };
+};
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
@@ -89,36 +90,36 @@ export const userRouter = createTRPCRouter({
       const { id, image, lastName, name, username } = input;
 
       const oldUser = await ctx.prisma.user.findFirst({
-        where:{
-          id
-        }
-      })
+        where: {
+          id,
+        },
+      });
 
       //
       //  SUBIR IMAGEN AQUI
       //
 
       const newData = {
-          image: image || oldUser?.image,
-          lastName:lastName || oldUser?.lastName,
-          name:name || oldUser?.name,
-          username:username || oldUser?.username,
-      }
+        image: image || oldUser?.image,
+        lastName: lastName || oldUser?.lastName,
+        name: name || oldUser?.name,
+        username: username || oldUser?.username,
+      };
 
       const userFound = await ctx.prisma.user.update({
         where: {
           id,
         },
-        data: newData
+        data: newData,
       });
 
-      return userFound
+      return userFound;
     }),
 
-    getUsers : protectedProcedure.query(async ({ctx}) => {
-      const user = await ctx.prisma.user.findMany({
-        take:100
-      })
-      return user.map(formatUserData)
-    })
+  getUsers: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findMany({
+      take: 100,
+    });
+    return user.map(formatUserData);
+  }),
 });

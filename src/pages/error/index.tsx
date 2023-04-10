@@ -1,13 +1,13 @@
-import { NextPage } from "next";
+import { type NextPage } from "next";
 
-
-const ErrorPage: NextPage = () =>{
-
-    return <div className="w-full max-w-lg bg-slate-600 rounded shadow mx-auto py-6 px-3">
-        <h2 className="text-center text-red-600 font-semibold">
-            ERROR BLA BLA BLA
-        </h2>
+const ErrorPage: NextPage = () => {
+  return (
+    <div className="mx-auto w-full max-w-lg rounded bg-slate-600 px-3 py-6 shadow">
+      <h2 className="text-center font-semibold text-red-600">
+        ERROR BLA BLA BLA
+      </h2>
     </div>
-}
+  );
+};
 
-export default ErrorPage
+export default ErrorPage;

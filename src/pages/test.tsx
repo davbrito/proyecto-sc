@@ -1,10 +1,9 @@
-import { NextPage } from "next";
-import { use } from "react";
+import { type NextPage } from "next";
 import { api } from "~/utils/api";
 
 const TestPage: NextPage = () => {
-    const {data} = api.user.getUsers.useQuery()
-    console.log(data)
+  const { data } = api.user.getUsers.useQuery();
+  console.log(data);
   return (
     <div>
       <h1>Pagina de prueba</h1>
@@ -18,5 +17,4 @@ const TestPage: NextPage = () => {
   );
 };
 
-
-export default TestPage
+export default TestPage;
