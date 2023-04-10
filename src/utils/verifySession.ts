@@ -6,7 +6,7 @@ export const verifySession = async (context: GetServerSidePropsContext) => {
   const session = await getServerSession(context.req, context.res, authOptions);
 
   if (!session) {
-    return { redirect: { destination: "/error" } };
+    return { redirect: { destination: "/login" } };
   }
 
   return {
