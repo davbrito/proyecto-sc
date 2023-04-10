@@ -19,11 +19,13 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+    "typeRoots": ["./typings", "./vendor/types"]
   },
   "include": [
     ".eslintrc.cjs",
     "next-env.d.ts",
+    "types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",

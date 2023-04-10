@@ -1,6 +1,5 @@
-import { Button, Card, Input, Row, Spacer, Text } from "@nextui-org/react";
-import { signIn } from "next-auth/react";
-import React from "react";
+import { Button, Card, Input, Spacer, Text } from "@nextui-org/react";
+import { signIn, useSession } from "next-auth/react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
 interface Inputs {
@@ -16,7 +15,8 @@ export const LoginForm = () => {
     register,
     setError,
   } = useForm<Inputs>();
-
+  const session = useSession();
+  console.log(session);
   const onSubmit: SubmitHandler<Inputs> = async ({ password, username }) => {
     console.log({ username, password });
 
@@ -25,14 +25,29 @@ export const LoginForm = () => {
         username,
         password,
         redirect: false,
+        callbackUrl: "/",
       });
-
       console.log(res);
+      if (res?.error) throw { message: res.error, status: res.status };
     } catch (error) {
-      console.log(error);
-      setError("root", {
-        message: "Error de servidor",
-      });
+      if (error) {
+        const { message } = error as { message: string; status: number };
+
+        setError("root", {
+          message,
+        });
+
+        setTimeout(() => {
+          setError("root", {
+            message: "",
+          });
+        }, 3000);
+      } else {
+        setError("root", {
+          message: "Server Error",
+        });
+      }
+
       reset({ password: "", username: "" }, { keepErrors: true });
     }
   };

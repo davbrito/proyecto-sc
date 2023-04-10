@@ -1,5 +1,6 @@
 import { Button, Card, Grid, Input, Text } from "@nextui-org/react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { api } from "~/utils/api";
 
 interface Inputs {
   username: string;
@@ -17,24 +18,21 @@ export const RegisterForm = () => {
     setError,
   } = useForm<Inputs>();
 
+  const { mutateAsync } = api.user.create.useMutation();
+
   const onSubmit: SubmitHandler<Inputs> = async (values) => {
-    console.log(values);
     try {
-      const post = await fetch("/api/auth/signin", {
-        body: JSON.stringify(values),
-        headers: {
-          "content-type": "application/json",
-        },
-      });
-      console.log(post);
-    } catch (error) {
-      setError("root", {
-        message: "Error de servidor",
-      });
+      const data = await mutateAsync(values);
+      console.log(data);
+
       reset(
         { password: "", username: "", lastName: "", name: "" },
         { keepErrors: true }
       );
+    } catch (error) {
+      if (error instanceof Error) {
+        setError("root", { message: error.message });
+      }
     }
   };
 
@@ -97,10 +95,9 @@ export const RegisterForm = () => {
                 required: { value: true, message: "campo requerido" },
                 minLength: { value: 8, message: "mínimo 8 caracteres" },
                 pattern: {
-                  value:
-                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                  value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
                   message:
-                    "la contraseña debe contener al menos 8 caracteres, al menos una letra, un número y un carácter especial",
+                    "este campo debe contener mínimo 8 caracteres, al menos una letra, una letra mayúscula y un número",
                 },
               })}
               helperText={errors.password?.message}

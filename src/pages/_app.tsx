@@ -3,10 +3,9 @@ import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
 import Head from "next/head";
-
-import { api } from "~/utils/api";
-
+import { NavBar } from "~/components/NavBar";
 import "~/styles/globals.css";
+import { api } from "~/utils/api";
 
 const theme = createTheme({
   type: "dark",
@@ -29,6 +28,7 @@ const App: AppType<{ session: Session | null }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <NextUIProvider theme={theme}>
+        <NavBar />
         <Component {...pageProps} />
       </NextUIProvider>
     </SessionProvider>
