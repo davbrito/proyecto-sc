@@ -1,7 +1,6 @@
-import { signIn, useSession ,} from "next-auth/react";
-import { useRouter } from "next/router";
-import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { Button, Card, Input, Spacer, Text } from "@nextui-org/react";
+import { signIn, useSession } from "next-auth/react";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
 interface Inputs {
   username: string;
@@ -16,94 +15,98 @@ export const LoginForm = () => {
     register,
     setError,
   } = useForm<Inputs>();
-  const session = useSession()
-  console.log(session)
-  const router = useRouter()
-
-
-  const onSubmit: SubmitHandler<Inputs> = async (
-    { password, username },
-    event
-  ) => {
-    event?.preventDefault();
+  const session = useSession();
+  console.log(session);
+  const onSubmit: SubmitHandler<Inputs> = async ({ password, username }) => {
     console.log({ username, password });
+
     try {
-      const res = await signIn("credentials",{
+      const res = await signIn("credentials", {
         username,
         password,
-        redirect:false,
-        callbackUrl:"/"
-      })
-      console.log(res)
-      if(res?.error) throw { message : res.error , status: res.status}
-      
-    } catch (error ) {
-      if(error){
-         const {message} = error as {message : string , status: number}
-        
-         setError("root", {
-           message ,
-         });
-        
-         setTimeout(() => {
-          setError("root", {
-            message :"",
-          });
-         },3000)
+        redirect: false,
+        callbackUrl: "/",
+      });
+      console.log(res);
+      if (res?.error) throw { message: res.error, status: res.status };
+    } catch (error) {
+      if (error) {
+        const { message } = error as { message: string; status: number };
 
-      } 
-      else{
         setError("root", {
-          message:  "Server Error",
+          message,
+        });
+
+        setTimeout(() => {
+          setError("root", {
+            message: "",
+          });
+        }, 3000);
+      } else {
+        setError("root", {
+          message: "Server Error",
         });
       }
-      
+
       reset({ password: "", username: "" }, { keepErrors: true });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-      <div>
-        <label>Username:</label>
-        <input
+    <Card
+      as="form"
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <Card.Header>
+        <Text h3>CENSO {new Date().getFullYear()}</Text>
+      </Card.Header>
+      <Card.Divider />
+      <Card.Body className="flex flex-col gap-2">
+        <Input
           type="text"
+          label="Nombre de usuario:"
+          placeholder="Escriba su nombre de usuario..."
+          bordered
           {...register("username", {
-            required: { value: true, message: "field required" },
+            required: { value: true, message: "campo requerido" },
           })}
-          className="input-field"
-          placeholder="Type your username..."
+          helperText={errors.username?.message}
+          helperColor="error"
         />
-        {errors.username && (
-          <span className="input-errors">{errors.username.message}</span>
-        )}
-      </div>
-
-      <div>
-        <label>Password:</label>
-        <input
+        <Spacer y={0.5} />
+        <Input
           type="password"
+          label="Contraseña:"
+          placeholder="Escriba su contraseña..."
+          bordered
           {...register("password", {
-            required: { value: true, message: "field required" },
+            required: { value: true, message: "campo requerido" },
           })}
-          className="input-field"
-          placeholder="Type your password..."
+          helperText={errors.password?.message}
+          helperColor="error"
         />
-        {errors.password && (
-          <span className="input-errors">{errors.password.message}</span>
+
+        {errors.root && (
+          <>
+            <Spacer y={0.5} />
+            <Text em color="error">
+              {errors.root.message}
+            </Text>
+          </>
         )}
-      </div>
-
-      {errors.root && (
-        <span className="input-errors">{errors.root.message}</span>
-      )}
-
-      <button
-        className="mx-auto rounded bg-blue-600 py-3 px-5 font-bold transition-all hover:bg-blue-500"
-        disabled={isSubmitting}
-      >
-        Log in
-      </button>
-    </form>
+      </Card.Body>
+      <Card.Divider />
+      <Card.Footer>
+        <Button
+          size="sm"
+          type="submit"
+          css={{ ml: "auto" }}
+          disabled={isSubmitting}
+        >
+          Log in
+        </Button>
+      </Card.Footer>
+    </Card>
   );
 };

@@ -1,63 +1,68 @@
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
-  type NextAuthOptions
+  type DefaultSession,
+  type NextAuthOptions,
 } from "next-auth";
+import { type JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "~/server/db";
 import { comparePassword } from "~/utils/hashPassword";
-import { type DefaultSession  } from "next-auth";
-import { JWT } from "next-auth/jwt";
 
-declare module "next-auth/jwt"{
+declare module "next-auth/jwt" {
   interface Token extends JWT {
-    username: string
+    username: string;
   }
 }
 
+/**
+ * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
+ * object and keep type safety.
+ *
+ * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
+ */
 
 declare module "next-auth" {
-  interface Session extends DefaultSession{
+  interface Session extends DefaultSession {
     user: {
-      name:string
-      username:string
-    } 
+      name: string;
+      username: string;
+    };
   }
   interface User {
-    name:string
-    username:string
+    name: string;
+    username: string;
   }
-
 }
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: "BLABLA",
   callbacks: {
-    async jwt({token, user}) {
-      if (user) { 
+    jwt({ token, user }) {
+      if (user) {
         token.accessToken = user.id;
-        token.user = user; 
-        token.name = user.name
-        token.username = user.username
+        token.user = user;
+        token.name = user.name;
+        token.username = user.username;
       }
       return token;
     },
-    session({session,token}){
-      if(session?.user){
-        session.user.username = token.username as string
+    session({ session, token }) {
+      if (session?.user) {
+        session.user.username = token.username as string;
       }
-      return session
+      return session;
     },
-  
   },
-  pages:{
-    error: "/error"
+  pages: {
+    error: "/error",
   },
   providers: [
     Credentials({
       name: "Credentials",
+      type: "credentials",
       credentials: {
         username: { label: "username", type: "text", placeholder: "blablal" },
         password: { label: "password", type: "password" },

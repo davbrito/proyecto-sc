@@ -1,5 +1,5 @@
-import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { Button, Card, Grid, Input, Text } from "@nextui-org/react";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
 
 interface Inputs {
@@ -18,110 +18,112 @@ export const RegisterForm = () => {
     setError,
   } = useForm<Inputs>();
 
-  const { mutate, isLoading } = api.user.create.useMutation();
+  const { mutateAsync } = api.user.create.useMutation();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data, event) => {
-    event?.preventDefault();
+  const onSubmit: SubmitHandler<Inputs> = async (values) => {
+    try {
+      const data = await mutateAsync(values);
+      console.log(data);
 
-    await mutate(data, {
-      onError(error) {
-        
-        setError("username", {
-          message:error.message,
-
-        })
-      },
-      onSuccess(data) {
-        console.log(data);
-        
-      },
-    });
-
-    reset(
-      { password: "", username: "", lastName: "", name: "" },
-      { keepErrors: true }
-    );
+      reset(
+        { password: "", username: "", lastName: "", name: "" },
+        { keepErrors: true }
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        setError("root", { message: error.message });
+      }
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-      <div>
-        <label>Username:</label>
-        <input
-          type="text"
-          {...register("username", {
-            required: { value: true, message: "field required" },
-          })}
-          className="input-field"
-          placeholder="Type your username..."
-        />
-        {errors.username && (
-          <span className="input-errors">{errors.username.message}</span>
-        )}
-      </div>
-
-      <div className="flex content-between gap-x-4">
-        <div className="w-full">
-          <label>Name:</label>
-          <input
-            type="text"
-            {...register("name", {
-              required: { value: true, message: "field required" },
-            })}
-            className="input-field"
-            placeholder="Type your name..."
-          />
-          {errors.name && (
-            <span className="input-errors">{errors.name.message}</span>
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    <Card as="form" onSubmit={handleSubmit(onSubmit)}>
+      <Card.Header>
+        <Text h3>Register Form</Text>
+      </Card.Header>
+      <Card.Divider />
+      <Card.Body>
+        <Grid.Container gap={2}>
+          <Grid xs={12}>
+            <Input
+              fullWidth
+              label="Nombre de usuario:"
+              placeholder="Escriba su nombre de usuario..."
+              bordered
+              {...register("username", {
+                required: { value: true, message: "campo requerido" },
+              })}
+              helperText={errors.username?.message}
+              helperColor="error"
+            />
+          </Grid>
+          <Grid xs={6}>
+            <Input
+              fullWidth
+              label="Nombre:"
+              placeholder="Escriba su nombre..."
+              bordered
+              {...register("name", {
+                required: { value: true, message: "campo requerido" },
+              })}
+              helperText={errors.name?.message}
+              helperColor="error"
+            />
+          </Grid>
+          <Grid xs={6}>
+            <Input
+              fullWidth
+              label="Apellido:"
+              placeholder="Escriba su apellido..."
+              bordered
+              {...register("lastName", {
+                required: { value: true, message: "campo requerido" },
+              })}
+              helperText={errors.lastName?.message}
+              helperColor="error"
+            />
+          </Grid>
+          <Grid xs={12}>
+            <Input
+              fullWidth
+              type="password"
+              label="Contraseña:"
+              placeholder="Escriba su contraseña..."
+              bordered
+              {...register("password", {
+                required: { value: true, message: "campo requerido" },
+                minLength: { value: 8, message: "mínimo 8 caracteres" },
+                pattern: {
+                  value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
+                  message:
+                    "este campo debe contener mínimo 8 caracteres, al menos una letra, una letra mayúscula y un número",
+                },
+              })}
+              helperText={errors.password?.message}
+              helperColor="error"
+            />
+          </Grid>
+          {errors.root && (
+            <Grid xs={12}>
+              <Text em color="error">
+                {errors.root.message}
+              </Text>
+            </Grid>
           )}
-        </div>
-
-        <div className="w-full">
-          <label>Last name:</label>
-          <input
-            type="text"
-            {...register("lastName", {
-              required: { value: true, message: "field required" },
-            })}
-            className="input-field"
-            placeholder="Type your lastName..."
-          />
-          {errors.lastName && (
-            <span className="input-errors">{errors.lastName.message}</span>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <label>Password:</label>
-        <input
-          type="password"
-          {...register("password", {
-            required: { value: true, message: "field required" },
-            pattern: {
-              value:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
-              message:
-                "this field must contain 8 characters,at least one letter, one upper letter and one number ",
-            },
-          })}
-          className="input-field"
-          placeholder="Type your password..."
-        />
-        {errors.password && (
-          <span className="input-errors">{errors.password.message}</span>
-        )}
-      </div>
-
-      {errors.root && (
-        <span className="input-errors">{errors.root.message}</span>
-      )}
-
-      <button
-        className="mx-auto rounded bg-blue-600 py-3 px-5 font-bold transition-all hover:bg-blue-500"
-        disabled={isLoading}
-      >
-        Register
-      </button>
-    </form>
+        </Grid.Container>
+      </Card.Body>
+      <Card.Divider />
+      <Card.Footer>
+        <Button
+          type="submit"
+          size="sm"
+          css={{ ml: "auto" }}
+          disabled={isSubmitting}
+        >
+          Registrarse
+        </Button>
+      </Card.Footer>
+    </Card>
   );
 };
