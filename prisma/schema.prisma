@@ -5,11 +5,10 @@ generator client {
     provider = "prisma-client-js"
 }
 
-
 datasource db {
-  provider = "mysql"
-  url = env("DATABASE_URL")
-  relationMode = "prisma"
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
 }
 
 model Example {
@@ -48,11 +47,11 @@ model Session {
 model User {
     id       String  @id @default(cuid())
     name     String
-    username String @unique
+    username String  @unique
     image    String?
     lastName String
     password String
-    
+
     accounts Account[]
     sessions Session[]
 }
@@ -65,39 +64,71 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-
-
 // CENSO 
 
-model Persona{
+model Familiar {
     id BigInt @id()
-    nombre String
-    apellido String
-    nacionalidad String
+
+    nombres         String
+    apellidos       String
     numeroDocumento String
-    edad Int
+    edad            Int
+
     fechaNacimiento DateTime
-    genero String
-    email String
-    telefono String
+    genero          String
+    email           String
+    telefono        String
+
     serialCarnetPatria String
-    codCarnetPatria String
+    codCarnetPatria    String
+
+    observacion String
+    parentesco  String
+
+    Censo Censo[]
 }
 
-model Casa{
-    id BigInt @id()
-    manzana String
-    casa String
-    calle String
+model JefeFamilia {
+    cod             BigInt @id()
+    nombres         String
+    apellidos       String
+    numeroDocumento String
+    edad            Int
+
+    fechaNacimiento DateTime
+    genero          String
+
+    serialCarnetPatria String
+    codCarnetPatria    String
+
+    observacion String
+
+    Censo Censo[]
 }
 
+model Casa {
+    id        BigInt @id()
+    manzana   String
+    casa      String
+    calle     String
+    direccion String
+
+    Censo Censo[]
+}
 
 model Censo {
-    cod String @id() 
+    cod String @id()
 
-    cargaFamiliar Int
-    tipoFamilia String
+    cargaFamiliar        Int
+    tipoFamilia          String
     cajasClapsPorRecibir Int
-    casaFamilia Int
-    familiaMultiple String
+
+    jefeFamiliaCod BigInt
+    casaId         BigInt
+    familiarId     BigInt?
+
+    jefeFamilia JefeFamilia @relation(fields: [jefeFamiliaCod], references: [cod])
+    casa        Casa        @relation(fields: [casaId], references: [id])
+
+    Familiar Familiar? @relation(fields: [familiarId], references: [id])
 }
