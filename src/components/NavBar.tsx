@@ -1,6 +1,7 @@
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
+import routesHref from "~/utils/routesNavBar";
 
 export const NavBar = () => {
   const { data } = useSession();
@@ -8,30 +9,16 @@ export const NavBar = () => {
   return (
     <nav className="mx-auto mt-5 flex w-full max-w-lg justify-between rounded-md border border-solid border-slate-800 bg-slate-600 p-3 font-semibold">
       <ul className="flex gap-x-6">
-        <li>
-          <Link
-            href="/"
-            className="text-lg text-blue-400 transition-all hover:text-blue-200"
-          >
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/login"
-            className="text-lg text-blue-400 transition-all hover:text-blue-200"
-          >
-            Sign in
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/register"
-            className="text-lg text-blue-400 transition-all hover:text-blue-200"
-          >
-            Sign up
-          </Link>
-        </li>
+        {routesHref.map((route) => (
+          <li>
+            <Link
+              href={route.href}
+              className="text-lg text-blue-400 transition-all hover:text-blue-200"
+            >
+              {route.pathName}
+            </Link>
+          </li>
+        ))}
       </ul>
 
       <div>
