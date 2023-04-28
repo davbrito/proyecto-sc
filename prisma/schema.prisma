@@ -89,7 +89,7 @@ model Familiar {
 }
 
 model JefeFamilia {
-    cod             BigInt @id()
+    cod             BigInt @id() @default(autoincrement())
     nombres         String
     apellidos       String
     numeroDocumento String
@@ -107,7 +107,7 @@ model JefeFamilia {
 }
 
 model Casa {
-    id        BigInt @id()
+    id        BigInt @id() @default(autoincrement())
     manzana   String
     casa      String
     calle     String

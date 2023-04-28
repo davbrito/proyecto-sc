@@ -1,6 +1,7 @@
 import { Button, Card, Grid, Input, Text } from "@nextui-org/react";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { api } from "~/utils/api";
 
 interface CasaProps {
   manzana: string;
@@ -21,15 +22,26 @@ interface JefeProps {
   observacion: string;
 }
 
-export const CensoForm = () => {
+export const CasaForm = () => {
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<CasaProps>();
 
+  const { mutateAsync } = api.casa.createCasa.useMutation();
+
   const onSubmit: SubmitHandler<CasaProps> = async (values) => {
     try {
+      mutateAsync(values, {
+        onSuccess: () => {
+          console.log("Chebere");
+        },
+        onError(error, variables, context) {
+          console.log(error, variables, context);
+        },
+      });
+
       console.log(values);
     } catch (error) {
       console.error(error);
@@ -37,7 +49,11 @@ export const CensoForm = () => {
   };
 
   return (
-    <Card as="form" onSubmit={handleSubmit(onSubmit)}>
+    <Card
+      as="form"
+      onSubmit={handleSubmit(onSubmit)}
+      css={{ mw: "440px", mx: "auto" }}
+    >
       <Card.Header>
         <Text h3>Datos de la vivienda</Text>
       </Card.Header>
