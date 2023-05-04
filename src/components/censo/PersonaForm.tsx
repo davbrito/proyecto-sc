@@ -1,9 +1,13 @@
 import { Divider, Grid, Input } from "@nextui-org/react";
 import React from "react";
 
-export const PersonaForm = ({ register, errors }: any) => {
+export const PersonaForm = ({ register, errors, getFieldState }: any) => {
+  const verify = () => {
+    return getFieldState("datosBasicosJefe");
+  };
+
   return (
-    <Grid.Container gap={1}>
+    <Grid.Container gap={2}>
       <Grid xs={6}>
         <Input
           fullWidth
@@ -14,7 +18,7 @@ export const PersonaForm = ({ register, errors }: any) => {
           {...register("datosBasicosJefe.primerNombre", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors.primerNombre?.message}
+          helperText={errors?.datosBasicosJefe?.primerNombre?.message}
           helperColor="error"
         />
       </Grid>
@@ -29,7 +33,7 @@ export const PersonaForm = ({ register, errors }: any) => {
           {...register("datosBasicosJefe.segundoNombre", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors.segundoNombre?.message}
+          helperText={errors?.datosBasicosJefe?.segundoNombre?.message}
           helperColor="error"
         />
       </Grid>
@@ -44,7 +48,7 @@ export const PersonaForm = ({ register, errors }: any) => {
           {...register("datosBasicosJefe.primerApellido", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors.primerApellido?.message}
+          helperText={errors?.datosBasicosJefe?.primerApellido?.message}
           helperColor="error"
         />
       </Grid>
@@ -59,7 +63,7 @@ export const PersonaForm = ({ register, errors }: any) => {
           {...register("datosBasicosJefe.segundoApellido", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors.segundoApellido?.message}
+          helperText={errors?.datosBasicosJefe?.segundoApellido?.message}
           helperColor="error"
         />
       </Grid>
@@ -76,7 +80,7 @@ export const PersonaForm = ({ register, errors }: any) => {
           {...register("datosBasicosJefe.fechaNacimiento", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors.fechaNacimiento?.message}
+          helperText={errors?.datosBasicosJefe?.fechaNacimiento?.message}
           helperColor="error"
         />
       </Grid>
@@ -91,7 +95,7 @@ export const PersonaForm = ({ register, errors }: any) => {
           {...register("datosBasicosJefe.edad", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors.edad?.message}
+          helperText={errors?.datosBasicosJefe?.edad?.message}
           helperColor="error"
         />
       </Grid>

@@ -13,7 +13,7 @@ interface CasaProps {
 export const CasaForm = ({ register, errors }: any) => {
   return (
     <Grid.Container gap={2}>
-      <Grid xs={12}>
+      <Grid xs={4}>
         <Input
           fullWidth
           label="N° Calle:"
@@ -27,7 +27,7 @@ export const CasaForm = ({ register, errors }: any) => {
           helperColor="error"
         />
       </Grid>
-      <Grid xs={12}>
+      <Grid xs={4}>
         <Input
           fullWidth
           label="N° Manzana:"
@@ -42,7 +42,7 @@ export const CasaForm = ({ register, errors }: any) => {
         />
       </Grid>
 
-      <Grid xs={12}>
+      <Grid xs={4}>
         <Input
           fullWidth
           label="N° Casa:"

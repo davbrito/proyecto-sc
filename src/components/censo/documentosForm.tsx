@@ -1,15 +1,5 @@
-import {
-  Button,
-  Card,
-  Divider,
-  Grid,
-  Input,
-  Text,
-  Textarea,
-} from "@nextui-org/react";
+import { Grid, Input, Textarea } from "@nextui-org/react";
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { api } from "~/utils/api";
 
 interface CasaProps {
   manzana: string;

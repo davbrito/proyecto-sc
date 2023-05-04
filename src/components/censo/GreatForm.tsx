@@ -45,12 +45,45 @@ interface JefeProps {
   casa: CasaProps;
 }
 
+interface CirclesProps {
+  count: number;
+  filled: number;
+}
+
+const CirclesReference = ({ count, filled }: CirclesProps) => {
+  const renderCircles = () => {
+    const circles: Array<JSX.Element> = [];
+
+    for (let i = 0; i < count; i++) {
+      circles.push(
+        <span
+          className={`inline-block h-6 w-6 rounded-full ${
+            i <= filled ? "bg-blue-600" : "bg-gray-400"
+          }`}
+        ></span>
+      );
+    }
+    return circles;
+  };
+
+  return (
+    <div className="mx-auto flex gap-x-2 p-2 transition-all">
+      {renderCircles()}
+    </div>
+  );
+};
+
 export const GreatForm = () => {
   const [step, setStep] = useState(0);
   const {
     handleSubmit,
     register,
-    formState: { errors },
+    formState: { errors, isValidating, isValid },
+    trigger,
+    setError,
+    getFieldState,
+    getValues,
+    watch,
   } = useForm<JefeProps>();
 
   const sections = [
@@ -74,10 +107,10 @@ export const GreatForm = () => {
     return step === 0;
   };
 
-  const handleSteps = (n: number) => {
+  const handleSteps = async (n: number) => {
     if (step === sections.length - 1 && n > 0) return;
 
-    setStep(step + n);
+    const campos = Object.keys(getValues());
   };
 
   return (
@@ -94,24 +127,27 @@ export const GreatForm = () => {
         <Grid css={{ mx: "auto" }}>{sections[step]}</Grid>
       </Card.Body>
 
+      <span></span>
       <Card.Divider />
 
-      <Card.Footer>
+      <Card.Footer css={{ display: "flex", justifyContent: "center", gap: 4 }}>
         <Button
           color={"secondary"}
           disabled={isDisabled()}
-          onClick={() => handleSteps(-1)}
+          onPress={() => handleSteps(-1)}
         >
           Atras
         </Button>
         {step === sections.length - 1 ? (
           <Button type="submit">Guardar datos</Button>
         ) : (
-          <Button type="button" onClick={() => handleSteps(1)}>
+          <Button type="button" onPress={() => handleSteps(1)}>
             Continuar
           </Button>
         )}
       </Card.Footer>
+
+      <CirclesReference count={sections.length} filled={step} />
     </Card>
   );
 };
