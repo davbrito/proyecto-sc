@@ -14,3 +14,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.select-form{
+  @apply block w-full rounded-xl border-2 border-neutral-700
+   bg-zinc-900 p-2.5 px-3 text-sm text-white placeholder-gray-400 
+   transition-all focus:border-neutral-300 focus:ring-blue-500
+   dark:border-gray-300 dark:bg-gray-50 dark:text-gray-900
+    dark:focus:border-blue-500 dark:focus:ring-blue-500 ;
+}

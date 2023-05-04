@@ -67,7 +67,7 @@ model VerificationToken {
 // CENSO 
 
 model Familiar {
-    id BigInt @id()
+    id BigInt @id() @default(autoincrement())
 
     nombres         String
     apellidos       String
@@ -117,8 +117,7 @@ model Casa {
 }
 
 model Censo {
-    cod String @id()
-
+    cod                  String @id()
     cargaFamiliar        Int
     tipoFamilia          String
     cajasClapsPorRecibir Int
