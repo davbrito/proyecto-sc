@@ -1,7 +1,7 @@
 import { Button, Table } from "@nextui-org/react";
 import React from "react";
 import { api } from "~/utils/api";
-import { Loading } from "../Loading";
+import { CustomLoading } from "../Loading";
 
 export const CasaList = () => {
   const { data, isLoading, refetch } = api.casa.getAllCasas.useQuery();
@@ -24,7 +24,7 @@ export const CasaList = () => {
     } catch (error) {}
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <CustomLoading />;
 
   if (!data) return <h1>Error</h1>;
   return (

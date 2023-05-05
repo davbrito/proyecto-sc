@@ -1,14 +1,5 @@
-import { Button, Card, Grid, Input, Text } from "@nextui-org/react";
+import { Grid, Input } from "@nextui-org/react";
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { api } from "~/utils/api";
-
-interface CasaProps {
-  manzana: string;
-  casa: string;
-  calle: string;
-  direccion: string;
-}
 
 export const CasaForm = ({ register, errors }: any) => {
   return (
@@ -23,7 +14,7 @@ export const CasaForm = ({ register, errors }: any) => {
           {...register("casa.calle", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors?.calle?.message}
+          helperText={errors?.casa?.calle?.message}
           helperColor="error"
         />
       </Grid>
@@ -37,7 +28,7 @@ export const CasaForm = ({ register, errors }: any) => {
           {...register("casa.manzana", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors?.manzana?.message}
+          helperText={errors?.casa?.manzana?.message}
           helperColor="error"
         />
       </Grid>
@@ -52,7 +43,7 @@ export const CasaForm = ({ register, errors }: any) => {
           {...register("casa.casa", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors?.casa?.message}
+          helperText={errors?.casa?.casa?.message}
           helperColor="error"
         />
       </Grid>
@@ -66,7 +57,7 @@ export const CasaForm = ({ register, errors }: any) => {
           {...register("casa.direccion", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors.direccion?.message}
+          helperText={errors.casa?.direccion?.message}
           helperColor="error"
         />
       </Grid>

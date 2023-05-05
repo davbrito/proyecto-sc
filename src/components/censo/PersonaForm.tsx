@@ -2,21 +2,22 @@ import { Divider, Grid, Input } from "@nextui-org/react";
 import React from "react";
 
 export const PersonaForm = ({ register, errors, getFieldState }: any) => {
-  const verify = () => {
-    return getFieldState("datosBasicosJefe");
-  };
-
   return (
     <Grid.Container gap={2}>
       <Grid xs={6}>
         <Input
           fullWidth
           label="Primer nombre:"
-          placeholder="Escriba los nombres..."
+          placeholder="Ej: pedro"
           bordered
           type="text"
           {...register("datosBasicosJefe.primerNombre", {
             required: { value: true, message: "Campo requerido" },
+            pattern: {
+              value:
+                /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
+              message: "El nombre no es valido",
+            },
           })}
           helperText={errors?.datosBasicosJefe?.primerNombre?.message}
           helperColor="error"
@@ -27,11 +28,16 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
         <Input
           fullWidth
           label="Segundo nombre:"
-          placeholder="Escriba los nombres..."
+          placeholder="Ej: jose"
           bordered
           type="text"
           {...register("datosBasicosJefe.segundoNombre", {
             required: { value: true, message: "Campo requerido" },
+            pattern: {
+              value:
+                /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
+              message: "El nombre no es valido",
+            },
           })}
           helperText={errors?.datosBasicosJefe?.segundoNombre?.message}
           helperColor="error"
@@ -42,11 +48,16 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
         <Input
           fullWidth
           label="Primer apellido:"
-          placeholder="Escriba los apellidos..."
+          placeholder="Ej: perez"
           bordered
           type="text"
           {...register("datosBasicosJefe.primerApellido", {
             required: { value: true, message: "Campo requerido" },
+            pattern: {
+              value:
+                /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
+              message: "El apellido no es valido",
+            },
           })}
           helperText={errors?.datosBasicosJefe?.primerApellido?.message}
           helperColor="error"
@@ -56,19 +67,24 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
       <Grid xs={6}>
         <Input
           fullWidth
-          label="Primer apellido:"
-          placeholder="Escriba los apellidos..."
+          label="Segundo apellido:"
+          placeholder="Ej: jimenez"
           bordered
           type="text"
           {...register("datosBasicosJefe.segundoApellido", {
             required: { value: true, message: "Campo requerido" },
+            pattern: {
+              value:
+                /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
+              message: "El apellido no es valido",
+            },
           })}
           helperText={errors?.datosBasicosJefe?.segundoApellido?.message}
           helperColor="error"
         />
       </Grid>
 
-      <Divider css={{ my: "$6" }} />
+      <Divider css={{ mt: "1rem" }} />
 
       <Grid xs={4}>
         <Input
@@ -89,11 +105,15 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
         <Input
           fullWidth
           label="Edad:"
-          placeholder="Escriba la edad..."
+          placeholder="18"
           bordered
           type="text"
           {...register("datosBasicosJefe.edad", {
             required: { value: true, message: "Campo requerido" },
+            pattern: {
+              value: /^[0-9]*$/,
+              message: "La edad debe estar en numeros",
+            },
           })}
           helperText={errors?.datosBasicosJefe?.edad?.message}
           helperColor="error"

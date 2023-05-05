@@ -1,29 +1,6 @@
 import { Grid, Input, Textarea } from "@nextui-org/react";
 import React from "react";
 
-interface CasaProps {
-  manzana: string;
-  casa: string;
-  calle: string;
-  direccion: string;
-}
-
-interface JefeProps {
-  primerNombre: string;
-  segundoNombre: string;
-  primerApellido: string;
-  segundoApellido: string;
-  tipoDocumento: string;
-  numeroDocumento: string;
-  edad: string;
-  fechaNacimiento: string;
-  genero: string;
-  serialCarnetPatria: string;
-  codCarnetPatria: string;
-  observacion?: string;
-  casa: CasaProps;
-}
-
 export const DocumentosForm = ({ register, errors }: any) => {
   return (
     <Grid.Container gap={1}>
@@ -58,6 +35,10 @@ export const DocumentosForm = ({ register, errors }: any) => {
           bordered
           type="text"
           {...register("documentos.numeroDocumento", {
+            required: {
+              value: true,
+              message: "Este campo es obligatorio",
+            },
             pattern: {
               value: /^[0-9]*$/,
               message: "Debe escribirlo en el siguiente formato: '12345678'",
@@ -67,7 +48,7 @@ export const DocumentosForm = ({ register, errors }: any) => {
               message: "Corrija el numero de cedula por favor.",
             },
           })}
-          helperText={errors.numeroDocumento?.message}
+          helperText={errors?.documentos?.numeroDocumento?.message}
           helperColor="error"
         />
       </Grid>
@@ -78,10 +59,8 @@ export const DocumentosForm = ({ register, errors }: any) => {
           placeholder="Escriba el serial del carnet de la patria..."
           bordered
           type="text"
-          {...register("documentos.serialCarnetPatria", {
-            required: { value: true, message: "Campo requerido" },
-          })}
-          helperText={errors.serialCarnetPatria?.message}
+          {...register("documentos.serialCarnetPatria")}
+          helperText={errors?.documentos?.serialCarnetPatria?.message}
           helperColor="error"
         />
       </Grid>
@@ -93,10 +72,8 @@ export const DocumentosForm = ({ register, errors }: any) => {
           placeholder="Escriba el codigo del carnet de la patria..."
           bordered
           type="text"
-          {...register("documentos.codCarnetPatria", {
-            required: { value: true, message: "Campo requerido" },
-          })}
-          helperText={errors.codCarnetPatria?.message}
+          {...register("documentos.codCarnetPatria")}
+          helperText={errors?.documentos?.codCarnetPatria?.message}
           helperColor="error"
         />
       </Grid>
@@ -107,10 +84,8 @@ export const DocumentosForm = ({ register, errors }: any) => {
           label="Observacion:"
           placeholder="Escriba alguna observacion (opcional)"
           bordered
-          {...register("documentos.observacion", {
-            required: { value: true, message: "Campo requerido" },
-          })}
-          helperText={errors.observacion?.message}
+          {...register("documentos.observacion")}
+          helperText={errors?.documentos?.observacion?.message}
           helperColor="error"
         />
       </Grid>

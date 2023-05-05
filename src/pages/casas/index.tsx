@@ -1,4 +1,4 @@
-import { Container, Link } from "@nextui-org/react";
+import { Container, Link, Text } from "@nextui-org/react";
 import { GetServerSidePropsContext } from "next";
 import React, { useContext } from "react";
 import { LayoutContent } from "~/components/Layout";
@@ -12,17 +12,15 @@ const CasaIndex = () => {
   console.log(data);
   return (
     <LayoutContent>
-      <Container>
-        <h1>Casas</h1>
-        <Link
-          href="/casas/create"
-          css={{ my: "1rem" }}
-          className="rounded bg-blue-700 px-2 py-3 text-blue-100"
-        >
-          Nueva casa
-        </Link>
-        <CasaList />
-      </Container>
+      <Text h1>Casas</Text>
+      <Link
+        href="/casas/create"
+        css={{ my: "1rem" }}
+        className="rounded bg-blue-700 px-2 py-3 text-blue-100"
+      >
+        Nueva casa
+      </Link>
+      <CasaList />
     </LayoutContent>
   );
 };

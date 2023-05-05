@@ -1,14 +1,6 @@
-import {
-  Button,
-  Card,
-  Divider,
-  Grid,
-  Input,
-  Text,
-  Textarea,
-} from "@nextui-org/react";
+import { Button, Card, Grid, Text } from "@nextui-org/react";
 import React, { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FieldError, SubmitHandler, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
 import { PersonaForm } from "./PersonaForm";
 import { CasaForm } from "./CasaForm";
@@ -78,13 +70,13 @@ export const GreatForm = () => {
   const {
     handleSubmit,
     register,
-    formState: { errors, isValidating, isValid },
+    formState: { errors, isSubmitting },
+    getFieldState,
     trigger,
     setError,
-    getFieldState,
-    getValues,
-    watch,
   } = useForm<JefeProps>();
+
+  const { mutate } = api.persona.createJefeFamilia.useMutation();
 
   const sections = [
     <PersonaForm register={register} errors={errors} />,
@@ -92,25 +84,68 @@ export const GreatForm = () => {
     <CasaForm register={register} errors={errors} />,
   ];
 
-  const persona = api.persona.createJefeFamilia.useMutation();
-
   const onSubmit: SubmitHandler<JefeProps> = async (values) => {
     try {
-      // Guardar Casa
       console.log(values);
+      mutate(
+        {
+          casa: values.casa,
+          documentos: values.documentos,
+          jefe: {
+            edad: parseInt(values.datosBasicosJefe.edad),
+            primerApellido: values.datosBasicosJefe.primerApellido,
+            genero: values.datosBasicosJefe.genero,
+            primerNombre: values.datosBasicosJefe.primerNombre,
+            segundoNombre: values.datosBasicosJefe.segundoNombre,
+            fechaNacimiento: values.datosBasicosJefe.fechaNacimiento,
+            segundoApellido: values.datosBasicosJefe.segundoApellido,
+          },
+        },
+        {
+          onSuccess(data, variables, context) {
+            console.log(data);
+          },
+          onError(error, variables, context) {
+            setError("root", {
+              message: "Ocurrio un error",
+              type: "validate",
+            });
+          },
+        }
+      );
     } catch (error) {
       console.error(error);
     }
   };
 
-  const isDisabled = () => {
+  const isDisabledBackButton = () => {
     return step === 0;
   };
 
   const handleSteps = async (n: number) => {
     if (step === sections.length - 1 && n > 0) return;
 
-    const campos = Object.keys(getValues());
+    let state:
+      | {
+          invalid: boolean;
+          isDirty: boolean;
+          isTouched: boolean;
+          error?: FieldError | undefined;
+        }
+      | undefined = undefined;
+
+    switch (step) {
+      case 0:
+        await trigger("datosBasicosJefe");
+        state = getFieldState("datosBasicosJefe");
+        break;
+      case 1:
+        await trigger("documentos");
+        state = getFieldState("documentos");
+        break;
+    }
+
+    if (!state?.invalid) setStep((step) => step + n);
   };
 
   return (
@@ -124,7 +159,19 @@ export const GreatForm = () => {
       <Card.Divider />
 
       <Card.Body>
-        <Grid css={{ mx: "auto" }}>{sections[step]}</Grid>
+        <Grid css={{ mx: "auto" }}>
+          {sections.map((section, index) => (
+            <section
+              className={`transition-all ${
+                step === index ? "block opacity-100 " : "hidden opacity-0"
+              }`}
+              key={index}
+            >
+              {section}
+            </section>
+          ))}
+        </Grid>
+        {errors && <Text color="error">errors?.root?.message</Text>}
       </Card.Body>
 
       <span></span>
@@ -133,13 +180,15 @@ export const GreatForm = () => {
       <Card.Footer css={{ display: "flex", justifyContent: "center", gap: 4 }}>
         <Button
           color={"secondary"}
-          disabled={isDisabled()}
+          disabled={isDisabledBackButton()}
           onPress={() => handleSteps(-1)}
         >
           Atras
         </Button>
         {step === sections.length - 1 ? (
-          <Button type="submit">Guardar datos</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            Guardar datos
+          </Button>
         ) : (
           <Button type="button" onPress={() => handleSteps(1)}>
             Continuar
