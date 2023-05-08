@@ -1,4 +1,5 @@
-import { createTRPCProxyClient } from "@trpc/client";
+import { TRPCClientError, createTRPCProxyClient } from "@trpc/client";
+import { TRPCError } from "@trpc/server";
 import { randomInt } from "crypto";
 import { z } from "zod";
 
@@ -50,6 +51,7 @@ export const personaRouter = createTRPCRouter({
 
       if (!newCasa) return;
 
+      console.log(newCasa);
       const newJefe = await ctx.prisma.jefeFamilia.create({
         data: {
           nombres: jefe.primerNombre + ", " + jefe.segundoNombre,
@@ -67,8 +69,8 @@ export const personaRouter = createTRPCRouter({
             2,
             "0"
           )}${newJefe.id.toString().padStart(4, "0")}`,
+          jefeFamiliaId: newJefe.id,
           casaId: newCasa.id,
-          jefeFamiliaCod: newJefe.id,
         },
       });
 
@@ -77,63 +79,86 @@ export const personaRouter = createTRPCRouter({
   addNewFamiliar: publicProcedure
     .input(
       z.object({
-        jefeId: z.string(),
-        nombres: z.string(),
-        apellidos: z.string(),
-        numeroDocumento: z.string(),
-        edad: z.string(),
-        fechaNacimiento: z.string(),
-        genero: z.string(),
-        email: z.string(),
-        telefono: z.string(),
-        serialCarnetPatria: z.string(),
-        codCarnetPatria: z.string(),
-        observacion: z.string(),
-
-        parentesco: z.string(),
+        familiar: z.object({
+          primerNombre: z.string(),
+          segundoNombre: z.string(),
+          primerApellido: z.string(),
+          segundoApellido: z.string(),
+          edad: z.number(),
+          fechaNacimiento: z.string(),
+          genero: z.string(),
+        }),
+        documentos: z.object({
+          tipoDocumento: z.string(),
+          numeroDocumento: z.string(),
+          serialCarnetPatria: z.string().default(""),
+          codCarnetPatria: z.string().default(""),
+          observacion: z.string().default(""),
+        }),
+        jefe: z.object({
+          jefeId: z.bigint(),
+          parentesco: z.string(),
+        }),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const {
-        apellidos,
-        codCarnetPatria,
-        edad,
-        email,
-        fechaNacimiento,
-        genero,
-        jefeId,
-        nombres,
-        numeroDocumento,
-        observacion,
-        parentesco,
-        serialCarnetPatria,
-        telefono,
-      } = input;
+      const { jefe, familiar, documentos } = input;
 
-      const jefeToEdit = await ctx.prisma.jefeFamilia.findFirstOrThrow({});
+      const jefeToEdit = await ctx.prisma.jefeFamilia.findFirstOrThrow({
+        where: {
+          id: jefe.jefeId,
+        },
+        include: { censo: true },
+      });
 
-      console.log(jefeToEdit);
+      if (!jefeToEdit || !jefeToEdit.censo || !jefeToEdit.censo[0])
+        throw new TRPCError({ message: "JEFE NO EXISTE", code: "CONFLICT" });
 
       const newFamiliar = await ctx.prisma.familiar.create({
         data: {
-          apellidos,
-          codCarnetPatria,
-          edad: parseInt(edad),
-          email,
-          fechaNacimiento,
-          genero,
-          nombres,
-          numeroDocumento,
-          observacion,
-          parentesco,
-          serialCarnetPatria,
-          telefono,
+          apellidos: `${familiar.primerApellido} ${familiar.segundoApellido}`,
+          nombres: `${familiar.primerNombre} ${familiar.segundoNombre}`,
+          fechaNacimiento: new Date(familiar.fechaNacimiento).toJSON(),
+          genero: familiar.genero,
+          edad: familiar.edad,
+          ...documentos,
+          parentesco: jefe.parentesco,
+          jefeFamiliaId: jefe.jefeId,
         },
       });
 
-      return newFamiliar;
+      const censoToUpdate = await ctx.prisma.censo.findFirst({
+        where: {
+          id: {
+            equals: jefeToEdit.censo[0]?.id,
+          },
+        },
+      });
+      if (!censoToUpdate)
+        throw new TRPCError({
+          message: "NO EXISTE EL CENSO",
+          code: "CONFLICT",
+        });
+
+      censoToUpdate.cargaFamiliar += 1;
+
+      if (censoToUpdate.cargaFamiliar > 4) {
+        censoToUpdate.tipoFamilia = "multifamiliar";
+        censoToUpdate.cajasClapsPorRecibir = 2;
+      }
+
+      const newCenso = await ctx.prisma.censo.update({
+        where: {
+          id: censoToUpdate.id,
+        },
+        data: {
+          ...censoToUpdate,
+        },
+      });
+
+      return { newFamiliar, newCenso };
     }),
-  getJefesFamilias: publicProcedure.query(async ({ ctx }) => {
+  getCensoInfor: publicProcedure.query(async ({ ctx }) => {
     const jefes = await ctx.prisma.censo.findMany({
       take: 20,
       include: {
@@ -144,6 +169,76 @@ export const personaRouter = createTRPCRouter({
 
     return jefes;
   }),
+  getJefesFamilia: publicProcedure.query(async ({ ctx }) => {
+    const jefes = await ctx.prisma.jefeFamilia.findMany({});
+    return jefes;
+  }),
 
-  getJefesWithFamiliares: publicProcedure.query(({ ctx }) => {}),
+  getJefesWithFamiliares: publicProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.jefeFamilia.findMany({
+      include: {
+        familiar: true,
+      },
+    });
+  }),
+
+  getFamiliares: publicProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.familiar.findMany({
+      include: {
+        jefeFamilia: true,
+      },
+    });
+  }),
+
+  deleteFamiliar: publicProcedure
+    .input(z.object({ id: z.bigint() }))
+    .mutation(async ({ ctx, input }) => {
+      const deleted = await ctx.prisma.familiar.delete({
+        where: { id: input.id },
+      });
+      return deleted;
+    }),
+
+  updateFamiliar: publicProcedure
+    .input(
+      z.object({
+        familiar: z.object({
+          primerNombre: z.string(),
+          segundoNombre: z.string(),
+          primerApellido: z.string(),
+          segundoApellido: z.string(),
+          edad: z.number(),
+          fechaNacimiento: z.string(),
+          genero: z.string(),
+        }),
+        documentos: z.object({
+          tipoDocumento: z.string(),
+          numeroDocumento: z.string(),
+          serialCarnetPatria: z.string().default(""),
+          codCarnetPatria: z.string().default(""),
+          observacion: z.string().default(""),
+        }),
+        jefe: z.object({
+          jefeId: z.bigint(),
+          parentesco: z.string(),
+        }),
+        id: z.bigint(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { documentos, familiar, jefe, id } = input;
+
+      const familiarUpdated = await ctx.prisma.familiar.update({
+        where: {
+          id,
+        },
+        data: {
+          ...familiar,
+          ...documentos,
+          parentesco: jefe.parentesco,
+        },
+      });
+
+      return familiarUpdated;
+    }),
 });

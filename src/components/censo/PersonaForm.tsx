@@ -11,7 +11,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           placeholder="Ej: pedro"
           bordered
           type="text"
-          {...register("datosBasicosJefe.primerNombre", {
+          {...register("datosBasicos.primerNombre", {
             required: { value: true, message: "Campo requerido" },
             pattern: {
               value:
@@ -19,7 +19,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
               message: "El nombre no es valido",
             },
           })}
-          helperText={errors?.datosBasicosJefe?.primerNombre?.message}
+          helperText={errors?.datosBasicos?.primerNombre?.message}
           helperColor="error"
         />
       </Grid>
@@ -31,7 +31,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           placeholder="Ej: jose"
           bordered
           type="text"
-          {...register("datosBasicosJefe.segundoNombre", {
+          {...register("datosBasicos.segundoNombre", {
             required: { value: true, message: "Campo requerido" },
             pattern: {
               value:
@@ -39,7 +39,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
               message: "El nombre no es valido",
             },
           })}
-          helperText={errors?.datosBasicosJefe?.segundoNombre?.message}
+          helperText={errors?.datosBasicos?.segundoNombre?.message}
           helperColor="error"
         />
       </Grid>
@@ -51,7 +51,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           placeholder="Ej: perez"
           bordered
           type="text"
-          {...register("datosBasicosJefe.primerApellido", {
+          {...register("datosBasicos.primerApellido", {
             required: { value: true, message: "Campo requerido" },
             pattern: {
               value:
@@ -59,7 +59,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
               message: "El apellido no es valido",
             },
           })}
-          helperText={errors?.datosBasicosJefe?.primerApellido?.message}
+          helperText={errors?.datosBasicos?.primerApellido?.message}
           helperColor="error"
         />
       </Grid>
@@ -71,7 +71,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           placeholder="Ej: jimenez"
           bordered
           type="text"
-          {...register("datosBasicosJefe.segundoApellido", {
+          {...register("datosBasicos.segundoApellido", {
             required: { value: true, message: "Campo requerido" },
             pattern: {
               value:
@@ -79,7 +79,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
               message: "El apellido no es valido",
             },
           })}
-          helperText={errors?.datosBasicosJefe?.segundoApellido?.message}
+          helperText={errors?.datosBasicos?.segundoApellido?.message}
           helperColor="error"
         />
       </Grid>
@@ -93,10 +93,10 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           placeholder="Ingrese la fecha de nacimiento..."
           bordered
           type="date"
-          {...register("datosBasicosJefe.fechaNacimiento", {
+          {...register("datosBasicos.fechaNacimiento", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors?.datosBasicosJefe?.fechaNacimiento?.message}
+          helperText={errors?.datosBasicos?.fechaNacimiento?.message}
           helperColor="error"
         />
       </Grid>
@@ -108,14 +108,14 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           placeholder="18"
           bordered
           type="text"
-          {...register("datosBasicosJefe.edad", {
+          {...register("datosBasicos.edad", {
             required: { value: true, message: "Campo requerido" },
             pattern: {
               value: /^[0-9]*$/,
               message: "La edad debe estar en numeros",
             },
           })}
-          helperText={errors?.datosBasicosJefe?.edad?.message}
+          helperText={errors?.datosBasicos?.edad?.message}
           helperColor="error"
         />
       </Grid>
@@ -126,7 +126,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
             Genero:
           </label>
           <select
-            {...register("datosBasicosJefe.genero", {
+            {...register("datosBasicos.genero", {
               required: {
                 value: true,
                 message: "Este campo no puede estar vacio",

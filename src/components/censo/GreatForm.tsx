@@ -32,7 +32,7 @@ interface BasicDataProps {
 }
 
 interface JefeProps {
-  datosBasicosJefe: BasicDataProps;
+  datosBasicos: BasicDataProps;
   documentos: OtrosProps;
   casa: CasaProps;
 }
@@ -92,13 +92,13 @@ export const GreatForm = () => {
           casa: values.casa,
           documentos: values.documentos,
           jefe: {
-            edad: parseInt(values.datosBasicosJefe.edad),
-            primerApellido: values.datosBasicosJefe.primerApellido,
-            genero: values.datosBasicosJefe.genero,
-            primerNombre: values.datosBasicosJefe.primerNombre,
-            segundoNombre: values.datosBasicosJefe.segundoNombre,
-            fechaNacimiento: values.datosBasicosJefe.fechaNacimiento,
-            segundoApellido: values.datosBasicosJefe.segundoApellido,
+            edad: parseInt(values.datosBasicos.edad),
+            primerApellido: values.datosBasicos.primerApellido,
+            genero: values.datosBasicos.genero,
+            primerNombre: values.datosBasicos.primerNombre,
+            segundoNombre: values.datosBasicos.segundoNombre,
+            fechaNacimiento: values.datosBasicos.fechaNacimiento,
+            segundoApellido: values.datosBasicos.segundoApellido,
           },
         },
         {
@@ -136,8 +136,8 @@ export const GreatForm = () => {
 
     switch (step) {
       case 0:
-        await trigger("datosBasicosJefe");
-        state = getFieldState("datosBasicosJefe");
+        await trigger("datosBasicos");
+        state = getFieldState("datosBasicos");
         break;
       case 1:
         await trigger("documentos");
@@ -171,10 +171,17 @@ export const GreatForm = () => {
             </section>
           ))}
         </Grid>
-        {errors && <Text color="error">errors?.root?.message</Text>}
+        {errors?.root && (
+          <Text
+            color="error"
+            h3
+            css={{ textTransform: "capitalize", display: "inline-block" }}
+          >
+            {errors?.root?.message}
+          </Text>
+        )}
       </Card.Body>
 
-      <span></span>
       <Card.Divider />
 
       <Card.Footer css={{ display: "flex", justifyContent: "center", gap: 4 }}>

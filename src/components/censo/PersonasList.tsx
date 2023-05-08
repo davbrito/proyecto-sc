@@ -5,7 +5,7 @@ import { CustomLoading } from "../Loading";
 import Link from "next/link";
 
 export const PersonasList = () => {
-  const { data, isLoading } = api.persona.getJefesFamilias.useQuery();
+  const { data, isLoading } = api.persona.getCensoInfor.useQuery();
 
   if (isLoading) return <CustomLoading />;
 
@@ -61,7 +61,7 @@ export const PersonasList = () => {
                   : "Masculino"}
               </Table.Cell>
               <Table.Cell>
-                <Link href={"/"}>Añadir Pariente</Link>
+                <Link href={"/familiares/create"}>Añadir Pariente</Link>
               </Table.Cell>
             </Table.Row>
           ))}

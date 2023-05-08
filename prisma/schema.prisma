@@ -66,28 +66,6 @@ model VerificationToken {
 
 // CENSO 
 
-model Familiar {
-    id BigInt @id() @default(autoincrement())
-
-    nombres         String
-    apellidos       String
-    numeroDocumento String
-    edad            Int
-
-    fechaNacimiento DateTime
-    genero          String
-    email           String
-    telefono        String
-
-    serialCarnetPatria String
-    codCarnetPatria    String
-
-    observacion String
-    parentesco  String
-
-    Censo Censo[]
-}
-
 model JefeFamilia {
     id              BigInt   @id() @default(autoincrement())
     nombres         String
@@ -101,8 +79,29 @@ model JefeFamilia {
     serialCarnetPatria String
     codCarnetPatria    String
     observacion        String
+    censo              Censo[]
+    familiar           Familiar[]
+}
 
-    Censo Censo[]
+model Familiar {
+    id BigInt @id() @default(autoincrement())
+
+    nombres         String
+    apellidos       String
+    numeroDocumento String
+    tipoDocumento   String
+    edad            Int
+    fechaNacimiento DateTime
+    genero          String
+
+    serialCarnetPatria String
+    codCarnetPatria    String
+    observacion        String
+    parentesco         String
+
+    jefeFamilia JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
+
+    jefeFamiliaId BigInt
 }
 
 model Casa {
@@ -121,12 +120,8 @@ model Censo {
     tipoFamilia          String @default("unifamiliar")
     cajasClapsPorRecibir Int    @default(1)
 
-    jefeFamilia JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
-    casa        Casa        @relation(fields: [casaId], references: [id])
-
-    Familiar Familiar @relation(fields: [familiarId], references: [id])
-
+    jefeFamilia   JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
     jefeFamiliaId BigInt
+    casa          Casa        @relation(fields: [casaId], references: [id])
     casaId        BigInt
-    familiarId    BigInt
 }
