@@ -1,3 +1,4 @@
+import { Button, Navbar } from "@nextui-org/react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
@@ -7,7 +8,7 @@ export const NavBar = () => {
   const { data } = useSession();
 
   return (
-    <nav className="mx-auto mt-5 flex w-full max-w-2xl justify-between rounded-md border border-solid border-slate-800 bg-slate-600 p-3 font-semibold">
+    <Navbar variant={"sticky"} css={{ mx: "auto" }}>
       {!data?.user && (
         <ul className="flex gap-x-6">
           {routesHref
@@ -44,10 +45,9 @@ export const NavBar = () => {
 
       <div className="self-center">
         {data && (
-          <button
-            className="rounded border bg-red-500
-                    px-3 py-2 text-red-800 transition-colors hover:bg-red-400"
-            onClick={() => {
+          <Button
+            color="error"
+            onPress={() => {
               signOut({ callbackUrl: "/login" })
                 .then(() => {
                   console.log("signed out");
@@ -58,9 +58,9 @@ export const NavBar = () => {
             }}
           >
             Logout
-          </button>
+          </Button>
         )}
       </div>
-    </nav>
+    </Navbar>
   );
 };

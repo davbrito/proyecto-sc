@@ -30,7 +30,9 @@ export const PersonasList = () => {
           {data.map(({ jefeFamilia, id, casa, tipoFamilia }) => (
             <Table.Row key={id.toString()}>
               <Table.Cell css={{ textAlign: "center" }}>
-                {id.toString().padStart(8, "0")}
+                <Link href={`/censo/${jefeFamilia.id.toString()}`}>
+                  {id.toString().padStart(8, "0")}
+                </Link>
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center" }}>
                 {casa.manzana}

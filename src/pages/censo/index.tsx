@@ -1,5 +1,5 @@
 import { LayoutContent } from "~/components/Layout";
-import { Container, Link, Table, Text } from "@nextui-org/react";
+import { Link, Text } from "@nextui-org/react";
 import { PersonasList } from "~/components/censo/PersonasList";
 
 const CensoIndex = () => {

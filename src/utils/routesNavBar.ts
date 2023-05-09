@@ -30,6 +30,11 @@ const routesHref: Array<RouteHref> = [
     pathName: "Casas",
     needAuth: true,
   },
+  {
+    href: "/familiares",
+    pathName: "Familiares",
+    needAuth: true,
+  },
 ];
 
 export default routesHref;

@@ -181,7 +181,14 @@ export const personaRouter = createTRPCRouter({
       },
     });
   }),
-
+  getAJefeById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.jefeFamilia.findFirstOrThrow({
+        where: { id: BigInt(input.id) },
+        include: { censo: { include: { casa: true } }, familiar: true },
+      });
+    }),
   getFamiliares: publicProcedure.query(async ({ ctx }) => {
     return ctx.prisma.familiar.findMany({
       include: {
