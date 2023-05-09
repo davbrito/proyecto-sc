@@ -5,7 +5,7 @@ import { CustomLoading } from "../Loading";
 import Link from "next/link";
 
 export const PersonasList = () => {
-  const { data, isLoading } = api.persona.getCensoInfor.useQuery();
+  const { data, isLoading } = api.censo.getCensoInfor.useQuery();
 
   if (isLoading) return <CustomLoading />;
 

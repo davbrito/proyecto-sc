@@ -5,7 +5,7 @@ import { CustomLoading } from "../Loading";
 import Link from "next/link";
 
 export const FamiliarList = () => {
-  const { data, isLoading } = api.persona.getFamiliares.useQuery();
+  const { data, isLoading } = api.familia.getAll.useQuery();
 
   if (isLoading) return <CustomLoading />;
 

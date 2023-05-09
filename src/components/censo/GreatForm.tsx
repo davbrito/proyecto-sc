@@ -76,7 +76,7 @@ export const GreatForm = () => {
     setError,
   } = useForm<JefeProps>();
 
-  const { mutate } = api.persona.createJefeFamilia.useMutation();
+  const { mutate } = api.jefe.create.useMutation();
 
   const sections = [
     <PersonaForm register={register} errors={errors} />,

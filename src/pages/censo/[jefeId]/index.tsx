@@ -20,7 +20,7 @@ export async function getStaticProps(
 
   if (typeof id !== "string") throw new Error("no Id");
 
-  await ssg.persona.getAJefeById.prefetch({ id });
+  await ssg.jefe.getById.prefetch({ id });
 
   return {
     props: {
@@ -45,14 +45,14 @@ export const getStaticPaths = async () => {
 };
 
 const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
-  const { data, isLoading, refetch } = api.persona.getAJefeById.useQuery(
+  const { data, isLoading, refetch } = api.jefe.getById.useQuery(
     {
       id: props.id,
     },
     { refetchOnWindowFocus: false }
   );
 
-  const { mutate } = api.persona.deleteFamiliar.useMutation();
+  const { mutate } = api.familia.deleteById.useMutation();
 
   const handleDelete = async (id: bigint) => {
     try {

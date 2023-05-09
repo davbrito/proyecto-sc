@@ -68,11 +68,11 @@ const FamiliarForm = () => {
     formState: { errors, isSubmitting, isSubmitted, isLoading },
   } = useForm<FormData>();
 
-  const { data } = api.persona.getJefesFamilia.useQuery(undefined, {
+  const { data } = api.jefe.getAll.useQuery(undefined, {
     cacheTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
-  const { mutate } = api.persona.addNewFamiliar.useMutation();
+  const { mutate } = api.familia.addNew.useMutation();
 
   const onSubmit: SubmitHandler<FormData> = (values, event) => {
     event?.preventDefault();
