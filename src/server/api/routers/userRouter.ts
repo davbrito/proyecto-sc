@@ -31,18 +31,19 @@ export const userRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      
       const users = await ctx.prisma.user.findFirst({
         where: {
           username: input.username,
         },
       });
-
       if (users)
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Username is already used!",
-        });
-
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "Username is already used!",
+      });
+      
+      
       const { lastName, name, password, username } = input;
       const hashed = await hashPassword(password);
 
