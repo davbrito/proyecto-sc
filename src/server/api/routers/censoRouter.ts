@@ -10,13 +10,20 @@ import {
 } from "~/server/api/trpc";
 
 export const censoRouter = createTRPCRouter({
-  getCensoInfor: publicProcedure.query(async ({ ctx }) => {
+  getCensoInfor: publicProcedure.input(z.string().default(""))
+  .query(async ({ ctx ,input}) => {
+
     const jefes = await ctx.prisma.censo.findMany({
       take: 20,
       include: {
         jefeFamilia: true,
         casa: true,
       },
+      where:{
+        id: {
+          contains:input
+        }
+      }
     });
     return jefes;
   }),

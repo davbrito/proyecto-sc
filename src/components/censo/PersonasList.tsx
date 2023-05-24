@@ -1,17 +1,30 @@
-import { Table } from "@nextui-org/react";
-import React from "react";
+import { Table, Container, Grid, Text } from '@nextui-org/react';
+import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import Link from "next/link";
+import { SearchForm } from "./SearchForm";
 
-export const PersonasList = () => {
-  const { data, isLoading } = api.censo.getCensoInfor.useQuery();
+export const PersonasList = ({search}:{search?:string}) => {
+  
+  const { data, isLoading ,} = api.censo.getCensoInfor.useQuery(search);
 
   if (isLoading) return <CustomLoading />;
 
   if (!data) return null;
+  if(data.length === 0) return (
+    <Container css={{
+      border:'1px solid $gray400',
+      borderRadius:"$3xl",
+      padding:"$10 $6",
+      
+    }} className='max-w-xl mx-4'>
+      <Text h2 css={{textAlign:"center"}}>No hay resultados para la busqueda del censo: '{search}'</Text>
+    </Container>
+  )
 
-  return (
+
+ return (
     <div>
       <Table bordered lined headerLined>
         <Table.Header>
@@ -27,6 +40,8 @@ export const PersonasList = () => {
           <Table.Column align="center">Acciones</Table.Column>
         </Table.Header>
         <Table.Body>
+       
+          
           {data.map(({ jefeFamilia, id, casa, tipoFamilia }) => (
             <Table.Row key={id.toString()}>
               <Table.Cell css={{ textAlign: "center" }}>
@@ -67,8 +82,12 @@ export const PersonasList = () => {
               </Table.Cell>
             </Table.Row>
           ))}
+
+          
         </Table.Body>
+          
       </Table>
+
     </div>
   );
 };
