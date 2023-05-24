@@ -35,6 +35,11 @@ const routesHref: Array<RouteHref> = [
     pathName: "Familiares",
     needAuth: true,
   },
+  {
+    href:"/profile",
+    pathName:"Mi cuenta",
+    needAuth:true,
+  }
 ];
 
 export default routesHref;

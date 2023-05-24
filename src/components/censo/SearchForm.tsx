@@ -1,4 +1,4 @@
-import { Button, Grid, Input } from "@nextui-org/react";
+import { Button, Grid, Input, Text } from "@nextui-org/react";
 import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
 
 interface Props {
@@ -12,12 +12,13 @@ export const SearchForm = ({ setSearchValue }: Props) => {
     setSearchValue(search);
   };
   return (
-    <div className="mx-auto my-4 max-w-xs rounded p-5">
+    <div className="rounded p-5">
       <Grid.Container
         as="form"
-        className="flex justify-center gap-2"
+        className="flex justify-center gap-2 flex-col"
         onSubmit={handlerSubmit}
       >
+        <Text h3>Busqueda:</Text>
         <Input
           placeholder="Ej: 102500001"
           bordered

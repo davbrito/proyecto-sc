@@ -12,6 +12,7 @@ export const PersonasList = ({search}:{search?:string}) => {
   if (isLoading) return <CustomLoading />;
 
   if (!data) return null;
+  
   if(data.length === 0) return (
     <Container css={{
       border:'1px solid $gray400',
@@ -26,8 +27,8 @@ export const PersonasList = ({search}:{search?:string}) => {
 
  return (
     <div>
-      <Table bordered lined headerLined>
-        <Table.Header>
+      <Table bordered lined headerLined >
+        <Table.Header >
           <Table.Column align="center">Codigo</Table.Column>
           <Table.Column align="center">Manzana</Table.Column>
           <Table.Column align="center">Casa</Table.Column>
@@ -44,35 +45,35 @@ export const PersonasList = ({search}:{search?:string}) => {
           
           {data.map(({ jefeFamilia, id, casa, tipoFamilia }) => (
             <Table.Row key={id.toString()}>
-              <Table.Cell css={{ textAlign: "center" }}>
+              <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
                 <Link href={`/censo/${jefeFamilia.id.toString()}`}>
                   {id.toString().padStart(8, "0")}
                 </Link>
               </Table.Cell>
-              <Table.Cell css={{ textAlign: "center" }}>
+              <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
                 {casa.manzana}
               </Table.Cell>
-              <Table.Cell css={{ textAlign: "center" }}>
+              <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
                 {casa.casa.padStart(2, "0")}
               </Table.Cell>
-              <Table.Cell css={{ textAlign: "center" }}>
+              <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
                 {jefeFamilia.apellidos.toUpperCase()},{" "}
                 {jefeFamilia.nombres.toUpperCase()}.
               </Table.Cell>
-              <Table.Cell css={{ textAlign: "center" }}>
+              <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
                 {jefeFamilia.tipoDocumento.toUpperCase()}-
                 {jefeFamilia.numeroDocumento}
               </Table.Cell>
-              <Table.Cell css={{ textAlign: "center" }}>
+              <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
                 {jefeFamilia.genero}
               </Table.Cell>
-              <Table.Cell css={{ textAlign: "center" }}>
+              <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
                 {jefeFamilia.fechaNacimiento.toLocaleString()}
               </Table.Cell>
-              <Table.Cell css={{ textAlign: "center" }}>
+              <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
                 {tipoFamilia.toUpperCase()}
               </Table.Cell>
-              <Table.Cell css={{ textAlign: "center" }}>
+              <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
                 {jefeFamilia.genero.toUpperCase() === "F"
                   ? "Femenino"
                   : "Masculino"}
