@@ -22,7 +22,7 @@ const routesHref: Array<RouteHref> = [
   },
   {
     href: "/censo",
-    pathName: "Datos de Censo",
+    pathName: "Censo",
     needAuth: true,
   },
   {
@@ -35,11 +35,6 @@ const routesHref: Array<RouteHref> = [
     pathName: "Familiares",
     needAuth: true,
   },
-  {
-    href:"/profile",
-    pathName:"Mi cuenta",
-    needAuth:true,
-  }
 ];
 
 export default routesHref;
