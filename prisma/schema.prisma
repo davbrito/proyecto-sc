@@ -105,7 +105,7 @@ model Familiar {
 }
 
 model Casa {
-    id        BigInt @id()
+    id        BigInt @id() @default(autoincrement())
     manzana   String
     casa      String
     calle     String
