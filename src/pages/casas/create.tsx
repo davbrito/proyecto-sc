@@ -6,9 +6,8 @@ import { CasaForm } from "~/components/censo/CasaForm";
 const CreateCasa = () => {
   return (
     <LayoutContent>
-      <Container>
-        {/* @ts-expect-error - TODO: fix */}
-        <CasaForm />
+      <Container> 
+        {/* <CasaForm /> */}
       </Container>
     </LayoutContent>
   );
