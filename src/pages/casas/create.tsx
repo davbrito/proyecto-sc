@@ -7,7 +7,7 @@ const CreateCasa = () => {
   return (
     <LayoutContent>
       <Container>
-        {/* @ts-expect-error */}
+        {/* @ts-expect-error - TODO: fix */}
         <CasaForm />
       </Container>
     </LayoutContent>
