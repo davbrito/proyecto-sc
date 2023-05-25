@@ -20,6 +20,7 @@ export const PersonasList = ({search}:{search?:string}) => {
       padding:"$10 $6",
       
     }} className='max-w-xl mx-4'>
+      {/* eslint-disable-next-line react/no-unescaped-entities */}
       <Text h2 css={{textAlign:"center"}}>No hay resultados para la busqueda del censo: '{search}'</Text>
     </Container>
   )

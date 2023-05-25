@@ -11,7 +11,7 @@ import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import Image from "next/image";
 import Link from "next/link";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { FormEvent } from "react";
 import { redirect } from "next/navigation"
 import { useRouter } from "next/router";

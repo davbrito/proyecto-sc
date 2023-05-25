@@ -1,5 +1,5 @@
 import { Container, Link, Text } from "@nextui-org/react";
-import { GetServerSidePropsContext } from "next";
+import { type GetServerSidePropsContext } from "next";
 import React, { useContext } from "react";
 import { LayoutContent } from "~/components/Layout";
 import { CasaList } from "~/components/censo/CasaList";

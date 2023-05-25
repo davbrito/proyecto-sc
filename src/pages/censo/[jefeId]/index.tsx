@@ -1,8 +1,8 @@
 import { Table, Text, Button, Card, Container } from "@nextui-org/react";
 import {
-  GetStaticProps,
-  GetStaticPropsContext,
-  InferGetStaticPropsType,
+  type GetStaticProps,
+  type GetStaticPropsContext,
+  type InferGetStaticPropsType,
 } from "next";
 import React from "react";
 import { LayoutContent } from "~/components/Layout";

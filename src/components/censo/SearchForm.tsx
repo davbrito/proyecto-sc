@@ -1,5 +1,5 @@
 import { Button, Grid, Input, Text } from "@nextui-org/react";
-import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import React, { type Dispatch, type FormEvent, type SetStateAction, useState } from "react";
 
 interface Props {
   setSearchValue: Dispatch<SetStateAction<string>>;

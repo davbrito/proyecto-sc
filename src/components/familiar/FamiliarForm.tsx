@@ -8,7 +8,7 @@ import {
   Text,
 } from "@nextui-org/react";
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { PersonaForm } from "../censo/PersonaForm";
 import { DocumentosForm } from "../censo/documentosForm";
 import { api } from "~/utils/api";

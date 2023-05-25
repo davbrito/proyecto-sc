@@ -1,6 +1,6 @@
 import { Button, Card, Grid, Text } from "@nextui-org/react";
 import React, { useState } from "react";
-import { FieldError, SubmitHandler, useForm } from "react-hook-form";
+import { type FieldError, type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
 import { PersonaForm } from "./PersonaForm";
 import { CasaForm } from "./CasaForm";
@@ -31,7 +31,7 @@ interface BasicDataProps {
   genero: string;
 }
 
-interface JefeProps {
+export interface JefeProps {
   datosBasicos: BasicDataProps;
   documentos: OtrosProps;
   casa: CasaProps;
@@ -76,18 +76,21 @@ export const GreatForm = () => {
     setError,
   } = useForm<JefeProps>();
 
-  const { mutate } = api.jefe.create.useMutation();
+  const { mutateAsync } = api.jefe.create.useMutation();
 
   const sections = [
+    // eslint-disable-next-line react/jsx-key
     <PersonaForm register={register} errors={errors} />,
+    // eslint-disable-next-line react/jsx-key
     <DocumentosForm register={register} errors={errors} />,
+    // eslint-disable-next-line react/jsx-key
     <CasaForm register={register} errors={errors} />,
   ];
 
   const onSubmit: SubmitHandler<JefeProps> = async (values) => {
     try {
       console.log(values);
-      mutate(
+      await mutateAsync(
         {
           casa: values.casa,
           documentos: values.documentos,
