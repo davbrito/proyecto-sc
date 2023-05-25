@@ -1,4 +1,5 @@
 import { Button, Card, Grid, Input, Text } from "@nextui-org/react";
+import { signIn } from "next-auth/react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
 
@@ -19,16 +20,22 @@ export const RegisterForm = () => {
   } = useForm<Inputs>();
 
   const { mutateAsync } = api.user.create.useMutation();
+  
 
   const onSubmit: SubmitHandler<Inputs> = async (values) => {
     try {
-      const data = await mutateAsync(values);
-      console.log(data);
-
+      await mutateAsync(values);
       reset(
         { password: "", username: "", lastName: "", name: "" },
         { keepErrors: true }
       );
+      
+      await signIn("credentials", {
+        username:values.username,
+        password:values.password,
+        redirect: true,
+        callbackUrl: "/",
+      });
     } catch (error) {
       if (error instanceof Error) {
         setError("root", { message: error.message });

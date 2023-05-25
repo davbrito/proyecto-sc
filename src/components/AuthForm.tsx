@@ -24,7 +24,7 @@ export const LoginForm = () => {
       const res = await signIn("credentials", {
         username,
         password,
-        redirect: false,
+        redirect: true,
         callbackUrl: "/",
       });
       console.log(res);
