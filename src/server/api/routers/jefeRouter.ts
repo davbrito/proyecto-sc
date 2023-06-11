@@ -13,7 +13,6 @@ export const jefeRouter = createTRPCRouter({
           manzana: z.string(),
           casa: z.string(),
           calle: z.string(),
-          direccion: z.string(),
         }),
         documentos: z.object({
           tipoDocumento: z.string(),
@@ -27,7 +26,6 @@ export const jefeRouter = createTRPCRouter({
           segundoNombre: z.string(),
           primerApellido: z.string(),
           segundoApellido: z.string(),
-          edad: z.number(),
           fechaNacimiento: z.string(),
           genero: z.string(),
         }),
@@ -47,13 +45,11 @@ export const jefeRouter = createTRPCRouter({
 
       if (!newCasa) return;
 
-      console.log(newCasa);
       const newJefe = await ctx.prisma.jefeFamilia.create({
         data: {
           nombres: jefe.primerNombre + ", " + jefe.segundoNombre,
           apellidos: jefe.primerApellido + ", " + jefe.segundoApellido,
           fechaNacimiento: new Date(jefe.fechaNacimiento).toJSON(),
-          edad: jefe.edad,
           genero: jefe.genero,
           ...documentos,
         },

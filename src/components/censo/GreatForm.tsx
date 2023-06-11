@@ -6,11 +6,11 @@ import { PersonaForm } from "./PersonaForm";
 import { CasaForm } from "./CasaForm";
 import { DocumentosForm } from "./documentosForm";
 
+
 interface CasaProps {
   manzana: string;
-  casa: string;
+  numeroCasa: string;
   calle: string;
-  direccion: string;
 }
 
 interface OtrosProps {
@@ -26,7 +26,6 @@ interface BasicDataProps {
   segundoNombre: string;
   primerApellido: string;
   segundoApellido: string;
-  edad: string;
   fechaNacimiento: string;
   genero: string;
 }
@@ -40,17 +39,19 @@ export interface JefeProps {
 interface CirclesProps {
   count: number;
   filled: number;
+  setStep: React.Dispatch<React.SetStateAction<number>>
 }
 
-const CirclesReference = ({ count, filled }: CirclesProps) => {
+const CirclesReference = ({ count, filled ,setStep}: CirclesProps) => {
   const renderCircles = () => {
     const circles: Array<JSX.Element> = [];
 
     for (let i = 0; i < count; i++) {
       circles.push(
         <span
-          className={`inline-block h-6 w-6 rounded-full ${
-            i <= filled ? "bg-blue-600" : "bg-gray-400"
+          onClick={() => i <= filled ? setStep(i) : null}
+          className={`inline-block h-6 w-6 rounded-full transition-all ${
+            i <= filled ? "bg-blue-600 hover:bg-blue-800" : "bg-gray-400"
           }`}
         ></span>
       );
@@ -73,29 +74,30 @@ export const GreatForm = () => {
     formState: { errors, isSubmitting },
     getFieldState,
     trigger,
+    watch,
     setError,
   } = useForm<JefeProps>();
 
   const { mutateAsync } = api.jefe.create.useMutation();
 
   const sections = [
-    // eslint-disable-next-line react/jsx-key
-    <PersonaForm register={register} errors={errors} />,
-    // eslint-disable-next-line react/jsx-key
-    <DocumentosForm register={register} errors={errors} />,
-    // eslint-disable-next-line react/jsx-key
-    <CasaForm register={register} errors={errors} />,
+    <PersonaForm register={register} errors={errors} key="personaForm" />,
+
+    <DocumentosForm register={register} errors={errors} key="documentosForm" />,
+
+    <CasaForm register={register} errors={errors} key="casaForm" watch={watch}/>,
   ];
 
   const onSubmit: SubmitHandler<JefeProps> = async (values) => {
     try {
       console.log(values);
+      /*
+      
       await mutateAsync(
         {
           casa: values.casa,
           documentos: values.documentos,
           jefe: {
-            edad: parseInt(values.datosBasicos.edad),
             primerApellido: values.datosBasicos.primerApellido,
             genero: values.datosBasicos.genero,
             primerNombre: values.datosBasicos.primerNombre,
@@ -116,6 +118,7 @@ export const GreatForm = () => {
           },
         }
       );
+      */
     } catch (error) {
       console.error(error);
     }
@@ -126,87 +129,109 @@ export const GreatForm = () => {
   };
 
   const handleSteps = async (n: number) => {
+    if (n < 0 && step !== 0) return setStep((step) => step + n);
+
     if (step === sections.length - 1 && n > 0) return;
 
-    let state:
-      | {
-          invalid: boolean;
-          isDirty: boolean;
-          isTouched: boolean;
-          error?: FieldError | undefined;
-        }
-      | undefined = undefined;
+    let isValid = false;
 
     switch (step) {
       case 0:
-        await trigger("datosBasicos");
-        state = getFieldState("datosBasicos");
+        isValid = await trigger("datosBasicos");
+
         break;
       case 1:
-        await trigger("documentos");
-        state = getFieldState("documentos");
+        isValid = await trigger([
+          "documentos.tipoDocumento",
+          "documentos.serialCarnetPatria",
+          "documentos.observacion",
+          "documentos.numeroDocumento",
+          "documentos.codCarnetPatria",
+        ]);
+
         break;
     }
 
-    if (!state?.invalid) setStep((step) => step + n);
+    if (isValid) setStep((step) => step + n);
   };
 
   return (
-    <Card as="form" onSubmit={handleSubmit(onSubmit)}>
-      <Card.Header>
-        <Text h3 css={{ mx: "auto" }}>
-          Datos personales del Jefe de Familia
-        </Text>
-      </Card.Header>
-
-      <Card.Divider />
-
-      <Card.Body>
-        <Grid css={{ mx: "auto" }}>
-          {sections.map((section, index) => (
-            <section
-              className={`transition-all ${
-                step === index ? "block opacity-100 " : "hidden opacity-0"
-              }`}
-              key={index}
-            >
-              {section}
-            </section>
-          ))}
-        </Grid>
-        {errors?.root && (
-          <Text
-            color="error"
-            h3
-            css={{ textTransform: "capitalize", display: "inline-block" }}
-          >
-            {errors?.root?.message}
+    <>
+      <Card as="form" onSubmit={handleSubmit(onSubmit)}>
+        <Card.Header>
+          <Text h3 css={{ mx: "auto" }}>
+            Datos personales del Jefe de Familia
           </Text>
-        )}
-      </Card.Body>
+        </Card.Header>
 
-      <Card.Divider />
+        <Card.Divider />
 
-      <Card.Footer css={{ display: "flex", justifyContent: "center", gap: 4 }}>
-        <Button
-          color={"secondary"}
-          disabled={isDisabledBackButton()}
-          onPress={() => handleSteps(-1)}
+        <Card.Body>
+          <Grid css={{ mx: "auto" }}>
+            {sections.map((section, index) => (
+              <section
+                className={`transition-all ${
+                  step === index ? "block opacity-100 " : "hidden opacity-0"
+                }`}
+                key={index}
+              >
+                {section}
+              </section>
+            ))}
+          </Grid>
+          {errors?.root && (
+            <Text
+              color="error"
+              h3
+              css={{ textTransform: "capitalize", display: "inline-block" }}
+            >
+              {errors?.root?.message}
+            </Text>
+          )}
+        </Card.Body>
+
+        <Card.Divider />
+
+        <Card.Footer
+          css={{ display: "flex", justifyContent: "center", gap: 4 }}
         >
-          Atras
-        </Button>
-        {step === sections.length - 1 ? (
-          <Button type="submit" disabled={isSubmitting}>
+          <Button
+            color={"secondary"}
+            disabled={isDisabledBackButton()}
+            onPress={() => handleSteps(-1)}
+          >
+            Atras
+          </Button>
+
+          <Button
+            disabled={isSubmitting}
+            type="submit"
+            css={{
+              display: `${step !== sections.length - 1 ? "none" : "block"}`,
+              "&:hover": {
+                backgroundColor: "$blue300",
+              },
+            }}
+          >
             Guardar datos
           </Button>
-        ) : (
-          <Button type="button" onPress={() => handleSteps(1)}>
+
+          <Button
+            type="button"
+            onPress={() => handleSteps(1)}
+            css={{
+              display: `${step !== sections.length - 1 ? "block" : "none"}`,
+              "&:hover": {
+                backgroundColor: "$blue300",
+              },
+            }}
+          >
             Continuar
           </Button>
-        )}
-      </Card.Footer>
+        </Card.Footer>
 
-      <CirclesReference count={sections.length} filled={step} />
-    </Card>
+        <CirclesReference count={sections.length} filled={step} setStep={setStep}/>
+      </Card>
+    </>
   );
 };

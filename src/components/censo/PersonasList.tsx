@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import Link from "next/link";
-import { SearchForm } from "./SearchForm";
+import { formatDate, getRelativeTime } from '~/utils/dates';
+
 
 export const PersonasList = ({search}:{search?:string}) => {
   
@@ -35,8 +36,8 @@ export const PersonasList = ({search}:{search?:string}) => {
           <Table.Column align="center">Casa</Table.Column>
           <Table.Column align="center">Nombres</Table.Column>
           <Table.Column align="center">Documento</Table.Column>
-          <Table.Column align="center">Casa</Table.Column>
-          <Table.Column align="center">Fecha</Table.Column>
+          <Table.Column align="center">Fecha Nacimiento</Table.Column>
+          <Table.Column align="center">Edad</Table.Column>
           <Table.Column align="center">Familia</Table.Column>
           <Table.Column align="center">Genero</Table.Column>
           <Table.Column align="center">Acciones</Table.Column>
@@ -65,11 +66,12 @@ export const PersonasList = ({search}:{search?:string}) => {
                 {jefeFamilia.tipoDocumento.toUpperCase()}-
                 {jefeFamilia.numeroDocumento}
               </Table.Cell>
+              
               <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
-                {jefeFamilia.genero}
+                {formatDate(jefeFamilia.fechaNacimiento)}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
-                {jefeFamilia.fechaNacimiento.toLocaleString()}
+                {getRelativeTime(jefeFamilia.fechaNacimiento)}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center" ,fontSize:'$sm'}}>
                 {tipoFamilia.toUpperCase()}

@@ -26,7 +26,6 @@ interface BasicDataProps {
   segundoNombre: string;
   primerApellido: string;
   segundoApellido: string;
-  edad: string;
   fechaNacimiento: string;
   genero: string;
 }
@@ -80,7 +79,6 @@ const FamiliarForm = () => {
       {
         documentos: values.documentos,
         familiar: {
-          edad: parseInt(values.datosBasicos.edad),
           fechaNacimiento: values.datosBasicos.fechaNacimiento,
           genero: values.datosBasicos.genero,
           primerNombre: values.datosBasicos.primerNombre,

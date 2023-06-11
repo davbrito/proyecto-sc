@@ -86,13 +86,14 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
 
       <Divider css={{ mt: "1rem" }} />
 
-      <Grid xs={4}>
+      <Grid xs={6}>
         <Input
           fullWidth
           label="Fecha de nacimiento:"
           placeholder="Ingrese la fecha de nacimiento..."
           bordered
           type="date"
+          max={new Date().toISOString().split("T")[0]}
           {...register("datosBasicos.fechaNacimiento", {
             required: { value: true, message: "Campo requerido" },
           })}
@@ -101,26 +102,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
         />
       </Grid>
 
-      <Grid xs={4}>
-        <Input
-          fullWidth
-          label="Edad:"
-          placeholder="18"
-          bordered
-          type="text"
-          {...register("datosBasicos.edad", {
-            required: { value: true, message: "Campo requerido" },
-            pattern: {
-              value: /^[0-9]*$/,
-              message: "La edad debe estar en numeros",
-            },
-          })}
-          helperText={errors?.datosBasicos?.edad?.message}
-          helperColor="error"
-        />
-      </Grid>
-
-      <Grid xs={4}>
+      <Grid xs={6}>
         <div className="w-full">
           <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
             Genero:

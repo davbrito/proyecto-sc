@@ -25,6 +25,7 @@ export const censoRouter = createTRPCRouter({
         }
       }
     });
+    
     return jefes;
   }),
 });
