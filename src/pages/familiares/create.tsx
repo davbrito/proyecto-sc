@@ -1,7 +1,9 @@
 import { Container, Text } from "@nextui-org/react";
+import { GetServerSidePropsContext } from "next";
 import React from "react";
 import { LayoutContent } from "~/components/Layout";
 import FamiliarForm from "~/components/familiar/FamiliarForm";
+import { verifySession } from "~/utils/verifySession";
 
 const CreateFamiliar = () => {
   return (
@@ -15,3 +17,7 @@ const CreateFamiliar = () => {
 };
 
 export default CreateFamiliar;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await verifySession(context);
+}

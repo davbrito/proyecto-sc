@@ -1,5 +1,6 @@
 import { Button, Card, Input, Spacer, Text } from "@nextui-org/react";
 import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
 interface Inputs {
@@ -15,20 +16,18 @@ export const LoginForm = () => {
     register,
     setError,
   } = useForm<Inputs>();
-  const session = useSession();
-  console.log(session);
-  const onSubmit: SubmitHandler<Inputs> = async ({ password, username }) => {
-    console.log({ username, password });
+  const router = useRouter();
 
+  const onSubmit: SubmitHandler<Inputs> = async ({ password, username }) => {
     try {
       const res = await signIn("credentials", {
         username,
         password,
-        redirect: true,
-        callbackUrl: "/",
+        redirect: false,
       });
-      console.log(res);
+
       if (res?.error) throw { message: res.error, status: res.status };
+      router.push("/");
     } catch (error) {
       if (error) {
         const { message } = error as { message: string; status: number };

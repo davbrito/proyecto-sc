@@ -56,13 +56,13 @@ export const CasaForm = ({
           label="N° Casa:"
           placeholder="Escriba el numero de casa..."
           bordered
-          {...register("casa.numeroCasa", {
+          {...register("casa.casa", {
             required: {
               message: "Este campo no puede estar vacio",
               value: true,
             },
           })}
-          helperText={errors?.casa?.numeroCasa?.message}
+          helperText={errors?.casa?.casa?.message}
           helperColor="error"
         />
       </Grid>

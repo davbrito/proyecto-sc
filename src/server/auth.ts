@@ -56,9 +56,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  pages: {
-    error: "/error",
-  },
+  pages: {},
   providers: [
     Credentials({
       name: "Credentials",
@@ -92,6 +90,7 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: "jwt",
+    maxAge: 60 * 60 * 5,
   },
 };
 

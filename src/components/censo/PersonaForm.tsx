@@ -121,6 +121,43 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           </select>
         </div>
       </Grid>
+
+      <Grid xs={6}>
+        <Input
+          fullWidth
+          label="Email:"
+          placeholder="Ej: pedro@gmail.com"
+          bordered
+          type="text"
+          {...register("datosBasicos.email", {
+            required: { value: true, message: "Campo requerido" },
+            pattern: {
+              value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+              message: "La direccion del correo no es valida.",
+            },
+          })}
+          helperText={errors?.datosBasicos?.email?.message}
+          helperColor="error"
+        />
+      </Grid>
+      <Grid xs={6}>
+        <Input
+          fullWidth
+          label="Numero de contacto:"
+          placeholder="Ej: 0414-1234567"
+          bordered
+          type="text"
+          {...register("datosBasicos.telefono", {
+            required: { value: true, message: "Campo requerido" },
+            pattern: {
+              value: /^(0414|0424|0412|0416|0426)[-][0-9]{7}$/,
+              message: "El numero no es valido.",
+            },
+          })}
+          helperText={errors?.datosBasicos?.telefono?.message}
+          helperColor="error"
+        />
+      </Grid>
     </Grid.Container>
   );
 };

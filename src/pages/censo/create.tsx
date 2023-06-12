@@ -2,7 +2,6 @@ import { Container } from "@nextui-org/react";
 import React from "react";
 import { LayoutContent } from "~/components/Layout";
 import { GreatForm } from "~/components/censo/GreatForm";
-import { PersonaForm } from "~/components/censo/PersonaForm";
 
 const CreateCenso = () => {
   return (

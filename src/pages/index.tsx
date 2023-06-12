@@ -1,6 +1,7 @@
 import { Container } from "@nextui-org/react";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { LayoutContent } from "~/components/Layout";
 import { verifySession } from "~/utils/verifySession";
 
@@ -34,15 +35,24 @@ const Home: NextPage = () => {
             mt: "$8",
           }}
         >
-          <button className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600">
+          <Link
+            href={"/censo"}
+            className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600"
+          >
             Ver datos del censo
-          </button>
-          <button className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600">
+          </Link>
+          <Link
+            href={"/familiares"}
+            className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600"
+          >
             Ver familiares
-          </button>
-          <button className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600">
+          </Link>
+          <Link
+            href={"/casas"}
+            className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600"
+          >
             Ver casas
-          </button>
+          </Link>
         </Container>
       </Container>
     </LayoutContent>

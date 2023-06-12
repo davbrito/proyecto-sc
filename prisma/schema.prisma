@@ -72,6 +72,9 @@ model JefeFamilia {
     apellidos       String
     fechaNacimiento DateTime
     genero          String
+    telefono String 
+    email String
+
 
     tipoDocumento      String
     numeroDocumento    String
@@ -115,7 +118,7 @@ model Censo {
     id                   String @id()
     cargaFamiliar        Int    @default(1)
     tipoFamilia          String @default("unifamiliar")
-    cajasClapsPorRecibir Int    @default(1)
+    cajasClapsPorRecibir Int    @default(0)
 
     jefeFamilia   JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
     jefeFamiliaId BigInt

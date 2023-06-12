@@ -11,7 +11,7 @@ export const NavBar = () => {
   const router = useRouter()
   
   return (
-    <Navbar variant={"sticky"} css={{ mx: "auto" }}>
+    <Navbar variant={"floating"} css={{ mx: "auto" ,zIndex:"1000"}}>
       {status === "unauthenticated" && (
         <Navbar.Content className="flex gap-x-6" hideIn="sm">
           {routesHref

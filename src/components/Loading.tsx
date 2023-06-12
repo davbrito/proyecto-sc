@@ -3,7 +3,12 @@ import React from "react";
 
 export const CustomLoading = () => {
   return (
-    <Grid>
+    <Grid css={{
+      width:"100%",
+      textAlign:"center",
+      justifyContent:"center",
+      my:"1rem"
+    }}>
       <Loading size="xl" type="points">
         Cargando...
       </Loading>

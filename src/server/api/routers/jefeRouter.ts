@@ -13,6 +13,7 @@ export const jefeRouter = createTRPCRouter({
           manzana: z.string(),
           casa: z.string(),
           calle: z.string(),
+
         }),
         documentos: z.object({
           tipoDocumento: z.string(),
@@ -28,6 +29,8 @@ export const jefeRouter = createTRPCRouter({
           segundoApellido: z.string(),
           fechaNacimiento: z.string(),
           genero: z.string(),
+          email: z.string(),
+          telefono: z.string(),
         }),
       })
     )
@@ -36,9 +39,6 @@ export const jefeRouter = createTRPCRouter({
 
       const newCasa = await ctx.prisma.casa.create({
         data: {
-          id: BigInt(
-            `${casa.manzana.padStart(2, "0")}${casa.casa.padStart(4, "0")}`
-          ),
           ...casa,
         },
       });
@@ -51,10 +51,11 @@ export const jefeRouter = createTRPCRouter({
           apellidos: jefe.primerApellido + ", " + jefe.segundoApellido,
           fechaNacimiento: new Date(jefe.fechaNacimiento).toJSON(),
           genero: jefe.genero,
+          email: jefe.email,
+          telefono: jefe.telefono,
           ...documentos,
         },
       });
-
       const censo = await ctx.prisma.censo.create({
         data: {
           id: `${newCasa.manzana.padStart(2, "0")}${newCasa.casa.padStart(
@@ -65,7 +66,6 @@ export const jefeRouter = createTRPCRouter({
           casaId: newCasa.id,
         },
       });
-
       return { newJefe, newCasa, censo };
     }),
 
@@ -90,4 +90,27 @@ export const jefeRouter = createTRPCRouter({
       },
     });
   }),
+
+  delete: publicProcedure.input(z.object({
+    id: z.bigint(),
+    censoId: z.string()
+  })).mutation(async ({ctx,input}) => {
+
+    const censoDelete = await ctx.prisma.censo.delete({
+      where:{
+        id:input.censoId
+      }
+    })
+    console.log(censoDelete)
+
+    const jefeDeleted = await ctx.prisma.jefeFamilia.delete({
+      where:{
+        id:input.id
+      },
+    }) 
+
+    console.log(jefeDeleted)
+    return  jefeDeleted
+
+  })  
 });

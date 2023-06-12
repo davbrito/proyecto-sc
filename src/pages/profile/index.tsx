@@ -1,13 +1,19 @@
-import { Text } from '@nextui-org/react'
-import React from 'react'
-import { ProfileData } from '~/components/profile/Profile'
+import { Text } from "@nextui-org/react";
+import { GetServerSidePropsContext } from "next";
+import React from "react";
+import { ProfileData } from "~/components/profile/Profile";
+import { verifySession } from "~/utils/verifySession";
 
-function Profile (){
+function Profile() {
   return (
     <div>
-        <ProfileData />
+      <ProfileData />
     </div>
-  )
+  );
 }
 
-export default Profile
+export default Profile;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await verifySession(context);
+}

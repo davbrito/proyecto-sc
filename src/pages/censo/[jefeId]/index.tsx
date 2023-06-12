@@ -10,6 +10,7 @@ import { CustomLoading } from "~/components/Loading";
 import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import { api } from "~/utils/api";
+import { getRelativeTime } from "~/utils/dates";
 
 export async function getStaticProps(
   context: GetStaticPropsContext<{ jefeId: string }>
@@ -53,6 +54,26 @@ const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
   );
 
   const { mutate } = api.familia.deleteById.useMutation();
+  const jefe = api.jefe.delete.useMutation();
+
+  const handleDeleteJefe = async () => {
+    if (!data || !data.censo || !data.censo[0]) return;
+
+    jefe.mutate(
+      {
+        id: data.id,
+        censoId: data.censo[0].id,
+      },
+      {
+        onSuccess(data, variables, context) {
+          console.log(data);
+        },
+        onError(error, variables, context) {
+          console.log(error);
+        },
+      }
+    );
+  };
 
   const handleDelete = async (id: bigint) => {
     try {
@@ -76,12 +97,29 @@ const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
 
   return (
     <LayoutContent>
-      <Text h1>
-        Perfil de,{" "}
-        <span className="font-thin uppercase text-gray-400">
-          {data?.nombres}.
-        </span>
-      </Text>
+      <Container
+        css={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
+        <Text h1>
+          Perfil de,{" "}
+          <span className="font-thin uppercase text-gray-400">
+            {data?.nombres}.
+          </span>
+        </Text>
+
+        <Container css={{ display: "flex", justifyContent: "center" }}>
+          <Button color={"error"} disabled onPress={() => handleDeleteJefe()}>
+            Eliminar este censo
+          </Button>
+
+          <Button color={"warning"}>Editar jefe de familia</Button>
+        </Container>
+      </Container>
+
       <Container css={{ my: "$6" }}>
         <Card>
           <Card.Header>
@@ -89,10 +127,14 @@ const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
           </Card.Header>
           <Card.Divider />
           <Card.Body>
-            <div className="flex flex-grow justify-center gap-12">
-              <div>Nombre: {data.nombres}</div>
-              <div>Apellidos: {data.apellidos}</div>
-              <div>Edad: {data.edad}</div>
+            <div className="flex flex-wrap justify-center gap-12">
+              <div>
+                Nombre: <span className="uppercase">{data.nombres}.</span>
+              </div>
+              <div>
+                Apellidos: <span className="uppercase">{data.apellidos}.</span>
+              </div>
+              <div>Edad: {getRelativeTime(data.fechaNacimiento)}</div>
               <div>
                 Documento de identidad {data.tipoDocumento.toUpperCase()}-
                 {data.numeroDocumento}
@@ -109,14 +151,15 @@ const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
           </Card.Header>
           <Card.Divider />
           <Card.Body>
-            <div className="flex flex-grow justify-center gap-12">
+            <div className="flex flex-wrap justify-center gap-12">
               <div>Manzana N°: {data.censo[0]?.casa.manzana}</div>
               <div>Calle: {data.censo[0]?.casa.calle.toUpperCase()}</div>
               <div>Casa N°: {data.censo[0]?.casa.casa}</div>
               <div>
                 Direccion:{" "}
-                <span className="capitalize">
-                  {data.censo[0]?.casa.direccion}.
+                <span className="uppercase">
+                  {data.censo[0]?.casa.manzana}, calle{" "}
+                  {data.censo[0]?.casa.calle}, casa {data.censo[0]?.casa.casa} .
                 </span>
               </div>
             </div>
@@ -130,7 +173,7 @@ const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
           </Card.Header>
           <Card.Divider />
           <Card.Body>
-            <div className="flex flex-grow justify-center gap-12">
+            <div className="flex flex-wrap justify-center gap-12">
               <div>
                 <h4>Cajas Asignadas: {data.censo[0]?.cajasClapsPorRecibir}</h4>
               </div>
@@ -144,69 +187,76 @@ const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
           </Card.Body>
         </Card>
       </Container>
-
-      <Table>
-        <Table.Header>
-          <Table.Column css={{ textAlign: "center" }}>Nombres</Table.Column>
-          <Table.Column css={{ textAlign: "center" }}>Apellidos</Table.Column>
-          <Table.Column css={{ textAlign: "center" }}>Edad</Table.Column>
-          <Table.Column css={{ textAlign: "center" }}>Genero</Table.Column>
-          <Table.Column css={{ textAlign: "center" }}>Parentesco</Table.Column>
-          <Table.Column css={{ textAlign: "center" }}>Observacion</Table.Column>
-          <Table.Column css={{ textAlign: "center" }}>Acciones</Table.Column>
-        </Table.Header>
-        <Table.Body>
-          {data.familiar.map(
-            ({
-              apellidos,
-              nombres,
-              genero,
-              id,
-              edad,
-              observacion,
-              parentesco,
-            }) => (
-              <Table.Row key={id.toString()}>
-                <Table.Cell css={{ textAlign: "center" }}>
-                  {nombres.toUpperCase()}
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>
-                  {apellidos.toUpperCase()}
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>{edad}</Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>
-                  {genero.toLocaleLowerCase() === "m"
-                    ? "Masculino"
-                    : "Femenino"}
-                </Table.Cell>
-                <Table.Cell
-                  css={{ textAlign: "center", textTransform: "capitalize" }}
-                >
-                  {parentesco}
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>
-                  {observacion || "Ninguna"}
-                </Table.Cell>
-                <Table.Cell
-                  css={{
-                    textAlign: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "$4 0",
-                  }}
-                >
-                  <Button color="error" onPress={(e) => handleDelete(id)}>
-                    {" "}
-                    Eliminar
-                  </Button>
-                  <Button color="warning">Actualizar</Button>
-                </Table.Cell>
-              </Table.Row>
-            )
-          )}
-        </Table.Body>
-      </Table>
+      {data.familiar.length > 0 && (
+        <Table>
+          <Table.Header>
+            <Table.Column css={{ textAlign: "center" }}>Nombres</Table.Column>
+            <Table.Column css={{ textAlign: "center" }}>Apellidos</Table.Column>
+            <Table.Column css={{ textAlign: "center" }}>Edad</Table.Column>
+            <Table.Column css={{ textAlign: "center" }}>Genero</Table.Column>
+            <Table.Column css={{ textAlign: "center" }}>
+              Parentesco
+            </Table.Column>
+            <Table.Column css={{ textAlign: "center" }}>
+              Observacion
+            </Table.Column>
+            <Table.Column css={{ textAlign: "center" }}>Acciones</Table.Column>
+          </Table.Header>
+          <Table.Body>
+            {data.familiar.map(
+              ({
+                apellidos,
+                nombres,
+                genero,
+                id,
+                fechaNacimiento,
+                observacion,
+                parentesco,
+              }) => (
+                <Table.Row key={id.toString()}>
+                  <Table.Cell css={{ textAlign: "center" }}>
+                    {nombres.toUpperCase()}
+                  </Table.Cell>
+                  <Table.Cell css={{ textAlign: "center" }}>
+                    {apellidos.toUpperCase()}
+                  </Table.Cell>
+                  <Table.Cell css={{ textAlign: "center" }}>
+                    {getRelativeTime(fechaNacimiento)}
+                  </Table.Cell>
+                  <Table.Cell css={{ textAlign: "center" }}>
+                    {genero.toLocaleLowerCase() === "m"
+                      ? "Masculino"
+                      : "Femenino"}
+                  </Table.Cell>
+                  <Table.Cell
+                    css={{ textAlign: "center", textTransform: "capitalize" }}
+                  >
+                    {parentesco}
+                  </Table.Cell>
+                  <Table.Cell css={{ textAlign: "center" }}>
+                    {observacion || "Ninguna"}
+                  </Table.Cell>
+                  <Table.Cell
+                    css={{
+                      textAlign: "center",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "$4 0",
+                    }}
+                  >
+                    <Button color="error" onPress={(e) => handleDelete(id)}>
+                      {" "}
+                      Eliminar
+                    </Button>
+                    <Button color="warning">Actualizar</Button>
+                  </Table.Cell>
+                </Table.Row>
+              )
+            )}
+          </Table.Body>
+        </Table>
+      )}
     </LayoutContent>
   );
 };

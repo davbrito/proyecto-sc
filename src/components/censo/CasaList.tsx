@@ -28,33 +28,23 @@ export const CasaList = () => {
 
   if (!data) return <h1>Error</h1>;
   return (
-    <Table css={{ mt: "0.5rem" }} className="text-center">
+    <Table
+      css={{ mt: "0.5rem", width: "378px" }}
+      className="text-center"
+      bordered
+    >
       <Table.Header>
-        <Table.Column align="center">N° Calle</Table.Column>
-        <Table.Column align="center">N° Manzana</Table.Column>
-        <Table.Column align="center">N° Casa</Table.Column>
-        <Table.Column align="center">Direccion</Table.Column>
-        <Table.Column align="center">Acciones</Table.Column>
+        <Table.Column align="center">N° Calle </Table.Column>
+        <Table.Column align="center">N° Manzana </Table.Column>
+        <Table.Column align="center">N° Casa </Table.Column>
       </Table.Header>
       <Table.Body>
         {data &&
-          data.map(({ id, calle, casa, direccion, manzana }) => (
+          data.map(({ id, calle, casa, manzana }) => (
             <Table.Row key={`${id}`}>
               <Table.Cell>{calle}</Table.Cell>
               <Table.Cell>{manzana}</Table.Cell>
               <Table.Cell>{casa}</Table.Cell>
-              <Table.Cell>{direccion}</Table.Cell>
-
-              <Table.Cell>
-                <Button
-                  flat
-                  color={"error"}
-                  css={{ mx: "auto" }}
-                  onClick={() => deleteById(id)}
-                >
-                  Eliminar
-                </Button>
-              </Table.Cell>
             </Table.Row>
           ))}
       </Table.Body>
