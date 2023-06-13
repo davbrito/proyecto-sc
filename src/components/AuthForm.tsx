@@ -15,6 +15,7 @@ export const LoginForm = () => {
     formState: { errors, isSubmitting },
     register,
     setError,
+    clearErrors,
   } = useForm<Inputs>();
   const router = useRouter();
 
@@ -37,9 +38,7 @@ export const LoginForm = () => {
         });
 
         setTimeout(() => {
-          setError("root", {
-            message: "",
-          });
+          //clearErrors("root");
         }, 3000);
       } else {
         setError("root", {
@@ -68,7 +67,10 @@ export const LoginForm = () => {
           placeholder="Escriba su nombre de usuario..."
           bordered
           {...register("username", {
-            required: { value: true, message: "campo requerido" },
+            required: {
+              value: true,
+              message: "Se requiere del nombre de usuario.",
+            },
           })}
           helperText={errors.username?.message}
           helperColor="error"
@@ -80,7 +82,7 @@ export const LoginForm = () => {
           placeholder="Escriba su contraseña..."
           bordered
           {...register("password", {
-            required: { value: true, message: "campo requerido" },
+            required: { value: true, message: "Se requiere la contraseña." },
           })}
           helperText={errors.password?.message}
           helperColor="error"
@@ -88,8 +90,11 @@ export const LoginForm = () => {
 
         {errors.root && (
           <>
-            <Spacer y={0.5} />
-            <Text em color="error">
+            <Text
+              em
+              color="error"
+              className="rounded-md bg-red-600 bg-opacity-20 px-4 py-1 font-semibold"
+            >
               {errors.root.message}
             </Text>
           </>
