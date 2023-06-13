@@ -30,7 +30,7 @@ export const FamiliarList = () => {
               nombres,
               numeroDocumento,
               apellidos,
-              edad,
+              fechaNacimiento,
               observacion,
               tipoDocumento,
               jefeFamilia,
@@ -49,7 +49,10 @@ export const FamiliarList = () => {
                 <Table.Cell css={{ textAlign: "center" }}>
                   {nombres.toUpperCase()}
                 </Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>{edad}</Table.Cell>
+                <Table.Cell css={{ textAlign: "center" }}>
+                  {new Date().getFullYear() -
+                    new Date(fechaNacimiento).getFullYear()}
+                </Table.Cell>
                 <Table.Cell css={{ textAlign: "center" }}>
                   {genero.toUpperCase() === "F" ? "Femenino" : "Masculino"}
                 </Table.Cell>

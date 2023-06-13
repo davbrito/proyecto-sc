@@ -6,10 +6,10 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token ,req }) => {
-        console.log("MIDLECALLBACK",token,req)
-        return true
-      }
+      authorized: ({ token, req }) => {
+        console.log("MIDLECALLBACK", token, req);
+        return true;
+      },
     },
   }
 );

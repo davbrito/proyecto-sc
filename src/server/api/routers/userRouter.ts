@@ -111,9 +111,7 @@ export const userRouter = createTRPCRouter({
 
   updateImage: protectedProcedure
     .input(z.object({ image: z.string() }))
-    .mutation(({ ctx, input }) => {
-
-    }),
+    .mutation(({ ctx, input }) => {}),
 
   getUsers: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findMany({

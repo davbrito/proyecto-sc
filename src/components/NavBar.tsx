@@ -7,25 +7,24 @@ import React from "react";
 import routesHref from "~/utils/routesNavBar";
 
 export const NavBar = () => {
-  const { data , status} = useSession();
-  const router = useRouter()
-  
+  const { data, status } = useSession();
+  const router = useRouter();
+
   return (
-    <Navbar variant={"floating"} css={{ mx: "auto" ,zIndex:"1000"}}>
+    <Navbar variant={"floating"} css={{ mx: "auto", zIndex: "1000" }}>
       {status === "unauthenticated" && (
         <Navbar.Content className="flex gap-x-6" hideIn="sm">
           {routesHref
             .filter(({ needAuth }) => !needAuth)
             .map(({ href, pathName }) => (
-                <Navbar.Link
-                  key={pathName}
-                  href={href}
-                  isActive={pathName === router.route}
-                  className="text-lg text-blue-400 transition-all hover:text-blue-200"
-                >
-                  {pathName}
-                </Navbar.Link>
-              
+              <Navbar.Link
+                key={pathName}
+                href={href}
+                isActive={pathName === router.route}
+                className="text-lg text-blue-400 transition-all hover:text-blue-200"
+              >
+                {pathName}
+              </Navbar.Link>
             ))}
         </Navbar.Content>
       )}
@@ -36,14 +35,13 @@ export const NavBar = () => {
             .filter(({ needAuth }) => needAuth)
             .map(({ href, pathName }) => (
               <Navbar.Link
-                  key={pathName}
-                  href={href}
-                  isActive={href === router.route}
-                  className="text-lg text-blue-400 transition-all hover:text-blue-200"
-                >
-                  {pathName}
-                </Navbar.Link>
-              
+                key={pathName}
+                href={href}
+                isActive={href === router.route}
+                className="text-lg text-blue-400 transition-all hover:text-blue-200"
+              >
+                {pathName}
+              </Navbar.Link>
             ))}
         </Navbar.Content>
       )}

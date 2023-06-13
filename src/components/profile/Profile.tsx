@@ -54,8 +54,8 @@ export const ProfileData = () => {
       </div>
       <div className="mx-auto text-center">
         <Link
-          className="cursor-pointer rounded border
-            border-solid border-red-500 bg-red-500 inline-block transform-none text-white py-3 px-4  font-semibold transition-all hover:bg-red-400
+          className="inline-block transform-none cursor-pointer
+            rounded border border-solid border-red-500 bg-red-500 px-4 py-3 font-semibold  text-white transition-all hover:bg-red-400
           "
           href={"/profile/edit"}
         >

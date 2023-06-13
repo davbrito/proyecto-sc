@@ -20,7 +20,6 @@ export const RegisterForm = () => {
   } = useForm<Inputs>();
 
   const { mutateAsync } = api.user.create.useMutation();
-  
 
   const onSubmit: SubmitHandler<Inputs> = async (values) => {
     try {
@@ -29,10 +28,10 @@ export const RegisterForm = () => {
         { password: "", username: "", lastName: "", name: "" },
         { keepErrors: true }
       );
-      
+
       await signIn("credentials", {
-        username:values.username,
-        password:values.password,
+        username: values.username,
+        password: values.password,
         redirect: true,
         callbackUrl: "/",
       });

@@ -13,7 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { FormEvent } from "react";
-import { redirect } from "next/navigation"
+import { redirect } from "next/navigation";
 import { useRouter } from "next/router";
 
 interface FormProps {
@@ -30,19 +30,22 @@ export const EditForm = () => {
   } = useForm<FormProps>();
   const { data, isLoading } = api.user.getById.useQuery();
   const { mutate } = api.user.updateDataInfoById.useMutation();
-  const router = useRouter()
+  const router = useRouter();
   const onSubmit: SubmitHandler<FormProps> = (value, event) => {
     event?.preventDefault();
 
-    mutate({ ...value , id:data?.id as string}, { 
+    mutate(
+      { ...value, id: data?.id as string },
+      {
         onError(error, variables, context) {
-            console.log(error)
+          console.log(error);
         },
         onSuccess(data, variables, context) {
-            console.log(data)
-            router.push("/profile")
+          console.log(data);
+          router.push("/profile");
         },
-    });
+      }
+    );
   };
 
   if (isLoading) return <CustomLoading />;

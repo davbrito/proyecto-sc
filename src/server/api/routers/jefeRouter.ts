@@ -13,7 +13,6 @@ export const jefeRouter = createTRPCRouter({
           manzana: z.string(),
           casa: z.string(),
           calle: z.string(),
-
         }),
         documentos: z.object({
           tipoDocumento: z.string(),
@@ -91,26 +90,28 @@ export const jefeRouter = createTRPCRouter({
     });
   }),
 
-  delete: publicProcedure.input(z.object({
-    id: z.bigint(),
-    censoId: z.string()
-  })).mutation(async ({ctx,input}) => {
+  delete: publicProcedure
+    .input(
+      z.object({
+        id: z.bigint(),
+        censoId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const censoDelete = await ctx.prisma.censo.delete({
+        where: {
+          id: input.censoId,
+        },
+      });
+      console.log(censoDelete);
 
-    const censoDelete = await ctx.prisma.censo.delete({
-      where:{
-        id:input.censoId
-      }
-    })
-    console.log(censoDelete)
+      const jefeDeleted = await ctx.prisma.jefeFamilia.delete({
+        where: {
+          id: input.id,
+        },
+      });
 
-    const jefeDeleted = await ctx.prisma.jefeFamilia.delete({
-      where:{
-        id:input.id
-      },
-    }) 
-
-    console.log(jefeDeleted)
-    return  jefeDeleted
-
-  })  
+      console.log(jefeDeleted);
+      return jefeDeleted;
+    }),
 });

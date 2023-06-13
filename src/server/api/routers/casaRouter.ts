@@ -22,7 +22,7 @@ export const casaRouter = createTRPCRouter({
         data: {
           calle,
           casa,
-          direccion,
+          // direccion,
           manzana,
         },
       });

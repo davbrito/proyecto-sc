@@ -72,9 +72,8 @@ model JefeFamilia {
     apellidos       String
     fechaNacimiento DateTime
     genero          String
-    telefono String 
-    email String
-
+    telefono        String
+    email           String
 
     tipoDocumento      String
     numeroDocumento    String
@@ -106,10 +105,10 @@ model Familiar {
 }
 
 model Casa {
-    id        BigInt @id() @default(autoincrement())
-    manzana   String
-    casa      String
-    calle     String
+    id      BigInt @id() @default(autoincrement())
+    manzana String
+    casa    String
+    calle   String
 
     Censo Censo[]
 }

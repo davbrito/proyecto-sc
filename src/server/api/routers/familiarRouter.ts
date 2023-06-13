@@ -9,18 +9,20 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 
+const createFamiliarSchema = z.object({
+  primerNombre: z.string(),
+  segundoNombre: z.string(),
+  primerApellido: z.string(),
+  segundoApellido: z.string(),
+  fechaNacimiento: z.string(),
+  genero: z.string(),
+});
+
 export const familiarRouter = createTRPCRouter({
   addNew: publicProcedure
     .input(
       z.object({
-        familiar: z.object({
-          primerNombre: z.string(),
-          segundoNombre: z.string(),
-          primerApellido: z.string(),
-          segundoApellido: z.string(),
-          fechaNacimiento: z.string(),
-          genero: z.string(),
-        }),
+        familiar: createFamiliarSchema,
         documentos: z.object({
           tipoDocumento: z.string(),
           numeroDocumento: z.string(),
@@ -92,11 +94,13 @@ export const familiarRouter = createTRPCRouter({
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.familiar.findMany({
+    const data = await ctx.prisma.familiar.findMany({
       include: {
         jefeFamilia: true,
       },
     });
+
+    return data;
   }),
 
   deleteById: publicProcedure
