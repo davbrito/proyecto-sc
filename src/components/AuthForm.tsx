@@ -1,4 +1,12 @@
-import { Button, Card, Input, Spacer, Text } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  Grid,
+  Input,
+  Loading,
+  Spacer,
+  Text,
+} from "@nextui-org/react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useForm, type SubmitHandler } from "react-hook-form";
@@ -60,55 +68,72 @@ export const LoginForm = () => {
         <Text h3>CENSO {new Date().getFullYear()}</Text>
       </Card.Header>
       <Card.Divider />
-      <Card.Body className="flex flex-col gap-2">
-        <Input
-          type="text"
-          label="Nombre de usuario:"
-          placeholder="Escriba su nombre de usuario..."
-          bordered
-          {...register("username", {
-            required: {
-              value: true,
-              message: "Se requiere del nombre de usuario.",
-            },
-          })}
-          helperText={errors.username?.message}
-          helperColor="error"
-        />
-        <Spacer y={0.5} />
-        <Input
-          type="password"
-          label="Contraseña:"
-          placeholder="Escriba su contraseña..."
-          bordered
-          {...register("password", {
-            required: { value: true, message: "Se requiere la contraseña." },
-          })}
-          helperText={errors.password?.message}
-          helperColor="error"
-        />
+      <Card.Body>
+        <Grid.Container gap={2}>
+          <Grid xs={12}>
+            <Input
+              fullWidth
+              type="text"
+              label="Nombre de usuario:"
+              placeholder="Escriba su nombre de usuario..."
+              bordered
+              {...register("username", {
+                required: {
+                  value: true,
+                  message: "Se requiere del nombre de usuario.",
+                },
+              })}
+              helperText={errors.username?.message}
+              helperColor="error"
+            />
+          </Grid>
+          <Spacer y={0.5} />
+          <Grid xs={12}>
+            <Input
+              fullWidth
+              type="password"
+              label="Contraseña:"
+              placeholder="Escriba su contraseña..."
+              bordered
+              {...register("password", {
+                required: {
+                  value: true,
+                  message: "Se requiere la contraseña.",
+                },
+              })}
+              helperText={errors.password?.message}
+              helperColor="error"
+            />
+          </Grid>
 
-        {errors.root && (
-          <>
-            <Text
-              em
-              color="error"
-              className="rounded-md bg-red-600 bg-opacity-20 px-4 py-1 font-semibold"
-            >
-              {errors.root.message}
-            </Text>
-          </>
-        )}
+          {errors.root && (
+            <Grid xs={12}>
+              <Text
+                em
+                color="error"
+                className="w-full rounded-md bg-red-600 bg-opacity-20 px-4 py-1 text-center font-semibold"
+              >
+                {errors.root.message}
+              </Text>
+            </Grid>
+          )}
+        </Grid.Container>
       </Card.Body>
       <Card.Divider />
       <Card.Footer>
         <Button
-          size="sm"
+          size="lg"
           type="submit"
-          css={{ ml: "auto" }}
+          css={{
+            ml: "auto",
+            "&:hover": {
+              backgroundColor: "$primarySolidHover",
+            },
+          }}
           disabled={isSubmitting}
         >
-          Log in
+          {isSubmitting && <Loading color={"secondary"} className="mx-4" />}
+          <span>{isSubmitting ? " Cargando..." : "Iniciar sesion."}</span>
         </Button>
       </Card.Footer>
     </Card>
