@@ -12,6 +12,7 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { PersonaForm } from "../censo/PersonaForm";
 import { DocumentosForm } from "../censo/documentosForm";
 import { api } from "~/utils/api";
+import { NextPage } from "next";
 
 interface OtrosProps {
   tipoDocumento: string;
@@ -58,7 +59,12 @@ const initialValues = {
   parentesco: "",
 };
 
-const FamiliarForm = () => {
+interface FamiliarFormProps {
+  jefeId?: bigint;
+}
+
+const FamiliarForm: NextPage<FamiliarFormProps> = ({ jefeId }) => {
+  console.log(jefeId, "jefeId");
   const {
     register,
     reset,
@@ -152,7 +158,11 @@ const FamiliarForm = () => {
                     tipoDocumento,
                     numeroDocumento,
                   }) => (
-                    <option value={id.toString()} key={id.toString()}>
+                    <option
+                      value={id.toString()}
+                      key={id.toString()}
+                      selected={id === jefeId}
+                    >
                       {apellidos.toUpperCase()}, {nombres.toUpperCase()}.{" "}
                       {tipoDocumento.toUpperCase()}-{numeroDocumento}
                     </option>

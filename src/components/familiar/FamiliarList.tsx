@@ -3,6 +3,7 @@ import React from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import Link from "next/link";
+import { getRelativeTime } from "~/utils/dates";
 
 export const FamiliarList = () => {
   const { data, isLoading } = api.familia.getAll.useQuery();
@@ -30,11 +31,11 @@ export const FamiliarList = () => {
               nombres,
               numeroDocumento,
               apellidos,
-              edad,
               observacion,
               tipoDocumento,
               jefeFamilia,
               genero,
+              fechaNacimiento,
             }) => (
               <Table.Row key={id.toString()}>
                 <Table.Cell css={{ textAlign: "center" }}>
@@ -49,7 +50,9 @@ export const FamiliarList = () => {
                 <Table.Cell css={{ textAlign: "center" }}>
                   {nombres.toUpperCase()}
                 </Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>{edad}</Table.Cell>
+                <Table.Cell css={{ textAlign: "center" }}>
+                  {getRelativeTime(fechaNacimiento)}
+                </Table.Cell>
                 <Table.Cell css={{ textAlign: "center" }}>
                   {genero.toUpperCase() === "F" ? "Femenino" : "Masculino"}
                 </Table.Cell>

@@ -13,16 +13,15 @@ export const casaRouter = createTRPCRouter({
         manzana: z.string(),
         casa: z.string(),
         calle: z.string(),
-        direccion: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { calle, casa, direccion, manzana } = input;
+      const { calle, casa, manzana } = input;
       const newCasa = await ctx.prisma.casa.create({
         data: {
           calle,
           casa,
-          direccion,
+
           manzana,
         },
       });

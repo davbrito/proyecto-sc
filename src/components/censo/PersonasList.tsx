@@ -19,18 +19,16 @@ export const PersonasList = ({ search }: { search?: string }) => {
           border: "1px solid $gray400",
           borderRadius: "$3xl",
           padding: "$10 $6",
-          display:"flex",
-          justifyContent:"center"
+          display: "flex",
+          justifyContent: "center",
         }}
-        className="max-w-xl mx-auto"
+        className="mx-auto max-w-xl"
       >
         {/* eslint-disable-next-line react/no-unescaped-entities */}
         <Text h2 css={{ textAlign: "center" }}>
-          {
-            search 
+          {search
             ? `No hay resultados para la busqueda del censo: '${search}'`
-            : "Aun no se han registrados censos."
-          }
+            : "Aun no se han registrados censos."}
         </Text>
       </Container>
     );
@@ -87,7 +85,9 @@ export const PersonasList = ({ search }: { search?: string }) => {
                 : "Masculino"}
             </Table.Cell>
             <Table.Cell>
-              <Link href={"/familiares/create"}>Añadir Pariente</Link>
+              <Link href={`/familiares/create/${jefeFamilia.id}`}>
+                Añadir Pariente
+              </Link>
             </Table.Cell>
           </Table.Row>
         ))}

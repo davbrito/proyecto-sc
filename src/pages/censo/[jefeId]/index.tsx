@@ -4,7 +4,8 @@ import {
   type GetStaticPropsContext,
   type InferGetStaticPropsType,
 } from "next";
-import React from "react";
+import { getSession, useSession } from "next-auth/react";
+import React, { useEffect } from "react";
 import { LayoutContent } from "~/components/Layout";
 import { CustomLoading } from "~/components/Loading";
 import { prisma } from "~/server/db";
@@ -16,7 +17,6 @@ export async function getStaticProps(
   context: GetStaticPropsContext<{ jefeId: string }>
 ) {
   const ssg = generateSSGHelper();
-
   const id = context?.params?.jefeId;
 
   if (typeof id !== "string") throw new Error("no Id");
@@ -52,7 +52,6 @@ const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
     },
     { refetchOnWindowFocus: false }
   );
-
   const { mutate } = api.familia.deleteById.useMutation();
   const jefe = api.jefe.delete.useMutation();
 
