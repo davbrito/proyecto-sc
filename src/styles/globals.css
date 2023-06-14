@@ -16,5 +16,5 @@ code {
 }
 
 .select-form {
-  @apply block w-full rounded-xl border-2 dark:border-neutral-700 p-2.5 px-3 text-sm dark:text-white placeholder-gray-400 transition-all hover:border-neutral-300 dark:focus:border-neutral-300 dark:focus:ring-blue-500 focus:border-blue-500 focus:ring-blue-500;
+  @apply block w-full rounded-xl border-2 p-2.5 px-3 text-sm placeholder-gray-400 transition-all hover:border-neutral-300 focus:border-blue-500 focus:ring-blue-500 dark:border-neutral-700 dark:text-white dark:focus:border-neutral-300 dark:focus:ring-blue-500;
 }

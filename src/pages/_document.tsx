@@ -21,7 +21,7 @@ class MyDocument extends Document {
     return (
       <Html lang="es">
         <Head>{CssBaseline.flush()}</Head>
-        <body>
+        <body className="min-h-screen">
           <Main />
           <NextScript />
         </body>
