@@ -66,7 +66,15 @@ export const NavBar = () => {
                 </Dropdown.Item>
               </Dropdown.Section>
               <Dropdown.Section>
-                <Dropdown.Item key="logout" color="error">
+                <Dropdown.Item
+                  key="logout"
+                  color="error"
+                  css={{
+                    "&:focus": {
+                      backgroundColor: "$red300",
+                    },
+                  }}
+                >
                   {data && (
                     <Button
                       className="w-full bg-inherit font-semibold"
