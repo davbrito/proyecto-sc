@@ -69,13 +69,16 @@ export const NavBar = () => {
                 <Dropdown.Item key="logout" color="error">
                   {data && (
                     <Button
-                      className="w-full bg-inherit "
+                      className="w-full bg-inherit font-semibold"
                       onClick={() => {
                         signOut({ callbackUrl: "/login" })
                           .then(() => {})
                           .catch((err) => {
                             console.error(err);
                           });
+                      }}
+                      css={{
+                        color: "$neutral",
                       }}
                     >
                       Cerrar sesion

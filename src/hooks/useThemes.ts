@@ -1,5 +1,5 @@
 import { type CreateTheme, createTheme } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const darkTheme = createTheme({
   type: "dark",
@@ -22,9 +22,20 @@ const light = createTheme({
 export const useThemes = () => {
   const [theme, setTheme] = useState<CreateTheme>(darkTheme);
 
+  useEffect(() => {
+    setTheme(
+      localStorage.getItem("theme")?.includes("dark") ? darkTheme : light
+    );
+  }, []);
+
   const toggleTheme = () => {
     setTheme(({ className }) =>
       className === "light-theme" ? darkTheme : light
+    );
+
+    localStorage.setItem(
+      "theme",
+      theme.className === "light-theme" ? "dark-theme" : "light-theme"
     );
   };
 
