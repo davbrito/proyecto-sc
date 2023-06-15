@@ -8,10 +8,6 @@ import { api } from "~/utils/api";
 import { verifySession } from "~/utils/verifySession";
 
 const CasaIndex = () => {
-  const { isLoading, data } = api.casa.getAllCasas.useQuery();
-  const session = useSession();
-  console.log(session);
-  console.log(data);
   return (
     <LayoutContent>
       <Text h1>Casas</Text>

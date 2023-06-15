@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
 import Head from "next/head";
 import ChangeTheme from "~/components/ChangeTheme";
+import Footer from "~/components/Footer";
 import { NavBar } from "~/components/NavBar";
 import { useThemes } from "~/hooks/useThemes";
 import "~/styles/globals.css";
@@ -26,6 +27,7 @@ const App: AppType<{ session: Session | null }> = ({
       <NextUIProvider theme={theme}>
         <NavBar />
         <Component {...pageProps} />
+        <Footer />
       </NextUIProvider>
       <ChangeTheme toggleTheme={toggleTheme} theme={theme.className} />
     </SessionProvider>

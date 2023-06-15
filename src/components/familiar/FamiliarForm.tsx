@@ -15,6 +15,7 @@ import { api } from "~/utils/api";
 import { NextPage } from "next";
 import { CustomLoading } from "../Loading";
 import { useRouter } from "next/router";
+import { Familiar } from "@prisma/client";
 
 interface OtrosProps {
   tipoDocumento: string;
@@ -63,54 +64,115 @@ const initialValues = {
 
 interface FamiliarFormProps {
   jefeId?: bigint;
+  familia: Familiar | null;
+  closeModal: () => void;
 }
 
-const FamiliarForm: NextPage<FamiliarFormProps> = ({ jefeId }) => {
+const FamiliarForm: NextPage<FamiliarFormProps> = ({
+  jefeId,
+  familia,
+  closeModal,
+}) => {
   const {
     register,
     reset,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<FamiliarFormData>();
+  } = useForm<FamiliarFormData>({
+    defaultValues: !familia
+      ? initialValues
+      : {
+          datosBasicos: {
+            fechaNacimiento: familia.fechaNacimiento
+              .toISOString()
+              .split("T")[0],
+            genero: familia.genero,
+            primerApellido: familia.apellidos.split(" ")[0],
+            primerNombre: familia.nombres.split(" ")[0],
+            segundoApellido: familia.apellidos.split(" ")[1],
+            segundoNombre: familia.nombres.split(" ")[1],
+          },
+          documentos: {
+            codCarnetPatria: familia.codCarnetPatria,
+            numeroDocumento: familia.numeroDocumento,
+            observacion: familia.observacion,
+            serialCarnetPatria: familia.serialCarnetPatria,
+            tipoDocumento: familia.tipoDocumento,
+          },
+          parentesco: familia.parentesco,
+          jefeId: familia.jefeFamiliaId.toString(),
+        },
+  });
 
+  console.log(familia, initialValues);
   const router = useRouter();
   const { data, isLoading } = api.jefe.getAll.useQuery(undefined, {
     cacheTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
-  const { mutateAsync } = api.familia.addNew.useMutation();
+  const addFamiliar = api.familia.addNew.useMutation();
+  const editFamiliar = api.familia.update.useMutation();
 
   const onSubmit: SubmitHandler<FamiliarFormData> = async (values, event) => {
     event?.preventDefault();
 
-    await mutateAsync(
-      {
-        documentos: values.documentos,
-        familiar: {
-          fechaNacimiento: values.datosBasicos.fechaNacimiento,
-          genero: values.datosBasicos.genero,
-          primerNombre: values.datosBasicos.primerNombre,
-          primerApellido: values.datosBasicos.primerApellido,
-          segundoApellido: values.datosBasicos.segundoApellido,
-          segundoNombre: values.datosBasicos.segundoNombre,
+    if (!familia) {
+      await addFamiliar.mutateAsync(
+        {
+          documentos: values.documentos,
+          familiar: {
+            fechaNacimiento: values.datosBasicos.fechaNacimiento,
+            genero: values.datosBasicos.genero,
+            primerNombre: values.datosBasicos.primerNombre,
+            primerApellido: values.datosBasicos.primerApellido,
+            segundoApellido: values.datosBasicos.segundoApellido,
+            segundoNombre: values.datosBasicos.segundoNombre,
+          },
+          jefe: {
+            jefeId: BigInt(values.jefeId),
+            parentesco: values.parentesco,
+          },
         },
-        jefe: {
-          jefeId: BigInt(values.jefeId),
-          parentesco: values.parentesco,
+        {
+          onError(error, variables, context) {
+            setError("root", { type: "validate", message: error.message });
+            reset(initialValues, { keepErrors: true });
+          },
+          onSuccess(data, variables, context) {
+            reset(initialValues, { keepTouched: false, keepDirty: false });
+            router.push(`/censo/${data.newCenso.jefeFamiliaId}`);
+          },
+        }
+      );
+    } else {
+      await editFamiliar.mutateAsync(
+        {
+          documentos: values.documentos,
+          familiar: {
+            fechaNacimiento: values.datosBasicos.fechaNacimiento,
+            genero: values.datosBasicos.genero,
+            primerNombre: values.datosBasicos.primerNombre,
+            primerApellido: values.datosBasicos.primerApellido,
+            segundoApellido: values.datosBasicos.segundoApellido,
+            segundoNombre: values.datosBasicos.segundoNombre,
+          },
+          jefe: {
+            jefeId: BigInt(values.jefeId),
+            parentesco: values.parentesco,
+          },
+          id: familia.id,
         },
-      },
-      {
-        onError(error, variables, context) {
-          setError("root", { type: "validate", message: error.message });
-          reset(initialValues, { keepErrors: true });
-        },
-        onSuccess(data, variables, context) {
-          reset(initialValues, { keepTouched: false, keepDirty: false });
-          router.push(`/censo/${data.newCenso.jefeFamiliaId}`);
-        },
-      }
-    );
+        {
+          onSuccess(data, variables, context) {
+            closeModal();
+          },
+          onError(error, variables, context) {
+            setError("root", { type: "validate", message: error.message });
+          },
+        }
+      );
+    }
   };
 
   if (isLoading) return <CustomLoading />;

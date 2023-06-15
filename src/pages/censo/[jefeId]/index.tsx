@@ -1,4 +1,12 @@
-import { Button, Checkbox, Input, Modal, Row, Text } from "@nextui-org/react";
+import {
+  Button,
+  Checkbox,
+  Container,
+  Input,
+  Modal,
+  Row,
+  Text,
+} from "@nextui-org/react";
 import {
   type GetStaticProps,
   type GetStaticPropsContext,
@@ -54,19 +62,6 @@ const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
   return (
     <LayoutContent>
       <JefeProfile id={props.id} />
-      <div>
-        <Button auto shadow onPress={handler}>
-          Open modal
-        </Button>
-        <Modal
-          closeButton
-          aria-labelledby="modal-title"
-          open={visible}
-          onClose={closeHandler}
-        >
-          <FamiliarForm />
-        </Modal>
-      </div>
     </LayoutContent>
   );
 };

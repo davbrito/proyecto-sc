@@ -150,7 +150,6 @@ export const familiarRouter = createTRPCRouter({
           segundoNombre: z.string(),
           primerApellido: z.string(),
           segundoApellido: z.string(),
-          edad: z.number(),
           fechaNacimiento: z.string(),
           genero: z.string(),
         }),
@@ -176,7 +175,11 @@ export const familiarRouter = createTRPCRouter({
           id,
         },
         data: {
-          ...familiar,
+          apellidos: `${familiar.primerApellido} ${familiar.segundoApellido}`,
+          nombres: `${familiar.primerNombre} ${familiar.segundoNombre}`,
+          fechaNacimiento: new Date(familiar.fechaNacimiento).toJSON(),
+          genero: familiar.genero,
+
           ...documentos,
           parentesco: jefe.parentesco,
         },
@@ -184,4 +187,11 @@ export const familiarRouter = createTRPCRouter({
 
       return familiarUpdated;
     }),
+  getById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(() => {}),
 });

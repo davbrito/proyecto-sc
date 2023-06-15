@@ -1,8 +1,15 @@
-import { Button, Card, Container, Table, Text } from "@nextui-org/react";
-import React from "react";
+import { Button, Card, Container, Modal, Table, Text } from "@nextui-org/react";
+import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import { getRelativeTime } from "~/utils/dates";
+import FamiliarForm from "../familiar/FamiliarForm";
+import { Familiar } from "@prisma/client";
+
+interface EditFamiliar {
+  familiaToEdit?: Familiar;
+  isOpen: boolean;
+}
 
 const JefeProfile = ({ id }: { id: "string" }) => {
   const { data, isLoading, refetch } = api.jefe.getById.useQuery(
@@ -13,6 +20,14 @@ const JefeProfile = ({ id }: { id: "string" }) => {
   );
   const familiar = api.familia.deleteById.useMutation();
   const jefe = api.jefe.delete.useMutation();
+  const [editFamiliar, setEditFamiliar] = useState<EditFamiliar>({
+    isOpen: false,
+  });
+
+  const closeHandler = () => {
+    setEditFamiliar({ isOpen: false });
+    refetch();
+  };
 
   const handleDeleteJefe = async () => {
     if (!data || !data.censo || !data.censo[0]) return;
@@ -48,6 +63,18 @@ const JefeProfile = ({ id }: { id: "string" }) => {
         }
       );
     } catch (error) {}
+  };
+
+  const handleEditFamiliar = (id: string) => {
+    const familiarToEdit = data?.familiar.filter(
+      (familia) => familia.id.toString() === id
+    );
+    if (!familiarToEdit) return;
+
+    setEditFamiliar({
+      isOpen: true,
+      familiaToEdit: familiarToEdit[0],
+    });
   };
 
   if (isLoading) <CustomLoading />;
@@ -207,7 +234,14 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                       {" "}
                       Eliminar
                     </Button>
-                    <Button color="warning">Actualizar</Button>
+                    <Button
+                      color="warning"
+                      onPress={() => {
+                        handleEditFamiliar(id.toString());
+                      }}
+                    >
+                      Actualizar
+                    </Button>
                   </Table.Cell>
                 </Table.Row>
               )
@@ -215,6 +249,22 @@ const JefeProfile = ({ id }: { id: "string" }) => {
           </Table.Body>
         </Table>
       )}
+
+      <Modal
+        closeButton
+        aria-labelledby="modal-title"
+        open={editFamiliar.isOpen}
+        onClose={closeHandler}
+        width="600px"
+      >
+        {editFamiliar.familiaToEdit && (
+          <FamiliarForm
+            familia={editFamiliar.familiaToEdit}
+            jefeId={data.id}
+            closeModal={closeHandler}
+          />
+        )}
+      </Modal>
     </>
   );
 };
