@@ -1,7 +1,14 @@
 import { Grid, Input, Textarea } from "@nextui-org/react";
 import React from "react";
+import { type FieldErrors, type UseFormRegister } from "react-hook-form";
+import { type JefeProps } from "./GreatForm";
 
-export const DocumentosForm = ({ register, errors }: any) => {
+interface Props {
+  register: UseFormRegister<JefeProps>;
+  errors: FieldErrors<JefeProps>;
+}
+
+export const DocumentosForm = ({ register, errors }: Props) => {
   return (
     <Grid.Container gap={1}>
       <Grid xs={4}>

@@ -86,7 +86,7 @@ export const PersonasList = ({ search }: { search?: string }) => {
             </Table.Cell>
             <Table.Cell>
               <Link href={`/familiares/create/${jefeFamilia.id}`}>
-                Añadir Pariente
+                Registrar pariente.
               </Link>
             </Table.Cell>
           </Table.Row>

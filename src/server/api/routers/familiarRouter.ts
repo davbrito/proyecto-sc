@@ -102,9 +102,43 @@ export const familiarRouter = createTRPCRouter({
   deleteById: publicProcedure
     .input(z.object({ id: z.bigint() }))
     .mutation(async ({ ctx, input }) => {
+      const familiarToDelete = await ctx.prisma.familiar.findFirst({
+        where: { id: input.id },
+        include: {
+          jefeFamilia: {
+            include: {
+              censo: true,
+            },
+          },
+        },
+      });
+
+      if (
+        !familiarToDelete ||
+        !familiarToDelete.jefeFamilia.censo[0] ||
+        !familiarToDelete.jefeFamilia.censo[0].id
+      )
+        return;
+      const censoId = familiarToDelete.jefeFamilia.censo[0].id;
+
+      await ctx.prisma.censo.update({
+        where: {
+          id: censoId,
+        },
+        data: {
+          cargaFamiliar:
+            familiarToDelete.jefeFamilia.censo[0].cargaFamiliar - 1,
+          tipoFamilia:
+            familiarToDelete.jefeFamilia.censo[0].cargaFamiliar - 1 > 4
+              ? "MULTIFAMILIAR"
+              : "UNIFAMILIAR",
+        },
+      });
+
       const deleted = await ctx.prisma.familiar.delete({
         where: { id: input.id },
       });
+
       return deleted;
     }),
 

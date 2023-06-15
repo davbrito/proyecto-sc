@@ -1,4 +1,4 @@
-import { Button, Card, Grid, Text } from "@nextui-org/react";
+import { Button, Card, Grid, Loading, Text } from "@nextui-org/react";
 import React, { useState } from "react";
 import { type FieldError, type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
@@ -28,9 +28,9 @@ interface BasicDataProps {
   segundoApellido: string;
   fechaNacimiento: string;
   genero: string;
-  email: string
-  codigoTelefono : string
-  telefono : string
+  email: string;
+  codigoTelefono: string;
+  telefono: string;
 }
 
 export interface JefeProps {
@@ -40,19 +40,23 @@ export interface JefeProps {
 }
 
 interface Step {
-  currentPos : number,
-  filled:number
+  currentPos: number;
+  filled: number;
 }
 
 interface CirclesProps {
   count: number;
-  current:number
+  current: number;
   filled: number;
-  setStep: React.Dispatch<React.SetStateAction<Step>>
+  setStep: React.Dispatch<React.SetStateAction<Step>>;
 }
 
-
-const CirclesReference = ({ count, filled ,current,setStep}: CirclesProps) => {
+const CirclesReference = ({
+  count,
+  filled,
+  current,
+  setStep,
+}: CirclesProps) => {
   const renderCircles = () => {
     const circles: Array<JSX.Element> = [];
 
@@ -60,12 +64,16 @@ const CirclesReference = ({ count, filled ,current,setStep}: CirclesProps) => {
       circles.push(
         <span
           key={`circle-reference-${i}`}
-          onClick={() => i <= filled ? setStep(({filled}) => ({currentPos:i,filled})) : null}
-          className={`inline-block h-6 w-6 rounded-full transition-all ${
-            i <= filled ? "bg-blue-600 hover:bg-blue-800" : "bg-gray-400"}
-            ${current === i ? 'bg-violet-500 hover:bg-violet-700': ''}  
-            `
+          onClick={() =>
+            i <= filled
+              ? setStep(({ filled }) => ({ currentPos: i, filled }))
+              : null
           }
+          className={`inline-block h-6 w-6 rounded-full transition-all ${
+            i <= filled ? "bg-blue-600 hover:bg-blue-800" : "bg-gray-400"
+          }
+            ${current === i ? "bg-violet-500 hover:bg-violet-700" : ""}  
+            `}
         ></span>
       );
     }
@@ -79,9 +87,8 @@ const CirclesReference = ({ count, filled ,current,setStep}: CirclesProps) => {
   );
 };
 
-
 export const GreatForm = () => {
-  const [step, setStep] = useState<Step>({currentPos:0,filled:0});
+  const [step, setStep] = useState<Step>({ currentPos: 0, filled: 0 });
 
   const {
     handleSubmit,
@@ -91,18 +98,22 @@ export const GreatForm = () => {
     watch,
     setError,
   } = useForm<JefeProps>();
-  const router = useRouter()
+  const router = useRouter();
   const { mutateAsync } = api.jefe.create.useMutation();
 
   const sections = [
     <PersonaForm register={register} errors={errors} key="personaForm" />,
     <DocumentosForm register={register} errors={errors} key="documentosForm" />,
-    <CasaForm register={register} errors={errors} key="casaForm" watch={watch}/>,
+    <CasaForm
+      register={register}
+      errors={errors}
+      key="casaForm"
+      watch={watch}
+    />,
   ];
 
   const onSubmit: SubmitHandler<JefeProps> = async (values) => {
     try {
-   
       await mutateAsync(
         {
           casa: values.casa,
@@ -115,15 +126,14 @@ export const GreatForm = () => {
             fechaNacimiento: values.datosBasicos.fechaNacimiento,
             segundoApellido: values.datosBasicos.segundoApellido,
             email: values.datosBasicos.email,
-            telefono: values.datosBasicos.telefono
+            telefono: values.datosBasicos.telefono,
           },
         },
         {
           onSuccess(data, variables, context) {
-            router.push("/censo")
+            router.push("/censo");
           },
-          onError({data}) {
-            
+          onError({ data }) {
             setError("root", {
               message: data?.code,
               type: "validate",
@@ -131,7 +141,6 @@ export const GreatForm = () => {
           },
         }
       );
-      
     } catch (error) {
       console.error(error);
     }
@@ -142,7 +151,11 @@ export const GreatForm = () => {
   };
 
   const handleSteps = async (n: number) => {
-    if (n < 0 && step.currentPos !== 0) return setStep(({currentPos,filled}) =>( {currentPos: currentPos + n,filled}));
+    if (n < 0 && step.currentPos !== 0)
+      return setStep(({ currentPos, filled }) => ({
+        currentPos: currentPos + n,
+        filled,
+      }));
 
     if (step.currentPos === sections.length - 1 && n > 0) return;
 
@@ -165,10 +178,11 @@ export const GreatForm = () => {
         break;
     }
 
-    if (isValid) setStep(({currentPos,filled}) => ({
-      currentPos:currentPos + n,
-      filled: filled + 1
-    }));
+    if (isValid)
+      setStep(({ currentPos, filled }) => ({
+        currentPos: currentPos + n,
+        filled: filled + 1,
+      }));
   };
 
   return (
@@ -187,7 +201,9 @@ export const GreatForm = () => {
             {sections.map((section, index) => (
               <section
                 className={`transition-all ${
-                  step.currentPos === index ? "block opacity-100 " : "hidden opacity-0"
+                  step.currentPos === index
+                    ? "block opacity-100 "
+                    : "hidden opacity-0"
                 }`}
                 key={index}
               >
@@ -195,29 +211,30 @@ export const GreatForm = () => {
               </section>
             ))}
           </Grid>
-          
         </Card.Body>
         {errors?.root && (
-            <Text
-              color="error"
-              h3
-              css={{ textTransform: "capitalize", 
-              display: "inline-block" ,
-              backgroundColor:"$red50",
-              padding:"4px 0",
-              margin:"8px 16px",
-              textAlign:"center" , border:"1px solid", 
-              borderRadius:"4px"}}
-            >
-              {errors?.root?.message}
-            </Text>
-          )}
+          <Text
+            color="error"
+            h3
+            css={{
+              textTransform: "capitalize",
+              display: "inline-block",
+              backgroundColor: "$red50",
+              padding: "4px 0",
+              margin: "8px 16px",
+              textAlign: "center",
+              border: "1px solid",
+              borderRadius: "4px",
+            }}
+          >
+            {errors?.root?.message}
+          </Text>
+        )}
         <Card.Divider />
 
         <Card.Footer
           css={{ display: "flex", justifyContent: "center", gap: 4 }}
         >
-          
           <Button
             color={"secondary"}
             disabled={isDisabledBackButton()}
@@ -230,7 +247,9 @@ export const GreatForm = () => {
             disabled={isSubmitting}
             type="submit"
             css={{
-              display: `${step.currentPos !== sections.length - 1 ? "none" : "block"}`,
+              display: `${
+                step.currentPos !== sections.length - 1 ? "none" : "block"
+              }`,
               "&:hover": {
                 backgroundColor: "$blue300",
               },
@@ -243,17 +262,27 @@ export const GreatForm = () => {
             type="button"
             onPress={() => handleSteps(1)}
             css={{
-              display: `${step.currentPos !== sections.length - 1 ? "block" : "none"}`,
+              display: `${
+                step.currentPos !== sections.length - 1 ? "block" : "none"
+              }`,
               "&:hover": {
                 backgroundColor: "$blue300",
               },
             }}
           >
+            {isSubmitting && (
+              <Loading as="span" color={"secondary"} className="mx-4" />
+            )}
             Continuar
           </Button>
         </Card.Footer>
 
-        <CirclesReference count={sections.length} filled={step.filled} current={step.currentPos} setStep={setStep}/>
+        <CirclesReference
+          count={sections.length}
+          filled={step.filled}
+          current={step.currentPos}
+          setStep={setStep}
+        />
       </Card>
     </>
   );
