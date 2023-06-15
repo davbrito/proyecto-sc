@@ -1,18 +1,15 @@
-import { Table, Text, Button, Card, Container } from "@nextui-org/react";
+import { Button, Checkbox, Input, Modal, Row, Text } from "@nextui-org/react";
 import {
   type GetStaticProps,
   type GetStaticPropsContext,
   type InferGetStaticPropsType,
 } from "next";
-import { getSession, useSession } from "next-auth/react";
-import React, { useEffect } from "react";
+import React from "react";
 import { LayoutContent } from "~/components/Layout";
-import { CustomLoading } from "~/components/Loading";
 import JefeProfile from "~/components/censo/JefeProfile";
+import FamiliarForm from "~/components/familiar/FamiliarForm";
 import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
-import { api } from "~/utils/api";
-import { getRelativeTime } from "~/utils/dates";
 
 export async function getStaticProps(
   context: GetStaticPropsContext<{ jefeId: string }>
@@ -47,9 +44,29 @@ export const getStaticPaths = async () => {
 };
 
 const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
+  const [visible, setVisible] = React.useState(false);
+  const handler = () => setVisible(true);
+
+  const closeHandler = () => {
+    setVisible(false);
+    console.log("closed");
+  };
   return (
     <LayoutContent>
       <JefeProfile id={props.id} />
+      <div>
+        <Button auto shadow onPress={handler}>
+          Open modal
+        </Button>
+        <Modal
+          closeButton
+          aria-labelledby="modal-title"
+          open={visible}
+          onClose={closeHandler}
+        >
+          <FamiliarForm />
+        </Modal>
+      </div>
     </LayoutContent>
   );
 };
