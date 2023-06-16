@@ -2,12 +2,11 @@ import { LayoutContent } from "~/components/Layout";
 import { Container, Link, Text } from "@nextui-org/react";
 import { PersonasList } from "~/components/censo/PersonasList";
 import { SearchForm } from "~/components/censo/SearchForm";
-import { useRef, useState } from "react";
-import { GetServerSidePropsContext } from "next";
+import { useState } from "react";
+import { type GetServerSidePropsContext } from "next";
 import { verifySession } from "~/utils/verifySession";
 
 const CensoIndex = () => {
-  const valueSearch = useRef<HTMLInputElement>(null);
   const [searchValue, setSearchValue] = useState<string>("");
 
   return (
@@ -21,7 +20,15 @@ const CensoIndex = () => {
               css={{ my: "1rem" }}
               className="mx-auto h-fit w-fit rounded bg-blue-700 px-2 py-3 text-blue-100"
             >
-              Nuevo censo
+              Nuevo censo.
+            </Link>
+
+            <Link
+              href="/censo/estadisticas"
+              css={{ my: "1rem" }}
+              className="mx-auto h-fit w-fit rounded bg-orange-700 px-2 py-3 text-blue-100"
+            >
+              Ver estadisticas.
             </Link>
           </div>
           <SearchForm setSearchValue={setSearchValue} />

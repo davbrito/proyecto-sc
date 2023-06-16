@@ -1,5 +1,10 @@
 import { Button, Grid, Input, Text } from "@nextui-org/react";
-import React, { type Dispatch, type FormEvent, type SetStateAction, useState } from "react";
+import React, {
+  type Dispatch,
+  type FormEvent,
+  type SetStateAction,
+  useState,
+} from "react";
 
 interface Props {
   setSearchValue: Dispatch<SetStateAction<string>>;
@@ -15,10 +20,12 @@ export const SearchForm = ({ setSearchValue }: Props) => {
     <div className="rounded p-5">
       <Grid.Container
         as="form"
-        className="flex justify-center gap-2 flex-col"
+        className="flex flex-col justify-center gap-2"
         onSubmit={handlerSubmit}
       >
-        <Text h3>Busqueda:</Text>
+        <Text as="label" aria-label="search" h3>
+          Busqueda:
+        </Text>
         <Input
           placeholder="Ej: 102500001"
           bordered
