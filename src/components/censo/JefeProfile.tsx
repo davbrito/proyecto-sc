@@ -4,10 +4,11 @@ import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import { getRelativeTime } from "~/utils/dates";
 import FamiliarForm from "../familiar/FamiliarForm";
-import { Familiar } from "@prisma/client";
+import { type JefeFamilia, type Familiar } from "@prisma/client";
+import JefeEditForm from "./JefeEditForm";
 
-interface EditFamiliar {
-  familiaToEdit?: Familiar;
+interface Edit {
+  idToEdit?: Familiar | JefeFamilia;
   isOpen: boolean;
 }
 
@@ -20,12 +21,17 @@ const JefeProfile = ({ id }: { id: "string" }) => {
   );
   const familiar = api.familia.deleteById.useMutation();
   const jefe = api.jefe.delete.useMutation();
-  const [editFamiliar, setEditFamiliar] = useState<EditFamiliar>({
+  const [editJefe, setEditJefe] = useState<Edit>({
+    isOpen: false,
+  });
+  const [editFamiliar, setEditFamiliar] = useState<Edit>({
     isOpen: false,
   });
 
   const closeHandler = () => {
     setEditFamiliar({ isOpen: false });
+    setEditJefe({ isOpen: false });
+
     refetch();
   };
 
@@ -73,7 +79,7 @@ const JefeProfile = ({ id }: { id: "string" }) => {
 
     setEditFamiliar({
       isOpen: true,
-      familiaToEdit: familiarToEdit[0],
+      idToEdit: familiarToEdit[0],
     });
   };
 
@@ -101,7 +107,12 @@ const JefeProfile = ({ id }: { id: "string" }) => {
             Eliminar este censo
           </Button>
 
-          <Button color={"warning"}>Editar jefe de familia</Button>
+          <Button
+            color={"warning"}
+            onPress={() => setEditJefe({ isOpen: true })}
+          >
+            Editar jefe de familia
+          </Button>
         </Container>
       </Container>
 
@@ -257,13 +268,26 @@ const JefeProfile = ({ id }: { id: "string" }) => {
         onClose={closeHandler}
         width="600px"
       >
-        {editFamiliar.familiaToEdit && (
+        {editFamiliar.idToEdit && (
           <FamiliarForm
-            familia={editFamiliar.familiaToEdit}
+            familia={editFamiliar.idToEdit as Familiar}
             jefeId={data.id}
             closeModal={closeHandler}
           />
         )}
+      </Modal>
+
+      <Modal
+        closeButton
+        aria-labelledby="modal-title2"
+        width="600px"
+        open={editJefe.isOpen}
+        onClose={() => {
+          setEditJefe({ isOpen: false, idToEdit: data });
+        }}
+        autoMargin
+      >
+        <JefeEditForm jefe={data} onClose={closeHandler} />
       </Modal>
     </>
   );

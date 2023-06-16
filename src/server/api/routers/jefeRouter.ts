@@ -13,7 +13,6 @@ export const jefeRouter = createTRPCRouter({
           manzana: z.string(),
           casa: z.string(),
           calle: z.string(),
-
         }),
         documentos: z.object({
           tipoDocumento: z.string(),
@@ -47,8 +46,8 @@ export const jefeRouter = createTRPCRouter({
 
       const newJefe = await ctx.prisma.jefeFamilia.create({
         data: {
-          nombres: jefe.primerNombre + ", " + jefe.segundoNombre,
-          apellidos: jefe.primerApellido + ", " + jefe.segundoApellido,
+          nombres: jefe.primerNombre + " " + jefe.segundoNombre,
+          apellidos: jefe.primerApellido + " " + jefe.segundoApellido,
           fechaNacimiento: new Date(jefe.fechaNacimiento).toJSON(),
           genero: jefe.genero,
           email: jefe.email,
@@ -91,26 +90,71 @@ export const jefeRouter = createTRPCRouter({
     });
   }),
 
-  delete: publicProcedure.input(z.object({
-    id: z.bigint(),
-    censoId: z.string()
-  })).mutation(async ({ctx,input}) => {
+  delete: publicProcedure
+    .input(
+      z.object({
+        id: z.bigint(),
+        censoId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const censoDelete = await ctx.prisma.censo.delete({
+        where: {
+          id: input.censoId,
+        },
+      });
+      console.log(censoDelete);
 
-    const censoDelete = await ctx.prisma.censo.delete({
-      where:{
-        id:input.censoId
-      }
-    })
-    console.log(censoDelete)
+      const jefeDeleted = await ctx.prisma.jefeFamilia.delete({
+        where: {
+          id: input.id,
+        },
+      });
 
-    const jefeDeleted = await ctx.prisma.jefeFamilia.delete({
-      where:{
-        id:input.id
-      },
-    }) 
+      console.log(jefeDeleted);
+      return jefeDeleted;
+    }),
 
-    console.log(jefeDeleted)
-    return  jefeDeleted
+  update: publicProcedure
+    .input(
+      z.object({
+        documentos: z.object({
+          tipoDocumento: z.string(),
+          numeroDocumento: z.string(),
+          serialCarnetPatria: z.string().default(""),
+          codCarnetPatria: z.string().default(""),
+          observacion: z.string().default(""),
+        }),
+        jefe: z.object({
+          primerNombre: z.string(),
+          segundoNombre: z.string(),
+          primerApellido: z.string(),
+          segundoApellido: z.string(),
+          fechaNacimiento: z.string(),
+          genero: z.string(),
+          email: z.string(),
+          telefono: z.string(),
+        }),
+        id: z.bigint(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const jefeUpdated = await ctx.prisma.jefeFamilia.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          nombres: input.jefe.primerNombre + " " + input.jefe.segundoNombre,
+          apellidos:
+            input.jefe.primerApellido + " " + input.jefe.segundoApellido,
+          fechaNacimiento: new Date(input.jefe.fechaNacimiento).toJSON(),
+          genero: input.jefe.genero,
+          email: input.jefe.email,
+          telefono: input.jefe.telefono,
+          ...input.documentos,
+        },
+      });
 
-  })  
+      return jefeUpdated;
+    }),
 });

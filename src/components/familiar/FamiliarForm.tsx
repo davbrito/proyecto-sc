@@ -105,7 +105,6 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
         },
   });
 
-  console.log(familia, initialValues);
   const router = useRouter();
   const { data, isLoading } = api.jefe.getAll.useQuery(undefined, {
     cacheTime: 30 * 60 * 1000,
@@ -464,7 +463,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
           {isSubmitting && (
             <Loading as="span" color={"secondary"} className="mx-4" />
           )}
-          Agregar familiar
+          {!familia ? "Agregar familiar." : "Actualizar familiar."}
         </Button>
       </Card.Footer>
     </Card>
