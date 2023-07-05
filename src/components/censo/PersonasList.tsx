@@ -1,12 +1,23 @@
-import { Table, Container, Grid, Text } from "@nextui-org/react";
+import { Table, Container, Text, Button, Modal } from "@nextui-org/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import Link from "next/link";
 import { formatDate, getRelativeTime } from "~/utils/dates";
+import FamiliarForm from "../familiar/FamiliarForm";
+
+interface stateFamiliarModal {
+  isOpen: boolean;
+  id?: bigint;
+}
 
 export const PersonasList = ({ search }: { search?: string }) => {
   const { data, isLoading } = api.censo.getCensoInfor.useQuery(search);
+  const [openModal, setOpenModal] = useState<stateFamiliarModal>({
+    isOpen: false,
+  });
+
+  const closeHandler = () => setOpenModal({ isOpen: false });
 
   if (isLoading) return <CustomLoading />;
 
@@ -34,64 +45,91 @@ export const PersonasList = ({ search }: { search?: string }) => {
     );
 
   return (
-    <Table bordered lined headerLined>
-      <Table.Header>
-        <Table.Column align="center">Codigo</Table.Column>
-        <Table.Column align="center">Manzana</Table.Column>
-        <Table.Column align="center">Casa</Table.Column>
-        <Table.Column align="center">Nombres</Table.Column>
-        <Table.Column align="center">Documento</Table.Column>
-        <Table.Column align="center">Fecha Nacimiento</Table.Column>
-        <Table.Column align="center">Edad</Table.Column>
-        <Table.Column align="center">Familia</Table.Column>
-        <Table.Column align="center">Genero</Table.Column>
-        <Table.Column align="center">Acciones</Table.Column>
-      </Table.Header>
-      <Table.Body>
-        {data.map(({ jefeFamilia, id, casa, tipoFamilia }) => (
-          <Table.Row key={id.toString()}>
-            <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-              <Link href={`/censo/${jefeFamilia.id.toString()}`}>
-                {id.toString().padStart(8, "0")}
-              </Link>
-            </Table.Cell>
-            <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-              {casa.manzana}
-            </Table.Cell>
-            <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-              {casa.casa.padStart(2, "0")}
-            </Table.Cell>
-            <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-              {jefeFamilia.apellidos.toUpperCase()},{" "}
-              {jefeFamilia.nombres.toUpperCase()}.
-            </Table.Cell>
-            <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-              {jefeFamilia.tipoDocumento.toUpperCase()}-
-              {jefeFamilia.numeroDocumento}
-            </Table.Cell>
+    <>
+      <Table bordered lined headerLined>
+        <Table.Header>
+          <Table.Column align="center">Codigo</Table.Column>
+          <Table.Column align="center">Manzana</Table.Column>
+          <Table.Column align="center">Casa</Table.Column>
+          <Table.Column align="center">Nombres</Table.Column>
+          <Table.Column align="center">Documento</Table.Column>
+          <Table.Column align="center">Fecha Nacimiento</Table.Column>
+          <Table.Column align="center">Edad</Table.Column>
+          <Table.Column align="center">Familia</Table.Column>
+          <Table.Column align="center">Genero</Table.Column>
+          <Table.Column align="center">Acciones</Table.Column>
+        </Table.Header>
+        <Table.Body>
+          {data.map(({ jefeFamilia, id, casa, tipoFamilia }) => (
+            <Table.Row key={id.toString()}>
+              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                <Link href={`/censo/${jefeFamilia.id.toString()}`}>
+                  {id.toString().padStart(8, "0")}
+                </Link>
+              </Table.Cell>
+              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                {casa.manzana}
+              </Table.Cell>
+              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                {casa.casa.padStart(2, "0")}
+              </Table.Cell>
+              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                {jefeFamilia.apellidos.toUpperCase()},{" "}
+                {jefeFamilia.nombres.toUpperCase()}.
+              </Table.Cell>
+              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                {jefeFamilia.tipoDocumento.toUpperCase()}-
+                {jefeFamilia.numeroDocumento}
+              </Table.Cell>
 
-            <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-              {formatDate(jefeFamilia.fechaNacimiento)}
-            </Table.Cell>
-            <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-              {getRelativeTime(jefeFamilia.fechaNacimiento)}
-            </Table.Cell>
-            <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-              {tipoFamilia.toUpperCase()}
-            </Table.Cell>
-            <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-              {jefeFamilia.genero.toUpperCase() === "F"
-                ? "Femenino"
-                : "Masculino"}
-            </Table.Cell>
-            <Table.Cell>
-              <Link href={`/familiares/create/${jefeFamilia.id}`}>
+              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                {formatDate(jefeFamilia.fechaNacimiento)}
+              </Table.Cell>
+              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                {getRelativeTime(jefeFamilia.fechaNacimiento)}
+              </Table.Cell>
+              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                {tipoFamilia.toUpperCase()}
+              </Table.Cell>
+              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                {jefeFamilia.genero.toUpperCase() === "F"
+                  ? "Femenino"
+                  : "Masculino"}
+              </Table.Cell>
+              <Table.Cell>
+                {/* <Link href={`/familiares/create/${jefeFamilia.id}`}>
                 Registrar pariente.
-              </Link>
-            </Table.Cell>
-          </Table.Row>
-        ))}
-      </Table.Body>
-    </Table>
+              </Link> */}
+
+                <Button
+                  color={"gradient"}
+                  size={"sm"}
+                  css={{
+                    mx: "auto",
+                  }}
+                  onPress={() =>
+                    setOpenModal({ isOpen: true, id: jefeFamilia.id })
+                  }
+                >
+                  Agregar pariente.
+                </Button>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+      <Modal
+        closeButton
+        aria-labelledby="modal-title2"
+        width="600px"
+        open={openModal.isOpen}
+        onClose={closeHandler}
+        autoMargin
+      >
+        {!!openModal.id && (
+          <FamiliarForm jefeId={openModal.id} closeModal={closeHandler} />
+        )}
+      </Modal>
+    </>
   );
 };

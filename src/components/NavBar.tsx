@@ -11,7 +11,7 @@ export const NavBar = () => {
   const router = useRouter();
 
   return (
-    <Navbar variant={"floating"} css={{ mx: "auto", zIndex: "1000" }}>
+    <Navbar variant={"sticky"} css={{ mx: "auto", zIndex: "1000" }}>
       {status === "unauthenticated" && (
         <Navbar.Content className="flex gap-x-6" hideIn="sm">
           {routesHref
@@ -30,7 +30,7 @@ export const NavBar = () => {
       )}
 
       {status === "authenticated" && (
-        <Navbar.Content className="flex gap-x-6" hideIn="sm">
+        <Navbar.Content className="hidden gap-x-6 sm:flex">
           {routesHref
             .filter(({ needAuth }) => needAuth)
             .map(({ href, pathName }) => (

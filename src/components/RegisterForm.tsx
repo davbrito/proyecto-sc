@@ -144,7 +144,9 @@ export const RegisterForm = () => {
           }}
           disabled={isSubmitting}
         >
-          {isSubmitting && <Loading color={"secondary"} className="mx-4" />}
+          {isSubmitting && (
+            <Loading as="span" color={"secondary"} className="mx-4" />
+          )}
           <span>{isSubmitting ? " Cargando..." : "Registrate."}</span>
         </Button>
       </Card.Footer>

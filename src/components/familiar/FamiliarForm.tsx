@@ -63,9 +63,9 @@ const initialValues = {
 };
 
 interface FamiliarFormProps {
-  jefeId?: bigint;
-  familia: Familiar | null;
-  closeModal: () => void;
+  jefeId: bigint;
+  familia?: Familiar;
+  closeModal?: () => void;
 }
 
 const FamiliarForm: NextPage<FamiliarFormProps> = ({
@@ -81,7 +81,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
     formState: { errors, isSubmitting },
   } = useForm<FamiliarFormData>({
     defaultValues: !familia
-      ? initialValues
+      ? { ...initialValues, jefeId: jefeId.toString() }
       : {
           datosBasicos: {
             fechaNacimiento: familia.fechaNacimiento
@@ -164,7 +164,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
         },
         {
           onSuccess(data, variables, context) {
-            closeModal();
+            closeModal && closeModal();
           },
           onError(error, variables, context) {
             setError("root", { type: "validate", message: error.message });
@@ -178,6 +178,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
 
   if (!data) return null;
 
+  console.log(jefeId, data);
   return (
     <Card as="form" onSubmit={handleSubmit(onSubmit)}>
       <Card.Body>
@@ -416,7 +417,6 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                   },
                 })}
                 className="select-form"
-                defaultValue={jefeId?.toString()}
               >
                 <option value="">Seleccione una opcion porfavor</option>
                 {data?.map(

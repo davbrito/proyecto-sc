@@ -69,21 +69,28 @@ export const authOptions: NextAuthOptions = {
         if (!credentials || !credentials.password || !credentials.username)
           throw new Error("Username or password cannot be empty!.");
 
-        const user = await prisma.user.findUnique({
-          where: {
-            username: credentials.username,
-          },
-        });
-
-        if (
-          !user ||
-          (user &&
-            !(await comparePassword(credentials.password, user.password)))
-        )
-          throw new Error("Username or password are incorrects!.");
-
-        console.log(user);
-        return user;
+        try {
+          const user = await prisma.user.findUnique({
+            where: {
+              username: credentials.username,
+            },
+          });
+          if (
+            !user ||
+            (user &&
+              !(await comparePassword(credentials.password, user.password)))
+          )
+            throw new Error("Username or password are incorrects!.");
+          return user;
+        } catch (error) {
+          if (typeof error === "string") {
+          } else if (error instanceof Error) {
+            if (error.message.includes("Username")) {
+              throw new Error("Username or password are incorrects!.");
+            }
+          }
+          throw new Error("Server is unavailable, please try again later.");
+        }
       },
     }),
   ],

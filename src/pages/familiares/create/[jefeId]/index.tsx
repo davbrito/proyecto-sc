@@ -9,6 +9,9 @@ import { LayoutContent } from "~/components/Layout";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import { prisma } from "~/server/db";
 import FamiliarForm from "~/components/familiar/FamiliarForm";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { CustomLoading } from "~/components/Loading";
 
 export async function getStaticProps(
   context: GetStaticPropsContext<{ jefeId: string }>
@@ -44,6 +47,28 @@ export const getStaticPaths = async () => {
 const IndexCreateFamiliar = (
   props: InferGetStaticPropsType<GetStaticProps>
 ) => {
+  const { status } = useSession();
+
+  if (status === "loading") {
+    return (
+      <LayoutContent>
+        <CustomLoading />
+      </LayoutContent>
+    );
+  }
+
+  if (status === "unauthenticated")
+    return (
+      <LayoutContent>
+        <Link
+          href={"/login"}
+          className="rounded-md bg-gray-400 px-4 py-5 shadow-md dark:bg-slate-700 "
+        >
+          Go Back! This does not belong to you
+        </Link>
+      </LayoutContent>
+    );
+
   return (
     <LayoutContent>
       <Container css={{ mw: "680px", my: "2rem" }}>

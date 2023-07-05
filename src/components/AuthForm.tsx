@@ -63,6 +63,9 @@ export const LoginForm = () => {
       as="form"
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={handleSubmit(onSubmit)}
+      css={{
+        background: "rgba(255,255,255,0.75)",
+      }}
     >
       <Card.Header>
         <Text h3>CENSO {new Date().getFullYear()}</Text>
@@ -132,7 +135,9 @@ export const LoginForm = () => {
           }}
           disabled={isSubmitting}
         >
-          {isSubmitting && <Loading color={"secondary"} className="mx-4" />}
+          {isSubmitting && (
+            <Loading as="span" color={"secondary"} className="mx-4" />
+          )}
           <span>{isSubmitting ? " Cargando..." : "Iniciar sesion."}</span>
         </Button>
       </Card.Footer>

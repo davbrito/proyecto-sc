@@ -1,5 +1,5 @@
 import { LayoutContent } from "~/components/Layout";
-import { Container, Link, Text } from "@nextui-org/react";
+import { Card, Container, Link, Text } from "@nextui-org/react";
 import { PersonasList } from "~/components/censo/PersonasList";
 import { SearchForm } from "~/components/censo/SearchForm";
 import { useState } from "react";
@@ -12,30 +12,36 @@ const CensoIndex = () => {
   return (
     <LayoutContent>
       <Container>
-        <Text h1>Datos del Censo</Text>
-        <Container css={{ display: "flex", justifyContent: "space-evenly" }}>
-          <div className="flex items-center justify-center">
-            <Link
-              href="/censo/create"
-              css={{ my: "1rem" }}
-              className="mx-auto h-fit w-fit rounded bg-blue-700 px-2 py-3 text-blue-100"
+        <Card>
+          <Card.Body>
+            <Text h1>Datos del Censo</Text>
+            <Container
+              css={{ display: "flex", justifyContent: "space-evenly" }}
             >
-              Nuevo censo.
-            </Link>
+              <div className="flex items-center justify-center">
+                <Link
+                  href="/censo/create"
+                  css={{ my: "1rem" }}
+                  className="mx-auto h-fit w-fit rounded bg-blue-700 px-2 py-3 text-blue-100"
+                >
+                  Nuevo censo.
+                </Link>
 
-            <Link
-              href="/censo/estadisticas"
-              css={{ my: "1rem" }}
-              className="mx-auto h-fit w-fit rounded bg-orange-700 px-2 py-3 text-blue-100"
-            >
-              Ver estadisticas.
-            </Link>
-          </div>
-          <SearchForm setSearchValue={setSearchValue} />
-        </Container>
-        <Container>
-          <PersonasList search={searchValue} />
-        </Container>
+                <Link
+                  href="/censo/estadisticas"
+                  css={{ my: "1rem" }}
+                  className="mx-auto h-fit w-fit rounded bg-orange-700 px-2 py-3 text-blue-100"
+                >
+                  Ver estadisticas.
+                </Link>
+              </div>
+              <SearchForm setSearchValue={setSearchValue} />
+            </Container>
+            <Container>
+              <PersonasList search={searchValue} />
+            </Container>
+          </Card.Body>
+        </Card>
       </Container>
     </LayoutContent>
   );

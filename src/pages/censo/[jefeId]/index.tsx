@@ -12,8 +12,11 @@ import {
   type GetStaticPropsContext,
   type InferGetStaticPropsType,
 } from "next";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import React from "react";
 import { LayoutContent } from "~/components/Layout";
+import { CustomLoading } from "~/components/Loading";
 import JefeProfile from "~/components/censo/JefeProfile";
 import FamiliarForm from "~/components/familiar/FamiliarForm";
 import { prisma } from "~/server/db";
@@ -54,11 +57,32 @@ export const getStaticPaths = async () => {
 const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
   const [visible, setVisible] = React.useState(false);
   const handler = () => setVisible(true);
+  const { status } = useSession();
 
   const closeHandler = () => {
     setVisible(false);
-    console.log("closed");
   };
+
+  if (status === "loading") {
+    return (
+      <LayoutContent>
+        <CustomLoading />
+      </LayoutContent>
+    );
+  }
+
+  if (status === "unauthenticated")
+    return (
+      <LayoutContent>
+        <Link
+          href={"/login"}
+          className="rounded-md bg-gray-400 px-4 py-5 shadow-md dark:bg-slate-700 "
+        >
+          Go Back! This does not belong to you
+        </Link>
+      </LayoutContent>
+    );
+
   return (
     <LayoutContent>
       <JefeProfile id={props.id} />
