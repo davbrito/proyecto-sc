@@ -99,10 +99,6 @@ export const PersonasList = ({ search }: { search?: string }) => {
                   : "Masculino"}
               </Table.Cell>
               <Table.Cell>
-                {/* <Link href={`/familiares/create/${jefeFamilia.id}`}>
-                Registrar pariente.
-              </Link> */}
-
                 <Button
                   className={`bg-blue-700 transition-all hover:bg-blue-900`}
                   size={"sm"}

@@ -20,6 +20,7 @@ export const jefeRouter = createTRPCRouter({
           serialCarnetPatria: z.string().default(""),
           codCarnetPatria: z.string().default(""),
           observacion: z.string().default(""),
+          condicionEspecial: z.string().default(""),
         }),
         jefe: z.object({
           primerNombre: z.string(),
@@ -55,12 +56,18 @@ export const jefeRouter = createTRPCRouter({
           ...documentos,
         },
       });
+
+      const nroMz = newCasa.manzana;
+      const secuenciaMz = await ctx.prisma.casa.count({
+        where: { manzana: newCasa.manzana },
+      });
+      const secJefe = newJefe.id.toString();
+
       const censo = await ctx.prisma.censo.create({
         data: {
-          id: `${newCasa.manzana.padStart(2, "0")}${newCasa.casa.padStart(
-            2,
-            "0"
-          )}${newJefe.id.toString().padStart(4, "0")}`,
+          id: `${nroMz.padStart(2, "0")}${secJefe.padStart(3, "0")}${secuenciaMz
+            .toString()
+            .padStart(4, "0")}`,
           jefeFamiliaId: newJefe.id,
           casaId: newCasa.id,
         },
@@ -124,6 +131,7 @@ export const jefeRouter = createTRPCRouter({
           serialCarnetPatria: z.string().default(""),
           codCarnetPatria: z.string().default(""),
           observacion: z.string().default(""),
+          condicionEspecial: z.string().default(""),
         }),
         jefe: z.object({
           primerNombre: z.string(),

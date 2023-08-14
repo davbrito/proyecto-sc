@@ -1,5 +1,6 @@
 import { Button, Dropdown, Navbar, Text, useTheme } from "@nextui-org/react";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -31,9 +32,16 @@ export const NavBar = () => {
       css={{ mx: "auto", zIndex: "1000" }}
     >
       <Navbar.Toggle showIn={"xs"} aria-label="toggle navigation" />
-      <Navbar.Brand>
-        <Text h1 b className=" text-2xl text-inherit">
-          ACME
+      <Navbar.Brand className="flex items-center gap-2" as={"div"}>
+        <Image
+          src={"/venezuela.ico"}
+          width={32}
+          height={32}
+          alt="logo"
+          className=""
+        />
+        <Text h1 b className=" m-0  text-2xl text-inherit">
+          CLAP
         </Text>
       </Navbar.Brand>
       {status === "unauthenticated" && (

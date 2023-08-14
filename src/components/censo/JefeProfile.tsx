@@ -151,7 +151,7 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                     {data.nombres.split(",")[0]} {data.apellidos.split(",")[0]}
                   </h1>
                   <h3 className=" text-sm   text-gray-600">
-                    {getRelativeTime(data.fechaNacimiento)} Años
+                    {getRelativeTime(data.fechaNacimiento)}
                   </h3>
                   <h3 className="font-medium  uppercase   text-gray-600">
                     {data.tipoDocumento}-{data.numeroDocumento}
@@ -323,6 +323,14 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                     <div className=" font-semibold">Observacion</div>
                     <div className="">{data.observacion}</div>
                   </Grid.Container>
+                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                    <div className=" font-semibold">Serial carnet</div>
+                    <div className="">{data.serialCarnetPatria}</div>
+                  </Grid.Container>
+                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                    <div className=" font-semibold">Cod carnet</div>
+                    <div className="">{data.codCarnetPatria}</div>
+                  </Grid.Container>
                 </Grid.Container>
               </Card.Body>
             </Card>
@@ -342,6 +350,27 @@ const JefeProfile = ({ id }: { id: "string" }) => {
               >
                 Familiares
               </Text>
+
+              {data.familiar.length === 0 && (
+                <Grid.Container
+                  css={{
+                    border: "1px solid $gray400",
+                    borderRadius: "$3xl",
+                    padding: "$10 $6",
+                  }}
+                  className="mx-auto min-h-[40vh] w-full place-content-center"
+                >
+                  {/* eslint-disable-next-line react/no-unescaped-entities */}
+                  <Text
+                    h2
+                    className="text-2xl font-light"
+                    css={{ textAlign: "center" }}
+                  >
+                    Aun no se han registrados familiares.
+                  </Text>
+                </Grid.Container>
+              )}
+
               {data.familiar.length > 0 && (
                 <Table headerLined lined bordered css={{ paddingTop: "$0" }}>
                   <Table.Header>

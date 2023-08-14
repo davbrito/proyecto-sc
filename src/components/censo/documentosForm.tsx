@@ -85,7 +85,7 @@ export const DocumentosForm = ({ register, errors }: Props) => {
         />
       </Grid>
 
-      <Grid xs={12}>
+      <Grid xs={8}>
         <Textarea
           fullWidth
           label="Observacion:"
@@ -93,6 +93,17 @@ export const DocumentosForm = ({ register, errors }: Props) => {
           bordered
           {...register("documentos.observacion")}
           helperText={errors?.documentos?.observacion?.message}
+          helperColor="error"
+        />
+      </Grid>
+      <Grid xs={4}>
+        <Textarea
+          fullWidth
+          label="Condicion:"
+          placeholder="Escriba si tiene alguna condicion especial"
+          bordered
+          {...register("documentos.condicionEspecial")}
+          helperText={errors?.documentos?.condicionEspecial?.message}
           helperColor="error"
         />
       </Grid>

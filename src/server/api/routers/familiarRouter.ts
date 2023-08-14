@@ -27,6 +27,7 @@ export const familiarRouter = createTRPCRouter({
           serialCarnetPatria: z.string().default(""),
           codCarnetPatria: z.string().default(""),
           observacion: z.string().default(""),
+          condicionEspecial: z.string().default(""),
         }),
         jefe: z.object({
           jefeId: z.bigint(),
@@ -159,6 +160,7 @@ export const familiarRouter = createTRPCRouter({
           serialCarnetPatria: z.string().default(""),
           codCarnetPatria: z.string().default(""),
           observacion: z.string().default(""),
+          condicionEspecial: z.string().default(""),
         }),
         jefe: z.object({
           jefeId: z.bigint(),

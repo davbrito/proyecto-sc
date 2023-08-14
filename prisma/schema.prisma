@@ -67,21 +67,20 @@ model VerificationToken {
 // CENSO 
 
 model JefeFamilia {
-    id              BigInt   @id() @default(autoincrement())
-    nombres         String
-    apellidos       String
-    fechaNacimiento DateTime
-    genero          String
-    telefono String 
-    email String
-
-
+    id                 BigInt     @id() @default(autoincrement())
+    nombres            String
+    apellidos          String
+    fechaNacimiento    DateTime
+    genero             String
+    telefono           String
+    email              String
     tipoDocumento      String
     numeroDocumento    String
     serialCarnetPatria String
     codCarnetPatria    String
     observacion        String
-    censo              Censo[]
+    condicionEspecial  String
+    censo              Censo?
     familiar           Familiar[]
 }
 
@@ -99,6 +98,7 @@ model Familiar {
     codCarnetPatria    String
     observacion        String
     parentesco         String
+    condicionEspecial  String
 
     jefeFamilia JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
 
@@ -106,22 +106,22 @@ model Familiar {
 }
 
 model Casa {
-    id        BigInt @id() @default(autoincrement())
-    manzana   String
-    casa      String
-    calle     String
+    id      BigInt @id() @default(autoincrement())
+    manzana String
+    casa    String
+    calle   String
 
-    Censo Censo[]
+    censo Censo[]
 }
 
 model Censo {
-    id                   String @id()
-    cargaFamiliar        Int    @default(1)
-    tipoFamilia          String @default("unifamiliar")
-    cajasClapsPorRecibir Int    @default(0)
-
-    jefeFamilia   JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
-    jefeFamiliaId BigInt
-    casa          Casa        @relation(fields: [casaId], references: [id])
-    casaId        BigInt
+    id                   String      @id()
+    cargaFamiliar        Int         @default(1)
+    tipoFamilia          String      @default("unifamiliar")
+    cajasClapsPorRecibir Int         @default(0)
+    fecha                DateTime    @default(now())
+    jefeFamilia          JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
+    jefeFamiliaId        BigInt      @unique
+    casa                 Casa        @relation(fields: [casaId], references: [id])
+    casaId               BigInt
 }
