@@ -8,7 +8,7 @@ import { getRelativeTime } from "~/utils/dates";
 export const FamiliarList = () => {
   const { data, isLoading } = api.familia.getAll.useQuery();
 
-  if (isLoading) return <CustomLoading />;
+  if (isLoading) return <CustomLoading className="place-content-center" />;
 
   if (!data) return null;
   console.log(data);
@@ -39,7 +39,10 @@ export const FamiliarList = () => {
             }) => (
               <Table.Row key={id.toString()}>
                 <Table.Cell css={{ textAlign: "center" }}>
-                  <Link href={`/censo/${jefeFamilia.id.toString()}`}>
+                  <Link
+                    href={`/censo/${jefeFamilia.id.toString()}`}
+                    className="transition-all hover:text-blue-800  "
+                  >
                     {jefeFamilia.tipoDocumento.toUpperCase()}-
                     {jefeFamilia.numeroDocumento}
                   </Link>
@@ -62,7 +65,9 @@ export const FamiliarList = () => {
                   {observacion || "No tiene"}.
                 </Table.Cell>
                 <Table.Cell css={{ textAlign: "center" }}>
-                  {tipoDocumento.toUpperCase()}-{numeroDocumento}
+                  {numeroDocumento
+                    ? `${tipoDocumento.toUpperCase()}-${numeroDocumento}`
+                    : "NO POSEE"}
                 </Table.Cell>
               </Table.Row>
             )

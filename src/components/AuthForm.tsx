@@ -7,7 +7,7 @@ import {
   Spacer,
   Text,
 } from "@nextui-org/react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
@@ -63,9 +63,8 @@ export const LoginForm = () => {
       as="form"
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={handleSubmit(onSubmit)}
-      css={{
-        background: "rgba(255,255,255,0.75)",
-      }}
+      css={{}}
+      className="shadow-lg"
     >
       <Card.Header>
         <Text h3>CENSO {new Date().getFullYear()}</Text>

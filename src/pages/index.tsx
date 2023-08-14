@@ -9,7 +9,7 @@ const Home: NextPage = () => {
   const { data } = useSession();
 
   return (
-    <LayoutContent>
+    <LayoutContent className="flex flex-col items-center justify-center">
       <Container
         css={{
           p: "$10",
@@ -37,19 +37,19 @@ const Home: NextPage = () => {
         >
           <Link
             href={"/censo"}
-            className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600"
+            className="inline-block cursor-pointer rounded  border bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
           >
             Ver datos del censo
           </Link>
           <Link
             href={"/familiares"}
-            className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600"
+            className="inline-block cursor-pointer rounded  border bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
           >
             Ver familiares
           </Link>
           <Link
             href={"/casas"}
-            className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600"
+            className="inline-block cursor-pointer rounded  border bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
           >
             Ver casas
           </Link>

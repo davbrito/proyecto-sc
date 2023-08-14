@@ -1,9 +1,13 @@
-import { Container, Text } from "@nextui-org/react";
+import { Container, Text, Row } from "@nextui-org/react";
 import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="m-0  min-h-[40] bg-slate-900 py-4">
+    <Row
+      className="m-0 mx-auto  min-h-[40]  w-full py-4"
+      css={{ backgroundColor: "$footerBg" }}
+      as="footer"
+    >
       <Container>
         <Text
           h2
@@ -12,21 +16,25 @@ const Footer = () => {
             textAlign: "center",
             fontSize: "$xl",
           }}
-          className=" tracking-wide text-gray-300"
+          className="tracking-wide "
         >
           Censo 2023. Republica Bolivariana de Venezuela.
         </Text>
 
         <Text
           h6
-          css={{ margin: "$10 0", textAlign: "center", fontSize: "$xs" }}
-          className=" text-gray-300"
+          css={{
+            margin: "$10 0",
+            textAlign: "center",
+            fontSize: "$xs",
+          }}
+          className=" "
         >
           Hecho con <span className=" text-red-600">❤</span> por estudiantes de
           la UNEG.
         </Text>
       </Container>
-    </footer>
+    </Row>
   );
 };
 

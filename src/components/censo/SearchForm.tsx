@@ -1,4 +1,4 @@
-import { Button, Grid, Input, Text } from "@nextui-org/react";
+import { Button, Card, Container, Grid, Input, Text } from "@nextui-org/react";
 import React, {
   type Dispatch,
   type FormEvent,
@@ -16,8 +16,9 @@ export const SearchForm = ({ setSearchValue }: Props) => {
     event.preventDefault();
     setSearchValue(search);
   };
+
   return (
-    <div className="rounded p-5">
+    <Card className=" mx-auto p-5" css={{ maxW: "350px" }}>
       <Grid.Container
         as="form"
         className="flex flex-col justify-center gap-2"
@@ -35,9 +36,13 @@ export const SearchForm = ({ setSearchValue }: Props) => {
           helperColor="error"
           onChange={({ target }) => setSearch(target.value)}
         />
-
-        <Button type="submit">Buscar</Button>
+        <Button
+          type="submit"
+          className="bg-blue-600 transition-all hover:bg-blue-950"
+        >
+          Buscar
+        </Button>
       </Grid.Container>
-    </div>
+    </Card>
   );
 };

@@ -18,7 +18,6 @@ import React from "react";
 import { LayoutContent } from "~/components/Layout";
 import { CustomLoading } from "~/components/Loading";
 import JefeProfile from "~/components/censo/JefeProfile";
-import FamiliarForm from "~/components/familiar/FamiliarForm";
 import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
@@ -65,15 +64,15 @@ const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
 
   if (status === "loading") {
     return (
-      <LayoutContent>
-        <CustomLoading />
+      <LayoutContent className="flex flex-col items-center justify-center">
+        <CustomLoading className="place-content-center" />
       </LayoutContent>
     );
   }
 
   if (status === "unauthenticated")
     return (
-      <LayoutContent>
+      <LayoutContent className="flex flex-col items-center justify-center">
         <Link
           href={"/login"}
           className="rounded-md bg-gray-400 px-4 py-5 shadow-md dark:bg-slate-700 "

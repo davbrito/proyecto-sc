@@ -1,5 +1,4 @@
-import { Button, Dropdown, Navbar } from "@nextui-org/react";
-import NavbarContent from "@nextui-org/react/types/navbar/navbar-content";
+import { Button, Dropdown, Navbar, Text, useTheme } from "@nextui-org/react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -9,22 +8,48 @@ import routesHref from "~/utils/routesNavBar";
 export const NavBar = () => {
   const { data, status } = useSession();
   const router = useRouter();
+  const { isDark } = useTheme();
+
+  const collapseItems = [
+    "Features",
+    "Customers",
+    "Pricing",
+    "Company",
+    "Legal",
+    "Team",
+    "Help & Feedback",
+    "Login",
+    "Sign Up",
+  ];
 
   return (
-    <Navbar variant={"sticky"} css={{ mx: "auto", zIndex: "1000" }}>
+    <Navbar
+      variant={"sticky"}
+      className=""
+      shouldHideOnScroll
+      isBordered={isDark}
+      css={{ mx: "auto", zIndex: "1000" }}
+    >
+      <Navbar.Toggle showIn={"xs"} aria-label="toggle navigation" />
+      <Navbar.Brand>
+        <Text h1 b className=" text-2xl text-inherit">
+          ACME
+        </Text>
+      </Navbar.Brand>
       {status === "unauthenticated" && (
-        <Navbar.Content className="flex gap-x-6" hideIn="sm">
+        <Navbar.Content
+          enableCursorHighlight
+          className="flex gap-x-6"
+          hideIn="sm"
+        >
           {routesHref
             .filter(({ needAuth }) => !needAuth)
             .map(({ href, pathName }) => (
-              <Navbar.Link
-                key={pathName}
-                href={href}
-                isActive={pathName === router.route}
-                className="text-lg text-blue-400 transition-all hover:text-blue-200"
-              >
-                {pathName}
-              </Navbar.Link>
+              <Navbar.Item key={pathName}>
+                <Navbar.Link href={href} isActive={pathName === router.route}>
+                  {pathName}
+                </Navbar.Link>
+              </Navbar.Item>
             ))}
         </Navbar.Content>
       )}
@@ -38,13 +63,22 @@ export const NavBar = () => {
                 key={pathName}
                 href={href}
                 isActive={href === router.route}
-                className="text-lg text-blue-400 transition-all hover:text-blue-200"
+                activeColor={"error"}
               >
                 {pathName}
               </Navbar.Link>
             ))}
         </Navbar.Content>
       )}
+      <Navbar.Collapse>
+        {collapseItems.map((item, index) => (
+          <Navbar.CollapseItem key={item}>
+            <Link color="inherit" href="#">
+              {item}
+            </Link>
+          </Navbar.CollapseItem>
+        ))}
+      </Navbar.Collapse>
 
       <div className="self-center">
         {data?.user && (
@@ -61,17 +95,19 @@ export const NavBar = () => {
             </Dropdown.Button>
             <Dropdown.Menu aria-label="Static Actions">
               <Dropdown.Section>
-                <Dropdown.Item key={"editUser"}>
-                  <Link href={"/profile"}>Mi cuenta</Link>
+                <Dropdown.Item key={"editUser"} css={{ textAlign: "center" }}>
+                  <Link href={"/profile"} className="block w-full">
+                    Mi cuenta
+                  </Link>
                 </Dropdown.Item>
               </Dropdown.Section>
               <Dropdown.Section>
                 <Dropdown.Item
                   key="logout"
-                  color="error"
                   css={{
+                    transition: "all 0.3s ease",
                     "&:focus": {
-                      backgroundColor: "$red300",
+                      backgroundColor: "$red",
                     },
                   }}
                 >
@@ -85,9 +121,7 @@ export const NavBar = () => {
                             console.error(err);
                           });
                       }}
-                      css={{
-                        color: "$neutral",
-                      }}
+                      css={{ color: "$foreground" }}
                     >
                       Cerrar sesion
                     </Button>

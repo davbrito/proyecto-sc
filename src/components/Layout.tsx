@@ -7,11 +7,7 @@ interface Props {
 
 export const LayoutContent = ({ children, className }: Props) => {
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-center ${
-        !!className ? className : ""
-      }`}
-    >
+    <main className={`min-h-screen  ${!!className ? className : ""}`}>
       {children}
     </main>
   );

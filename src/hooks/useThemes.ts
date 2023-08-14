@@ -5,7 +5,10 @@ const darkTheme = createTheme({
   type: "dark",
   theme: {
     colors: {
-      background: "#1e2225",
+      background: "#202020",
+      red: "#d80a0a",
+      footerBg: "#0b0e10",
+      bgGreen: "rgb(5,45,22)",
     },
   },
 });
@@ -14,7 +17,10 @@ const light = createTheme({
   type: "light",
   theme: {
     colors: {
-      background: "#eee",
+      background: "#ddd",
+      red: "#d80a0a",
+      footerBg: "#f8f8f8",
+      bgGreen: "rgb(74,222,128)",
     },
   },
 });

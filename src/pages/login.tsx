@@ -5,8 +5,8 @@ import { LayoutContent } from "~/components/Layout";
 
 const LoginPage: NextPage = () => {
   return (
-    <LayoutContent className="bg-[url('/img/independencia.jpg')] bg-contain">
-      <Container xs>
+    <LayoutContent className="flex flex-col bg-[url('/img/independencia.jpg')] bg-cover py-12">
+      <Container xs justify="center" alignItems="center">
         <LoginForm />
       </Container>
     </LayoutContent>

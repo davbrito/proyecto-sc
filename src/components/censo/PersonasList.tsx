@@ -1,4 +1,4 @@
-import { Table, Container, Text, Button, Modal } from "@nextui-org/react";
+import { Table, Container, Text, Button, Modal, Grid } from "@nextui-org/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
@@ -19,29 +19,28 @@ export const PersonasList = ({ search }: { search?: string }) => {
 
   const closeHandler = () => setOpenModal({ isOpen: false });
 
-  if (isLoading) return <CustomLoading />;
+  if (isLoading)
+    return <CustomLoading className="h-[30vh] place-content-center" />;
 
   if (!data) return null;
 
   if (data.length === 0)
     return (
-      <Container
+      <Grid.Container
         css={{
           border: "1px solid $gray400",
           borderRadius: "$3xl",
           padding: "$10 $6",
-          display: "flex",
-          justifyContent: "center",
         }}
-        className="mx-auto max-w-xl"
+        className="mx-auto min-h-[40vh] w-full place-content-center"
       >
         {/* eslint-disable-next-line react/no-unescaped-entities */}
-        <Text h2 css={{ textAlign: "center" }}>
+        <Text h2 className="text-2xl font-light" css={{ textAlign: "center" }}>
           {search
             ? `No hay resultados para la busqueda del censo: '${search}'`
             : "Aun no se han registrados censos."}
         </Text>
-      </Container>
+      </Grid.Container>
     );
 
   return (
@@ -63,7 +62,10 @@ export const PersonasList = ({ search }: { search?: string }) => {
           {data.map(({ jefeFamilia, id, casa, tipoFamilia }) => (
             <Table.Row key={id.toString()}>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                <Link href={`/censo/${jefeFamilia.id.toString()}`}>
+                <Link
+                  href={`/censo/${jefeFamilia.id.toString()}`}
+                  className="transition-all hover:text-blue-800  "
+                >
                   {id.toString().padStart(8, "0")}
                 </Link>
               </Table.Cell>
@@ -102,7 +104,7 @@ export const PersonasList = ({ search }: { search?: string }) => {
               </Link> */}
 
                 <Button
-                  color={"gradient"}
+                  className={`bg-blue-700 transition-all hover:bg-blue-900`}
                   size={"sm"}
                   css={{
                     mx: "auto",
