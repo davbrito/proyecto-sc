@@ -1,4 +1,4 @@
-import { Table, Container, Text, Button, Modal, Grid } from "@nextui-org/react";
+import { Table, Text, Button, Modal, Grid } from "@nextui-org/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
@@ -85,10 +85,10 @@ export const PersonasList = ({ search }: { search?: string }) => {
               </Table.Cell>
 
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {formatDate(jefeFamilia.fechaNacimiento)}
+                {formatDate(jefeFamilia.fechaNacimiento as Date)}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {getRelativeTime(jefeFamilia.fechaNacimiento)}
+                {getRelativeTime(jefeFamilia.fechaNacimiento as Date)}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
                 {tipoFamilia.toUpperCase()}
@@ -125,7 +125,9 @@ export const PersonasList = ({ search }: { search?: string }) => {
         autoMargin
       >
         {!!openModal.id && (
-          <FamiliarForm jefeId={openModal.id} closeModal={closeHandler} />
+          <Modal.Body>
+            <FamiliarForm jefeId={openModal.id} closeModal={closeHandler} />
+          </Modal.Body>
         )}
       </Modal>
     </>

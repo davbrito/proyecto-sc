@@ -87,15 +87,15 @@ export const CasaList = () => {
           </Table.Header>
           <Table.Body>
             {data &&
-              data.map(({ id, calle, casa, manzana, Censo }) => (
+              data.map(({ id, calle, casa, manzana, censo }) => (
                 <Table.Row key={`${id}`}>
                   <Table.Cell>{calle.toUpperCase()}</Table.Cell>
                   <Table.Cell>{manzana}</Table.Cell>
                   <Table.Cell>{casa}</Table.Cell>
                   <Table.Cell>
-                    {Censo[0]?.jefeFamiliaId ? (
+                    {censo[0]?.jefeFamiliaId ? (
                       <Link
-                        href={`/censo/${Censo[0]?.jefeFamiliaId.toString()}`}
+                        href={`censo/$censo[0]?.jefeFamiliaId.toString()}`}
                         className="block rounded-xl bg-blue-700 px-3 py-2 text-[0.875rem]  text-white transition-all hover:bg-blue-950"
                       >
                         Ver informacion

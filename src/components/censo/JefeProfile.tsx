@@ -54,12 +54,12 @@ const JefeProfile = ({ id }: { id: "string" }) => {
   };
 
   const handleDeleteJefe = async () => {
-    if (!data || !data.censo || !data.censo[0]) return;
+    if (!data || !data.censo || !data.censo) return;
 
     jefe.mutate(
       {
         id: data.id,
-        censoId: data.censo[0].id,
+        censoId: data.censo.id,
       },
       {
         onSuccess(data, variables, context) {
@@ -75,18 +75,18 @@ const JefeProfile = ({ id }: { id: "string" }) => {
   const handleDelete = async (id: bigint) => {
     try {
       console.log("Se elimino el registro ", id);
-      // familiar.mutate(
-      //   { id },
-      //   {
-      //     onSuccess(data, variables, context) {
-      //       console.log(data);
-      //       refetch();
-      //     },
-      //     onError(error, variables, context) {
-      //       console.log(error);
-      //     },
-      //   }
-      // );
+      familiar.mutate(
+        { id },
+        {
+          onSuccess(data, variables, context) {
+            console.log(data);
+            refetch();
+          },
+          onError(error, variables, context) {
+            console.log(error);
+          },
+        }
+      );
     } catch (error) {}
   };
 
@@ -165,7 +165,7 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                     <li className="flex flex-col  sm:flex-row sm:items-center sm:justify-between">
                       <span>Desde</span>
                       <span className=" text-right font-medium">
-                        Nov 07, 2016
+                        {data.censo?.fecha.toDateString()}
                       </span>
                     </li>
                   </Container>
@@ -194,19 +194,19 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                   <Grid.Container className="grid grid-cols-2  gap-6 px-3 py-2">
                     <div className=" font-semibold">Nro</div>
                     <div className="text-right uppercase">
-                      {data.censo[0]?.casa.casa}
+                      {data.censo?.casa.casa}
                     </div>
                   </Grid.Container>
                   <Grid.Container className="grid  grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Manzana</div>
                     <div className="text-right uppercase">
-                      {data.censo[0]?.casa.manzana}
+                      {data.censo?.casa.manzana}
                     </div>
                   </Grid.Container>
                   <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Calle</div>
                     <div className="text-right capitalize">
-                      {data.censo[0]?.casa.calle}
+                      {data.censo?.casa.calle}
                     </div>
                   </Grid.Container>
                 </Grid.Container>
@@ -306,30 +306,36 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                   <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Cajas asignadas</div>
                     <div className="uppercase">
-                      {data.censo[0]?.cajasClapsPorRecibir}
+                      {data.censo?.cajasClapsPorRecibir}
                     </div>
                   </Grid.Container>
                   <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Carga familiar</div>
-                    <div className="uppercase">
-                      {data.censo[0]?.cargaFamiliar}
-                    </div>
+                    <div className="uppercase">{data.censo?.cargaFamiliar}</div>
                   </Grid.Container>
                   <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Tipo familia</div>
-                    <div className="">{data.censo[0]?.tipoFamilia}</div>
+                    <div className="">{data.censo?.tipoFamilia}</div>
                   </Grid.Container>
                   <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Observacion</div>
-                    <div className="">{data.observacion}</div>
+                    <div className="">
+                      {data.observacion ? data.observacion : "NINGUNA"}
+                    </div>
                   </Grid.Container>
                   <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Serial carnet</div>
-                    <div className="">{data.serialCarnetPatria}</div>
+                    <div className="">
+                      {data.serialCarnetPatria
+                        ? data.serialCarnetPatria
+                        : "NO POSEE"}
+                    </div>
                   </Grid.Container>
                   <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Cod carnet</div>
-                    <div className="">{data.codCarnetPatria}</div>
+                    <div className="">
+                      {data.codCarnetPatria ? data.codCarnetPatria : "NO POSEE"}
+                    </div>
                   </Grid.Container>
                 </Grid.Container>
               </Card.Body>

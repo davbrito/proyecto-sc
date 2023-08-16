@@ -45,7 +45,7 @@ export const familiarRouter = createTRPCRouter({
         include: { censo: true },
       });
 
-      if (!jefeToEdit || !jefeToEdit.censo || !jefeToEdit.censo[0])
+      if (!jefeToEdit || !jefeToEdit.censo)
         throw new TRPCError({ message: "JEFE NO EXISTE", code: "CONFLICT" });
 
       const newFamiliar = await ctx.prisma.familiar.create({
@@ -63,7 +63,7 @@ export const familiarRouter = createTRPCRouter({
       const censoToUpdate = await ctx.prisma.censo.findFirst({
         where: {
           id: {
-            equals: jefeToEdit.censo[0]?.id,
+            equals: jefeToEdit.censo?.id,
           },
         },
       });
@@ -116,21 +116,20 @@ export const familiarRouter = createTRPCRouter({
 
       if (
         !familiarToDelete ||
-        !familiarToDelete.jefeFamilia.censo[0] ||
-        !familiarToDelete.jefeFamilia.censo[0].id
+        !familiarToDelete.jefeFamilia.censo ||
+        !familiarToDelete.jefeFamilia.censo.id
       )
         return;
-      const censoId = familiarToDelete.jefeFamilia.censo[0].id;
+      const censoId = familiarToDelete.jefeFamilia.censo.id;
 
       await ctx.prisma.censo.update({
         where: {
           id: censoId,
         },
         data: {
-          cargaFamiliar:
-            familiarToDelete.jefeFamilia.censo[0].cargaFamiliar - 1,
+          cargaFamiliar: familiarToDelete.jefeFamilia.censo.cargaFamiliar - 1,
           tipoFamilia:
-            familiarToDelete.jefeFamilia.censo[0].cargaFamiliar - 1 > 4
+            familiarToDelete.jefeFamilia.censo.cargaFamiliar - 1 > 4
               ? "MULTIFAMILIAR"
               : "UNIFAMILIAR",
         },

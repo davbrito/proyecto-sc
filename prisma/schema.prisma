@@ -11,12 +11,6 @@ datasource db {
     relationMode = "prisma"
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -64,10 +58,55 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
+model ConsejoComunal {
+    id                Int    @unique @default(autoincrement())
+    nombre_consejo    String
+    nombre_clap       String
+    circuito          Int
+    bms               String
+    comunidad         String
+    sector            String
+    cod_siscod        String
+    estado            String
+    municipio         String
+    parroquia         String
+    rif               String
+    cantidad_combos   Int
+    cantidad_familias Int
+
+    //FOREIGN KEY
+    censos     Censo[]
+    encargados EncargadoClap[]
+}
+
 // CENSO 
 
+model Censo {
+    id                   String   @id()
+    cargaFamiliar        Int      @default(1)
+    tipoFamilia          String   @default("unifamiliar")
+    cajasClapsPorRecibir Int      @default(0)
+    fecha                DateTime @default(now())
+
+    //FOREIGN KEY
+    jefeFamilia JefeFamilia?
+
+    consejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+    consejoComunalId Int
+}
+
+model Casa {
+    id      BigInt @id() @default(autoincrement())
+    manzana String
+    casa    String
+    calle   String
+
+    jefeFamilia JefeFamilia[]
+    liderCalle  LiderCalle?
+}
+
 model JefeFamilia {
-    id                 BigInt     @id() @default(autoincrement())
+    id                 BigInt   @id() @default(autoincrement())
     nombres            String
     apellidos          String
     fechaNacimiento    DateTime
@@ -80,8 +119,15 @@ model JefeFamilia {
     codCarnetPatria    String
     observacion        String
     condicionEspecial  String
-    censo              Censo?
-    familiar           Familiar[]
+
+    //FOREIGN KEY
+    censo   Censo  @relation(fields: [censoId], references: [id])
+    censoId String @unique
+
+    casa   Casa?   @relation(fields: [casaId], references: [id])
+    casaId BigInt?
+
+    familiar Familiar[]
 }
 
 model Familiar {
@@ -100,28 +146,43 @@ model Familiar {
     parentesco         String
     condicionEspecial  String
 
-    jefeFamilia JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
-
+    //FOREIGN KEY
+    jefeFamilia   JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
     jefeFamiliaId BigInt
 }
 
-model Casa {
-    id      BigInt @id() @default(autoincrement())
-    manzana String
-    casa    String
-    calle   String
+// Nuevos Modelos
 
-    censo Censo[]
+model LiderCalle {
+    id                Int    @unique @default(autoincrement())
+    nombres           String
+    apellidos         String
+    cedula            String
+    telefono          String
+    profesion         String
+    nacionalidad      String
+    genero            String
+    cantidad_familias Int
+    email             String
+    cantidad_combos   Int
+    longitud          Float
+    latitud           Float
+
+    casa   Casa   @relation(fields: [casaId], references: [id])
+    casaId BigInt @unique
 }
 
-model Censo {
-    id                   String      @id()
-    cargaFamiliar        Int         @default(1)
-    tipoFamilia          String      @default("unifamiliar")
-    cajasClapsPorRecibir Int         @default(0)
-    fecha                DateTime    @default(now())
-    jefeFamilia          JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
-    jefeFamiliaId        BigInt      @unique
-    casa                 Casa        @relation(fields: [casaId], references: [id])
-    casaId               BigInt
+model EncargadoClap {
+    id        Int    @unique @default(autoincrement())
+    cargo     String
+    nombres   String
+    apellidos String
+    cedula    String
+    telefono  String
+    profesion String
+    email     String
+
+    //FOREIGN KEY
+    ConsejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+    consejoComunalId Int
 }
