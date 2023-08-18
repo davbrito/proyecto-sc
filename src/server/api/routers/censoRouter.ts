@@ -19,8 +19,11 @@ export const censoRouter = createTRPCRouter({
         },
         take: 20,
         include: {
-          jefeFamilia: true,
-          casa: true,
+          jefeFamilia: {
+            include: {
+              casa: true,
+            },
+          },
         },
         where: {
           id: {

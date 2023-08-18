@@ -45,7 +45,7 @@ export const CasaList = () => {
             className="text-2xl font-light"
             css={{ textAlign: "center" }}
           >
-            Aun no se han registrados familiares.
+            Aun no se han registrados alguna casa.
           </Text>
         </Grid.Container>
       )}
@@ -87,13 +87,13 @@ export const CasaList = () => {
           </Table.Header>
           <Table.Body>
             {data &&
-              data.map(({ id, calle, casa, manzana, censo }) => (
+              data.map(({ id, calle, casa, manzana, jefeFamilia }) => (
                 <Table.Row key={`${id}`}>
                   <Table.Cell>{calle.toUpperCase()}</Table.Cell>
                   <Table.Cell>{manzana}</Table.Cell>
                   <Table.Cell>{casa}</Table.Cell>
                   <Table.Cell>
-                    {censo[0]?.jefeFamiliaId ? (
+                    {jefeFamilia[0]?.id ? (
                       <Link
                         href={`censo/$censo[0]?.jefeFamiliaId.toString()}`}
                         className="block rounded-xl bg-blue-700 px-3 py-2 text-[0.875rem]  text-white transition-all hover:bg-blue-950"

@@ -24,12 +24,13 @@ export const SearchForm = ({ setSearchValue }: Props) => {
         className="flex flex-col justify-center gap-2"
         onSubmit={handlerSubmit}
       >
-        <Text as="label" aria-label="search" h3>
+        <Text as="label" h3 className="text-xl font-medium">
           Busqueda:
         </Text>
         <Input
           placeholder="Ej: 102500001"
           bordered
+          id="search-input"
           name="search"
           type="search"
           value={search}

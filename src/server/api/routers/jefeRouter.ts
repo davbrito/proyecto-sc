@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const jefeRouter = createTRPCRouter({
   create: publicProcedure
@@ -32,10 +28,11 @@ export const jefeRouter = createTRPCRouter({
           email: z.string(),
           telefono: z.string(),
         }),
+        consejoComunalId: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { casa, documentos, jefe } = input;
+      const { casa, documentos, jefe, consejoComunalId } = input;
 
       const newCasa = await ctx.prisma.casa.create({
         data: {
@@ -44,6 +41,31 @@ export const jefeRouter = createTRPCRouter({
       });
 
       if (!newCasa) return;
+
+      const nroMz = newCasa.manzana;
+      const secuenciaMz = await ctx.prisma.casa.count({
+        where: { manzana: newCasa.manzana },
+      });
+
+      const jefes = await ctx.prisma.jefeFamilia.findMany({
+        orderBy: { id: "desc" },
+        take: 1,
+      });
+
+      if (!jefes || !jefes.length) return;
+
+      const secJefe = jefes[0]?.id
+        ? (jefes[0]?.id + BigInt(1)).toString()
+        : "1";
+
+      const censo = await ctx.prisma.censo.create({
+        data: {
+          id: `${nroMz.padStart(2, "0")}${secJefe.padStart(3, "0")}${secuenciaMz
+            .toString()
+            .padStart(4, "0")}`,
+          consejoComunalId,
+        },
+      });
 
       const newJefe = await ctx.prisma.jefeFamilia.create({
         data: {
@@ -54,24 +76,11 @@ export const jefeRouter = createTRPCRouter({
           email: jefe.email,
           telefono: jefe.telefono,
           ...documentos,
-        },
-      });
-
-      const nroMz = newCasa.manzana;
-      const secuenciaMz = await ctx.prisma.casa.count({
-        where: { manzana: newCasa.manzana },
-      });
-      const secJefe = newJefe.id.toString();
-
-      const censo = await ctx.prisma.censo.create({
-        data: {
-          id: `${nroMz.padStart(2, "0")}${secJefe.padStart(3, "0")}${secuenciaMz
-            .toString()
-            .padStart(4, "0")}`,
-          jefeFamiliaId: newJefe.id,
+          censoId: censo.id,
           casaId: newCasa.id,
         },
       });
+
       return { newJefe, newCasa, censo };
     }),
 
@@ -80,7 +89,7 @@ export const jefeRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return ctx.prisma.jefeFamilia.findFirstOrThrow({
         where: { id: BigInt(input.id) },
-        include: { censo: { include: { casa: true } }, familiar: true },
+        include: { censo: true, familiar: true, casa: true },
       });
     }),
 

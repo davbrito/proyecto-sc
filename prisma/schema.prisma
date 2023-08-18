@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider = "prisma-client-js"
 }
@@ -59,20 +56,22 @@ model VerificationToken {
 }
 
 model ConsejoComunal {
-    id                Int    @unique @default(autoincrement())
-    nombre_consejo    String
-    nombre_clap       String
-    circuito          Int
-    bms               String
-    comunidad         String
-    sector            String
-    cod_siscod        String
-    estado            String
-    municipio         String
-    parroquia         String
-    rif               String
-    cantidad_combos   Int
-    cantidad_familias Int
+    id             Int    @unique @default(autoincrement())
+    nombre_consejo String
+    nombre_clap    String
+    circuito       Int
+    bms            String
+    comunidad      String
+    sector         String
+    cod_siscod     String
+    estado         String
+    municipio      String
+    parroquia      String
+    rif            String
+
+    cantidad_combos   Int      @default(0)
+    cantidad_familias Int      @default(0)
+    fecha_registro    DateTime @default(now())
 
     //FOREIGN KEY
     censos     Censo[]
@@ -120,6 +119,8 @@ model JefeFamilia {
     observacion        String
     condicionEspecial  String
 
+    fechaRegistro DateTime @default(now())
+
     //FOREIGN KEY
     censo   Censo  @relation(fields: [censoId], references: [id])
     censoId String @unique
@@ -145,16 +146,16 @@ model Familiar {
     observacion        String
     parentesco         String
     condicionEspecial  String
-
+    fechaRegistro      DateTime    @default(now())
     //FOREIGN KEY
-    jefeFamilia   JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
-    jefeFamiliaId BigInt
+    jefeFamilia        JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
+    jefeFamiliaId      BigInt
 }
 
 // Nuevos Modelos
 
 model LiderCalle {
-    id                Int    @unique @default(autoincrement())
+    id                Int      @unique @default(autoincrement())
     nombres           String
     apellidos         String
     cedula            String
@@ -167,9 +168,9 @@ model LiderCalle {
     cantidad_combos   Int
     longitud          Float
     latitud           Float
-
-    casa   Casa   @relation(fields: [casaId], references: [id])
-    casaId BigInt @unique
+    fechaRegistro     DateTime @default(now())
+    casa              Casa     @relation(fields: [casaId], references: [id])
+    casaId            BigInt   @unique
 }
 
 model EncargadoClap {
@@ -182,6 +183,7 @@ model EncargadoClap {
     profesion String
     email     String
 
+    fechaRegistro    DateTime       @default(now())
     //FOREIGN KEY
     ConsejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
     consejoComunalId Int

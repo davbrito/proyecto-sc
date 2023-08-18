@@ -31,7 +31,7 @@ export const casaRouter = createTRPCRouter({
     const casas = await ctx.prisma.casa.findMany({
       take: 100,
       include: {
-        censo: { include: { jefeFamilia: true } },
+        jefeFamilia: true,
       },
     });
 
