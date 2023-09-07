@@ -44,10 +44,6 @@ export const LoginForm = () => {
         setError("root", {
           message,
         });
-
-        setTimeout(() => {
-          //clearErrors("root");
-        }, 3000);
       } else {
         setError("root", {
           message: "Server Error",

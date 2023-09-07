@@ -31,30 +31,40 @@ export const userRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const users = await ctx.prisma.user.findFirst({
-        where: {
-          username: input.username,
-        },
-      });
-      if (users)
+      try {
+        const users = await ctx.prisma.user.findFirst({
+          where: {
+            username: input.username,
+          },
+        });
+        if (users)
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Username is already used!",
+          });
+
+        const { lastName, name, password, username } = input;
+        const hashed = await hashPassword(password);
+
+        const newUser = await ctx.prisma.user.create({
+          data: {
+            password: hashed,
+            lastName,
+            name,
+            username,
+          },
+        });
+        return newUser;
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
         throw new TRPCError({
           code: "CONFLICT",
-          message: "Username is already used!",
+          cause: "Server unvailable",
+          message: "Ocurrio un error al conectar con el servidor!",
         });
-
-      const { lastName, name, password, username } = input;
-      const hashed = await hashPassword(password);
-
-      const newUser = await ctx.prisma.user.create({
-        data: {
-          password: hashed,
-          lastName,
-          name,
-          username,
-        },
-      });
-
-      return newUser;
+      }
     }),
 
   deleteById: protectedProcedure
@@ -111,9 +121,7 @@ export const userRouter = createTRPCRouter({
 
   updateImage: protectedProcedure
     .input(z.object({ image: z.string() }))
-    .mutation(({ ctx, input }) => {
-
-    }),
+    .mutation(({ ctx, input }) => {}),
 
   getUsers: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findMany({

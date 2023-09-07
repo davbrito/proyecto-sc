@@ -28,7 +28,6 @@ const light = createTheme({
 export const useThemes = () => {
   const [theme, setTheme] = useState<CreateTheme>(darkTheme);
 
-  console.log(darkTheme);
   useEffect(() => {
     setTheme(
       localStorage.getItem("theme")?.includes("dark") ? darkTheme : light

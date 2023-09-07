@@ -9,11 +9,9 @@ import {
 } from "@nextui-org/react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
-import Image from "next/image";
-import Link from "next/link";
+
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { FormEvent } from "react";
-import { redirect } from "next/navigation";
+
 import { useRouter } from "next/router";
 
 interface FormProps {
@@ -119,15 +117,27 @@ export const EditForm = () => {
           </Grid.Container>
         </Card.Body>
 
-        <Card.Footer css={{ flexDirection: "column", pt: 0 }}>
+        <Card.Footer
+          css={{ flexDirection: "row", pt: 0 }}
+          className="justify-center gap-4"
+        >
           <Button
             type="submit"
             disabled={isSubmitting}
             css={{ display: "block" }}
-            size={"lg"}
+            size={"md"}
             className="bg-blue-600 transition-all hover:bg-blue-700"
           >
             Actualizar
+          </Button>
+          <Button
+            type="button"
+            css={{ display: "block" }}
+            size={"md"}
+            className="bg-red-600 transition-all hover:bg-red-700"
+            onPress={() => router.back()}
+          >
+            Cancelar
           </Button>
         </Card.Footer>
       </Card>

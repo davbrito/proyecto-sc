@@ -38,7 +38,6 @@ export const ConsejoForm = () => {
     mutate({ ...data, circuito: parseInt(data.circuito.toString()) });
     return router.push("/consejo-comunal");
   });
-  console.log(watch("estado"), watch("municipio"), watch("parroquia"));
 
   return (
     <Card as="form" onSubmit={onSubmit}>

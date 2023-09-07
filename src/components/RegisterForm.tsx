@@ -23,7 +23,9 @@ export const RegisterForm = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (values) => {
     try {
-      await mutateAsync(values);
+      const user = await mutateAsync(values);
+
+      console.log(user);
       reset(
         { password: "", username: "", lastName: "", name: "" },
         { keepErrors: true }

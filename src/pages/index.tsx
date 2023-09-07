@@ -1,4 +1,4 @@
-import { Container } from "@nextui-org/react";
+import { Container, Text } from "@nextui-org/react";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -24,9 +24,18 @@ const Home: NextPage = () => {
         }}
       >
         <div>
-          <h1 className="text-2xl">Proyecto de Censo 2023</h1>
+          <Text className="text-4xl font-medium" h1>
+            Proyecto de Censo 2023
+          </Text>
         </div>
-        <div>{data && <p>Hola de nuevo, {data.user.name}</p>}</div>
+        <div>
+          {data && (
+            <p className="text-lg">
+              Hola de nuevo,{" "}
+              <span className="font-semibold uppercase">{data.user.name}</span>.
+            </p>
+          )}
+        </div>
         <Container
           css={{
             display: "flex",

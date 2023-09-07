@@ -83,6 +83,7 @@ export const authOptions: NextAuthOptions = {
             throw new Error("Username or password are incorrects!.");
           return user;
         } catch (error) {
+          console.log(error);
           if (typeof error === "string") {
           } else if (error instanceof Error) {
             if (error.message.includes("Username")) {
