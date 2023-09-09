@@ -1,3 +1,4 @@
+import { Card, Text } from "@nextui-org/react";
 import {
   type InferGetStaticPropsType,
   type GetStaticProps,
@@ -5,6 +6,7 @@ import {
 } from "next";
 import React from "react";
 import { LayoutContent } from "~/components/Layout";
+import { ConsejoInfor } from "~/components/consejo-comunal/ConsejoInfor";
 import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
@@ -41,7 +43,11 @@ export const getStaticPaths = async () => {
 };
 
 const Index = (props: InferGetStaticPropsType<GetStaticProps>) => {
-  return <LayoutContent>Index {props.id}</LayoutContent>;
+  return (
+    <LayoutContent className="flex flex-col  ">
+      <ConsejoInfor consejoId={props?.id} />
+    </LayoutContent>
+  );
 };
 
 export default Index;

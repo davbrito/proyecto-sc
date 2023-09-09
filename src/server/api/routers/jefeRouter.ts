@@ -32,56 +32,81 @@ export const jefeRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { casa, documentos, jefe, consejoComunalId } = input;
+      try {
+        const { casa, documentos, jefe, consejoComunalId } = input;
 
-      const newCasa = await ctx.prisma.casa.create({
-        data: {
-          ...casa,
-        },
-      });
+        const newCasa = await ctx.prisma.casa.create({
+          data: {
+            ...casa,
+          },
+        });
 
-      if (!newCasa) return;
+        if (!newCasa) throw new Error("Error creating the house");
 
-      const nroMz = newCasa.manzana;
-      const secuenciaMz = await ctx.prisma.casa.count({
-        where: { manzana: newCasa.manzana },
-      });
+        const nroMz = newCasa.manzana;
 
-      const jefes = await ctx.prisma.jefeFamilia.findMany({
-        orderBy: { id: "desc" },
-        take: 1,
-      });
+        const cc = await ctx.prisma.consejoComunal.findFirst({
+          where: {
+            id: consejoComunalId,
+          },
+          include: {
+            censos: {
+              include: {
+                jefeFamilia: {
+                  include: {
+                    casa: true,
+                  },
+                },
+              },
+            },
+          },
+        });
 
-      if (!jefes || !jefes.length) return;
+        const manzanasCC = cc?.censos.filter(
+          (censo) => censo.jefeFamilia?.casa?.manzana === newCasa.manzana
+        ).length;
 
-      const secJefe = jefes[0]?.id
-        ? (jefes[0]?.id + BigInt(1)).toString()
-        : "1";
+        const secuenciaMz = manzanasCC ? manzanasCC + 1 : 1;
 
-      const censo = await ctx.prisma.censo.create({
-        data: {
-          id: `${nroMz.padStart(2, "0")}${secJefe.padStart(3, "0")}${secuenciaMz
-            .toString()
-            .padStart(4, "0")}`,
-          consejoComunalId,
-        },
-      });
+        const jefes = await ctx.prisma.jefeFamilia.findMany({
+          orderBy: { id: "desc" },
+          take: 1,
+        });
 
-      const newJefe = await ctx.prisma.jefeFamilia.create({
-        data: {
-          nombres: jefe.primerNombre + " " + jefe.segundoNombre,
-          apellidos: jefe.primerApellido + " " + jefe.segundoApellido,
-          fechaNacimiento: new Date(jefe.fechaNacimiento).toJSON(),
-          genero: jefe.genero,
-          email: jefe.email,
-          telefono: jefe.telefono,
-          ...documentos,
-          censoId: censo.id,
-          casaId: newCasa.id,
-        },
-      });
+        const secJefe = jefes[0]?.id
+          ? (jefes[0]?.id + BigInt(1)).toString()
+          : "1";
 
-      return { newJefe, newCasa, censo };
+        const censo = await ctx.prisma.censo.create({
+          data: {
+            id: `${nroMz.padStart(2, "0")}${secJefe.padStart(
+              3,
+              "0"
+            )}${secuenciaMz.toString().padStart(4, "0")}`,
+            consejoComunalId,
+          },
+        });
+        if (!censo) throw new Error("Error creating the censo");
+
+        const newJefe = await ctx.prisma.jefeFamilia.create({
+          data: {
+            nombres: jefe.primerNombre + " " + jefe.segundoNombre,
+            apellidos: jefe.primerApellido + " " + jefe.segundoApellido,
+            fechaNacimiento: new Date(jefe.fechaNacimiento).toJSON(),
+            genero: jefe.genero,
+            email: jefe.email,
+            telefono: jefe.telefono,
+            ...documentos,
+            censoId: censo.id,
+            casaId: newCasa.id,
+          },
+        });
+        if (!newJefe) throw new Error("Error creating the jefe");
+
+        return { newJefe, newCasa, censo };
+      } catch (error) {
+        throw error;
+      }
     }),
 
   getById: publicProcedure
@@ -93,10 +118,21 @@ export const jefeRouter = createTRPCRouter({
       });
     }),
 
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const jefes = await ctx.prisma.jefeFamilia.findMany({});
-    return jefes;
-  }),
+  getAll: publicProcedure
+    .input(z.object({ consejoId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const jefes = await ctx.prisma.jefeFamilia.findMany({
+        include: {
+          censo: true,
+        },
+      });
+
+      const jefesEnCC = jefes.filter(
+        (jefe) => jefe.censo.consejoComunalId === input.consejoId
+      );
+
+      return jefesEnCC;
+    }),
 
   getAllWithFamiliares: publicProcedure.query(async ({ ctx }) => {
     return ctx.prisma.jefeFamilia.findMany({

@@ -36,33 +36,6 @@ const Home: NextPage = () => {
             </p>
           )}
         </div>
-        <Container
-          css={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "$4",
-            mt: "$8",
-          }}
-        >
-          <Link
-            href={"/censo"}
-            className="inline-block cursor-pointer rounded  border bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
-          >
-            Ver datos del censo
-          </Link>
-          <Link
-            href={"/familiares"}
-            className="inline-block cursor-pointer rounded  border bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
-          >
-            Ver familiares
-          </Link>
-          <Link
-            href={"/casas"}
-            className="inline-block cursor-pointer rounded  border bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
-          >
-            Ver casas
-          </Link>
-        </Container>
       </Container>
     </LayoutContent>
   );

@@ -11,7 +11,12 @@ import {
 
 export const censoRouter = createTRPCRouter({
   getCensoInfor: publicProcedure
-    .input(z.string().default(""))
+    .input(
+      z.object({
+        keyword: z.string().default(""),
+        consejoId: z.string(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       const jefes = await ctx.prisma.censo.findMany({
         orderBy: {
@@ -27,8 +32,9 @@ export const censoRouter = createTRPCRouter({
         },
         where: {
           id: {
-            contains: input,
+            contains: input.keyword,
           },
+          consejoComunalId: parseInt(input.consejoId),
         },
       });
 

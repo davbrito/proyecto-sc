@@ -11,11 +11,12 @@ import {
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
-import { getRelativeTime } from "~/utils/dates";
+import { formatDate, getRelativeTime } from "~/utils/dates";
 import FamiliarForm from "../familiar/FamiliarForm";
 import { type JefeFamilia, type Familiar } from "@prisma/client";
 import JefeEditForm from "./JefeEditForm";
 import DeleteConfirmation from "../DeleteConfirmation";
+import { useRouter } from "next/router";
 
 interface Edit {
   idToEdit?: Familiar | JefeFamilia;
@@ -24,10 +25,14 @@ interface Edit {
 
 interface Delete {
   id?: bigint;
+
   isOpen: boolean;
 }
 
 const JefeProfile = ({ id }: { id: "string" }) => {
+  const router = useRouter();
+  const consejoId = router.query?.id ? router.query.id.toString() : "";
+
   const { data, isLoading, refetch } = api.jefe.getById.useQuery(
     {
       id,
@@ -165,7 +170,7 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                     <li className="flex flex-col  sm:flex-row sm:items-center sm:justify-between">
                       <span>Desde</span>
                       <span className=" text-right font-medium">
-                        {data.censo?.fecha.toDateString()}
+                        {formatDate(data.censo?.fecha)}
                       </span>
                     </li>
                   </Container>
@@ -194,19 +199,19 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                   <Grid.Container className="grid grid-cols-2  gap-6 px-3 py-2">
                     <div className=" font-semibold">Nro</div>
                     <div className="text-right uppercase">
-                      {data.censo?.casa.casa}
+                      {data.casa?.casa}
                     </div>
                   </Grid.Container>
                   <Grid.Container className="grid  grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Manzana</div>
                     <div className="text-right uppercase">
-                      {data.censo?.casa.manzana}
+                      {data.casa?.manzana}
                     </div>
                   </Grid.Container>
                   <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Calle</div>
                     <div className="text-right capitalize">
-                      {data.censo?.casa.calle}
+                      {data.casa?.calle}
                     </div>
                   </Grid.Container>
                 </Grid.Container>
@@ -271,9 +276,7 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                   </Grid.Container>
                   <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Fecha nacimiento</div>
-                    <div className="">
-                      {data.fechaNacimiento.toDateString()}
-                    </div>
+                    <div className="">{formatDate(data.fechaNacimiento)}</div>
                   </Grid.Container>
                 </Grid.Container>
               </Card.Body>
@@ -486,18 +489,21 @@ const JefeProfile = ({ id }: { id: "string" }) => {
         aria-labelledby="modal-title"
         open={editFamiliar.isOpen}
         onClose={closeHandler}
-        width="580px"
+        width="700px"
+        autoMargin
       >
-        {editFamiliar.idToEdit && (
-          <FamiliarForm
-            familia={editFamiliar.idToEdit as Familiar}
-            jefeId={data.id}
-            closeModal={closeHandler}
-          />
-        )}
+        <Modal.Body>
+          {editFamiliar.idToEdit && (
+            <FamiliarForm
+              consejoId={consejoId}
+              familia={editFamiliar.idToEdit as Familiar}
+              jefeId={data.id}
+              closeModal={closeHandler}
+            />
+          )}
+        </Modal.Body>
       </Modal>
       <Modal
-        closeButton
         aria-labelledby="modal-title2"
         width="580px"
         open={editJefe.isOpen}
@@ -505,8 +511,11 @@ const JefeProfile = ({ id }: { id: "string" }) => {
           setEditJefe({ isOpen: false, idToEdit: data });
         }}
         autoMargin
+        css={{ pt: "0" }}
       >
-        <JefeEditForm jefe={data} onClose={closeHandler} />
+        <Modal.Body>
+          <JefeEditForm jefe={data} onClose={closeHandler} />
+        </Modal.Body>
       </Modal>
       <DeleteConfirmation
         onClose={() => setDeleteFamiliar({ isOpen: false })}

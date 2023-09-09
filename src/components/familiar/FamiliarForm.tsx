@@ -12,10 +12,10 @@ import {
 import React from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import { CustomLoading } from "../Loading";
 import { useRouter } from "next/router";
-import { Familiar } from "@prisma/client";
+import { type Familiar } from "@prisma/client";
 
 interface OtrosProps {
   tipoDocumento: string;
@@ -64,14 +64,16 @@ const initialValues = {
 };
 
 interface FamiliarFormProps {
-  jefeId: bigint;
+  jefeId?: bigint;
   familia?: Familiar;
+  consejoId: string;
   closeModal?: () => void;
 }
 
 const FamiliarForm: NextPage<FamiliarFormProps> = ({
   jefeId,
   familia,
+  consejoId,
   closeModal,
 }) => {
   const {
@@ -82,7 +84,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
     formState: { errors, isSubmitting },
   } = useForm<FamiliarFormData>({
     defaultValues: !familia
-      ? { ...initialValues, jefeId: jefeId.toString() }
+      ? { ...initialValues, jefeId: jefeId ? jefeId.toString() : "" }
       : {
           datosBasicos: {
             fechaNacimiento: familia.fechaNacimiento
@@ -108,10 +110,13 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
   });
 
   const router = useRouter();
-  const { data, isLoading } = api.jefe.getAll.useQuery(undefined, {
-    cacheTime: 30 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
+  const { data, isLoading } = api.jefe.getAll.useQuery(
+    { consejoId: parseInt(consejoId) },
+    {
+      cacheTime: 30 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    }
+  );
   const addFamiliar = api.familia.addNew.useMutation();
   const editFamiliar = api.familia.update.useMutation();
 
@@ -142,7 +147,8 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
           },
           onSuccess(data, variables, context) {
             reset(initialValues, { keepTouched: false, keepDirty: false });
-            router.push(`/censo/${data.newCenso.jefeFamiliaId}`);
+            if (closeModal) closeModal();
+            else router.push(`/censo/${data.newFamiliar.jefeFamiliaId}`);
           },
         }
       );
@@ -387,7 +393,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
 
         <Divider css={{ my: "$8" }} />
         <Grid.Container lg={12} gap={1}>
-          <Grid lg={8}>
+          <Grid lg={4}>
             <Input
               fullWidth
               bordered
@@ -405,7 +411,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
             />
           </Grid>
           <Grid lg={8}>
-            <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
+            <label className="mb-2 block text-sm font-medium ">
               Jefe de Familia:
             </label>
 
@@ -419,20 +425,37 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
               className="select-form"
             >
               <option value="">Seleccione una opcion porfavor</option>
-              {data?.map(
-                ({
-                  id,
-                  nombres,
-                  apellidos,
-                  tipoDocumento,
-                  numeroDocumento,
-                }) => (
-                  <option value={id.toString()} key={id.toString()}>
-                    {apellidos.toUpperCase()}, {nombres.toUpperCase()}.{" "}
-                    {tipoDocumento.toUpperCase()}-{numeroDocumento}
-                  </option>
-                )
-              )}
+              {!jefeId
+                ? data.map(
+                    ({
+                      id,
+                      nombres,
+                      apellidos,
+                      tipoDocumento,
+                      numeroDocumento,
+                    }) => (
+                      <option value={id.toString()} key={id.toString()}>
+                        {apellidos.toUpperCase()}, {nombres.toUpperCase()}.{" "}
+                        {tipoDocumento.toUpperCase()}-{numeroDocumento}
+                      </option>
+                    )
+                  )
+                : data
+                    .filter((jefe) => jefe.id === jefeId)
+                    .map(
+                      ({
+                        id,
+                        nombres,
+                        apellidos,
+                        tipoDocumento,
+                        numeroDocumento,
+                      }) => (
+                        <option value={id.toString()} key={id.toString()}>
+                          {apellidos.toUpperCase()}, {nombres.toUpperCase()}.{" "}
+                          {tipoDocumento.toUpperCase()}-{numeroDocumento}
+                        </option>
+                      )
+                    )}
             </select>
           </Grid>
         </Grid.Container>
@@ -457,6 +480,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
               backgroundColor: "$blue300",
             },
           }}
+          className="mx-auto mt-2"
           size={"lg"}
         >
           {isSubmitting && (

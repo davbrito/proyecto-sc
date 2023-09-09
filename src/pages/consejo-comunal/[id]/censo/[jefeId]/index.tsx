@@ -1,13 +1,4 @@
 import {
-  Button,
-  Checkbox,
-  Container,
-  Input,
-  Modal,
-  Row,
-  Text,
-} from "@nextui-org/react";
-import {
   type GetStaticProps,
   type GetStaticPropsContext,
   type InferGetStaticPropsType,
@@ -21,13 +12,17 @@ import JefeProfile from "~/components/censo/JefeProfile";
 import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
+//Second
 export async function getStaticProps(
-  context: GetStaticPropsContext<{ jefeId: string }>
+  context: GetStaticPropsContext<{ jefeId: string; id: string }>
 ) {
+  console.log(context.params);
   const ssg = generateSSGHelper();
   const id = context?.params?.jefeId;
+  const consejoId = context?.params?.id;
 
-  if (typeof id !== "string") throw new Error("no Id");
+  if (typeof id !== "string" || typeof consejoId !== "string")
+    throw new Error("no Id");
 
   await ssg.jefe.getById.prefetch({ id });
 
@@ -40,12 +35,18 @@ export async function getStaticProps(
   };
 }
 
+//First
 export const getStaticPaths = async () => {
-  const jefes = await prisma.jefeFamilia.findMany();
+  const jefes = await prisma.jefeFamilia.findMany({ include: { censo: true } });
 
   const paths = jefes.map((jefe) => ({
-    params: { jefeId: jefe.id.toString() },
+    params: {
+      jefeId: jefe.id.toString(),
+      id: jefe.censo.consejoComunalId.toString(),
+    },
   }));
+
+  console.log(paths);
 
   return {
     paths,

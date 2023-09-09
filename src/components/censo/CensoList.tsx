@@ -11,8 +11,20 @@ interface stateFamiliarModal {
   id?: bigint;
 }
 
-export const PersonasList = ({ search }: { search?: string }) => {
-  const { data, isLoading } = api.censo.getCensoInfor.useQuery(search);
+export const CensoList = ({
+  search,
+  consejoId,
+}: {
+  search?: string;
+  consejoId: string;
+}) => {
+  const { data, isLoading } = api.censo.getCensoInfor.useQuery(
+    {
+      keyword: search,
+      consejoId,
+    },
+    { retry: false }
+  );
   const [openModal, setOpenModal] = useState<stateFamiliarModal>({
     isOpen: false,
   });
@@ -43,6 +55,7 @@ export const PersonasList = ({ search }: { search?: string }) => {
       </Grid.Container>
     );
 
+  if (!data) return <div>Error</div>;
   return (
     <>
       <Table bordered lined headerLined>
@@ -59,21 +72,21 @@ export const PersonasList = ({ search }: { search?: string }) => {
           <Table.Column align="center">Acciones</Table.Column>
         </Table.Header>
         <Table.Body>
-          {data.map(({ jefeFamilia, id, casa, tipoFamilia }) => (
-            <Table.Row key={id.toString()}>
+          {data.map(({ jefeFamilia, id, tipoFamilia }) => (
+            <Table.Row key={id}>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
                 <Link
-                  href={`/censo/${jefeFamilia.id.toString()}`}
+                  href={`/consejo-comunal/${consejoId}/censo/${jefeFamilia.id.toString()}`}
                   className="transition-all hover:text-blue-800  "
                 >
-                  {id.toString().padStart(8, "0")}
+                  {id.padStart(8, "0")}
                 </Link>
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {casa.manzana}
+                {jefeFamilia.casa ? jefeFamilia.casa.manzana : ""}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {casa.casa.padStart(2, "0")}
+                {jefeFamilia.casa ? jefeFamilia.casa.casa.padStart(2, "0") : ""}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
                 {jefeFamilia.apellidos.toUpperCase()},{" "}
@@ -119,14 +132,18 @@ export const PersonasList = ({ search }: { search?: string }) => {
       <Modal
         closeButton
         aria-labelledby="modal-title2"
-        width="600px"
+        width="700px"
         open={openModal.isOpen}
         onClose={closeHandler}
         autoMargin
       >
         {!!openModal.id && (
           <Modal.Body>
-            <FamiliarForm jefeId={openModal.id} closeModal={closeHandler} />
+            <FamiliarForm
+              consejoId={consejoId}
+              jefeId={openModal.id}
+              closeModal={closeHandler}
+            />
           </Modal.Body>
         )}
       </Modal>

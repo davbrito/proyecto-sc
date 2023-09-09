@@ -98,7 +98,10 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
   return (
     <Card as={"form"} onSubmit={handleSubmit(onSubmit)}>
       <Card.Header css={{ mt: 0, pt: 0 }}>
-        <Text h2>Datos personales</Text>
+        <Text h2 className="mx-auto">
+          {" "}
+          Datos personales
+        </Text>
       </Card.Header>
       <Card.Body css={{ mt: 0, pt: 0 }}>
         <Grid.Container gap={2} css={{ mt: 0, pt: 0 }}>
@@ -260,7 +263,9 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
       </Card.Body>
 
       <Card.Header css={{ mt: 0, pt: 0 }}>
-        <Text h2>Documentos personales</Text>
+        <Text h2 className="mx-auto">
+          Documentos personales
+        </Text>
       </Card.Header>
       <Card.Body css={{ mt: 0, pt: 0 }}>
         <Grid.Container gap={2} css={{ mt: 0, pt: 0 }}>

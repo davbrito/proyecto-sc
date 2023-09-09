@@ -6,6 +6,7 @@ import { PersonaForm } from "./PersonaForm";
 import { CasaForm } from "./CasaForm";
 import { DocumentosForm } from "./documentosForm";
 import { useRouter } from "next/router";
+import { CirclesReference } from "../Circles";
 
 interface CasaProps {
   manzana: string;
@@ -45,50 +46,11 @@ interface Step {
   filled: number;
 }
 
-interface CirclesProps {
-  count: number;
-  current: number;
-  filled: number;
-  setStep: React.Dispatch<React.SetStateAction<Step>>;
+interface Props {
+  consejoComunalId: string;
 }
 
-const CirclesReference = ({
-  count,
-  filled,
-  current,
-  setStep,
-}: CirclesProps) => {
-  const renderCircles = () => {
-    const circles: Array<JSX.Element> = [];
-
-    for (let i = 0; i < count; i++) {
-      circles.push(
-        <span
-          key={`circle-reference-${i}`}
-          onClick={() =>
-            i <= filled
-              ? setStep(({ filled }) => ({ currentPos: i, filled }))
-              : null
-          }
-          className={`inline-block h-6 w-6 rounded-full transition-all ${
-            i <= filled ? "bg-blue-600 hover:bg-blue-800" : "bg-gray-400"
-          }
-            ${current === i ? "bg-violet-500 hover:bg-violet-700" : ""}  
-            `}
-        ></span>
-      );
-    }
-    return circles;
-  };
-
-  return (
-    <div className="mx-auto flex gap-x-2 p-2 transition-all">
-      {renderCircles()}
-    </div>
-  );
-};
-
-export const GreatForm = () => {
+export const GreatForm = ({ consejoComunalId }: Props) => {
   const [step, setStep] = useState<Step>({ currentPos: 0, filled: 0 });
 
   const {
@@ -129,10 +91,11 @@ export const GreatForm = () => {
             email: values.datosBasicos.email,
             telefono: values.datosBasicos.telefono,
           },
+          consejoComunalId: parseInt(consejoComunalId),
         },
         {
           onSuccess(data, variables, context) {
-            router.push("/censo");
+            router.push(`/consejo-comunal/${consejoComunalId}/censo`);
           },
           onError({ data }) {
             setError("root", {

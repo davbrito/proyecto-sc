@@ -1,13 +1,17 @@
 import { LayoutContent } from "~/components/Layout";
 import { Card, Container, Link, Row, Text } from "@nextui-org/react";
-import { PersonasList } from "~/components/censo/PersonasList";
+import { CensoList } from "~/components/censo/CensoList";
 import { SearchForm } from "~/components/censo/SearchForm";
 import { useState } from "react";
 import { type GetServerSidePropsContext } from "next";
 import { verifySession } from "~/utils/verifySession";
+import { useRouter } from "next/router";
 
 const CensoIndex = () => {
   const [searchValue, setSearchValue] = useState<string>("");
+  const router = useRouter();
+
+  const consejoComunalId = router.query.id ? router.query.id.toString() : "";
 
   return (
     <LayoutContent>
@@ -18,7 +22,7 @@ const CensoIndex = () => {
             className="flex flex-row flex-wrap items-center justify-evenly self-stretch"
           >
             <Link
-              href="/censo/create"
+              href={`/consejo-comunal/${consejoComunalId}/censo/create`}
               css={{ my: "1rem" }}
               className=" h-fit w-fit rounded-md bg-green-700 px-4 py-3 text-lg text-white"
             >
@@ -26,7 +30,7 @@ const CensoIndex = () => {
             </Link>
 
             <Link
-              href="/censo/estadisticas"
+              href={`/consejo-comunal/${consejoComunalId}/censo/estadisticas`}
               css={{ my: "1rem" }}
               className=" h-fit w-fit rounded-md bg-orange-600 px-4 py-3 text-lg text-white"
             >
@@ -42,7 +46,7 @@ const CensoIndex = () => {
             </Text>
 
             <Container css={{ mt: "16px" }}>
-              <PersonasList search={searchValue} />
+              <CensoList search={searchValue} consejoId={consejoComunalId} />
             </Container>
           </Card.Body>
         </Card>
