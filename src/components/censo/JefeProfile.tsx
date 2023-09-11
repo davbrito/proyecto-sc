@@ -6,7 +6,6 @@ import {
   Table,
   Text,
   Grid,
-  StyledGridItem,
 } from "@nextui-org/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
@@ -17,15 +16,15 @@ import { type JefeFamilia, type Familiar } from "@prisma/client";
 import JefeEditForm from "./JefeEditForm";
 import DeleteConfirmation from "../DeleteConfirmation";
 import { useRouter } from "next/router";
+import EditCajaForm from "./EditCajaForm";
 
 interface Edit {
-  idToEdit?: Familiar | JefeFamilia;
+  data?: Familiar | JefeFamilia;
   isOpen: boolean;
 }
 
 interface Delete {
   id?: bigint;
-
   isOpen: boolean;
 }
 
@@ -41,6 +40,8 @@ const JefeProfile = ({ id }: { id: "string" }) => {
   );
   const familiar = api.familia.deleteById.useMutation();
   const jefe = api.jefe.delete.useMutation();
+
+  // Estados
   const [editJefe, setEditJefe] = useState<Edit>({
     isOpen: false,
   });
@@ -50,6 +51,9 @@ const JefeProfile = ({ id }: { id: "string" }) => {
   const [deleteFamiliar, setDeleteFamiliar] = useState<Delete>({
     isOpen: false,
   });
+
+  const [editCaja, setEditCaja] = useState(false);
+  const [createFamiliar, setCreateFamiliar] = useState(false);
 
   const closeHandler = () => {
     setEditFamiliar({ isOpen: false });
@@ -103,14 +107,13 @@ const JefeProfile = ({ id }: { id: "string" }) => {
 
     setEditFamiliar({
       isOpen: true,
-      idToEdit: familiarToEdit[0],
+      data: familiarToEdit[0],
     });
   };
 
   if (isLoading) <CustomLoading />;
   if (!data) return null;
 
-  console.log(deleteFamiliar);
   return (
     <>
       {/* CABECERA DEL CENSO */}
@@ -144,6 +147,7 @@ const JefeProfile = ({ id }: { id: "string" }) => {
           </Button>
         </Container>
       </Container>
+
       {/* Informacion JEFE FAMILIA */}
       <Container gap={2} fluid>
         <div className="flex flex-col  gap-3 md:flex-row">
@@ -283,8 +287,8 @@ const JefeProfile = ({ id }: { id: "string" }) => {
             </Card>
             <div className="my-4"></div>
             <Card className="">
-              <Card.Body>
-                <div className="flex items-center justify-center  space-x-2 px-2 font-semibold leading-8">
+              <Card.Header>
+                <div className="mx-auto flex items-center justify-center  space-x-2 px-2 font-semibold leading-8">
                   <span className="text-gray-500">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -296,11 +300,18 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                       <path d="M50.7 58.5L0 160H208V32H93.7C75.5 32 58.9 42.3 50.7 58.5zM240 160H448L397.3 58.5C389.1 42.3 372.5 32 354.3 32H240V160zm208 32H0V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192z" />
                     </svg>
                   </span>
-                  <h2 className="text-2xl  font-normal text-gray-400">
+                  <Text h2 className="text-2xl  font-normal text-gray-400">
                     Caja CLAP
-                  </h2>
+                  </Text>
                 </div>
-
+                <button
+                  onClick={() => setEditCaja(true)}
+                  className="rounded-lg border-solid border-orange-800 bg-orange-700 p-2 text-sm transition-all hover:bg-orange-800"
+                >
+                  Editar
+                </button>
+              </Card.Header>
+              <Card.Body>
                 <Grid.Container
                   gap={2}
                   className="grid  text-sm md:grid-cols-2"
@@ -348,18 +359,26 @@ const JefeProfile = ({ id }: { id: "string" }) => {
 
         <div className="my-4">
           <Card>
-            <Card.Body>
+            <Card.Header className="justify-between">
               <Text
                 h2
                 css={{
                   fontSize: "$4xl",
                   fontWeight: "$normal",
                   textAlign: "center",
+                  mx: "auto",
                 }}
               >
                 Familiares
               </Text>
-
+              <button
+                className="w-min rounded-lg border-solid border-green-600 bg-green-600  p-2 transition-all hover:bg-green-700"
+                onClick={() => setCreateFamiliar(true)}
+              >
+                Añadir
+              </button>
+            </Card.Header>
+            <Card.Body>
               {data.familiar.length === 0 && (
                 <Grid.Container
                   css={{
@@ -484,19 +503,59 @@ const JefeProfile = ({ id }: { id: "string" }) => {
         </div>
       </Container>
 
+      {/* Modales */}
       <Modal
         closeButton
-        aria-labelledby="modal-title"
+        aria-labelledby="modal-create-familiar-form"
+        open={editCaja}
+        onClose={() => setEditCaja(false)}
+        width="350px"
+        autoMargin
+      >
+        <Modal.Body>
+          <EditCajaForm
+            censoId={data.censoId}
+            closeModal={() => {
+              setEditCaja(false);
+              refetch();
+            }}
+          />
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        closeButton
+        aria-labelledby="modal-create-familiar-form"
+        open={createFamiliar}
+        onClose={() => setCreateFamiliar(false)}
+        width="700px"
+        autoMargin
+      >
+        <Modal.Body>
+          <FamiliarForm
+            consejoId={consejoId}
+            jefeId={BigInt(id)}
+            closeModal={() => {
+              setCreateFamiliar(false);
+              refetch();
+            }}
+          />
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        closeButton
+        aria-labelledby="modal-edit-familiar-form"
         open={editFamiliar.isOpen}
         onClose={closeHandler}
         width="700px"
         autoMargin
       >
         <Modal.Body>
-          {editFamiliar.idToEdit && (
+          {editFamiliar.data && (
             <FamiliarForm
               consejoId={consejoId}
-              familia={editFamiliar.idToEdit as Familiar}
+              familia={editFamiliar.data as Familiar}
               jefeId={data.id}
               closeModal={closeHandler}
             />
@@ -508,15 +567,14 @@ const JefeProfile = ({ id }: { id: "string" }) => {
         width="580px"
         open={editJefe.isOpen}
         onClose={() => {
-          setEditJefe({ isOpen: false, idToEdit: data });
+          setEditJefe({ isOpen: false });
         }}
         autoMargin
         css={{ pt: "0" }}
       >
-        <Modal.Body>
-          <JefeEditForm jefe={data} onClose={closeHandler} />
-        </Modal.Body>
+        <JefeEditForm jefe={data} onClose={closeHandler} />
       </Modal>
+
       <DeleteConfirmation
         onClose={() => setDeleteFamiliar({ isOpen: false })}
         open={deleteFamiliar.isOpen}

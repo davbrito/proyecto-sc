@@ -40,4 +40,26 @@ export const censoRouter = createTRPCRouter({
 
       return jefes;
     }),
+
+  editCaja: publicProcedure
+    .input(
+      z.object({
+        cajasPorAsignar: z.number(),
+        censoId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { cajasPorAsignar, censoId } = input;
+
+      const response = await ctx.prisma.censo.update({
+        where: {
+          id: censoId,
+        },
+        data: {
+          cajasClapsPorRecibir: cajasPorAsignar,
+        },
+      });
+
+      return response;
+    }),
 });
