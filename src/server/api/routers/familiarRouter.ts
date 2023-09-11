@@ -36,60 +36,64 @@ export const familiarRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { jefe, familiar, documentos } = input;
+      try {
+        const { jefe, familiar, documentos } = input;
 
-      const jefeToEdit = await ctx.prisma.jefeFamilia.findFirstOrThrow({
-        where: {
-          id: jefe.jefeId,
-        },
-        include: { censo: true },
-      });
-
-      if (!jefeToEdit || !jefeToEdit.censo)
-        throw new TRPCError({ message: "JEFE NO EXISTE", code: "CONFLICT" });
-
-      const newFamiliar = await ctx.prisma.familiar.create({
-        data: {
-          apellidos: `${familiar.primerApellido} ${familiar.segundoApellido}`,
-          nombres: `${familiar.primerNombre} ${familiar.segundoNombre}`,
-          fechaNacimiento: new Date(familiar.fechaNacimiento).toJSON(),
-          genero: familiar.genero,
-          ...documentos,
-          parentesco: jefe.parentesco,
-          jefeFamiliaId: jefe.jefeId,
-        },
-      });
-
-      const censoToUpdate = await ctx.prisma.censo.findFirst({
-        where: {
-          id: {
-            equals: jefeToEdit.censo?.id,
+        const jefeToEdit = await ctx.prisma.jefeFamilia.findFirstOrThrow({
+          where: {
+            id: jefe.jefeId,
           },
-        },
-      });
-      if (!censoToUpdate)
-        throw new TRPCError({
-          message: "NO EXISTE EL CENSO",
-          code: "CONFLICT",
+          include: { censo: true },
         });
 
-      censoToUpdate.cargaFamiliar += 1;
+        if (!jefeToEdit || !jefeToEdit.censo)
+          throw new TRPCError({ message: "JEFE NO EXISTE", code: "CONFLICT" });
 
-      if (censoToUpdate.cargaFamiliar > 4) {
-        censoToUpdate.tipoFamilia = "multifamiliar";
-        censoToUpdate.cajasClapsPorRecibir = 2;
+        const newFamiliar = await ctx.prisma.familiar.create({
+          data: {
+            apellidos: `${familiar.primerApellido} ${familiar.segundoApellido}`,
+            nombres: `${familiar.primerNombre} ${familiar.segundoNombre}`,
+            fechaNacimiento: new Date(familiar.fechaNacimiento).toJSON(),
+            genero: familiar.genero,
+            ...documentos,
+            parentesco: jefe.parentesco,
+            jefeFamiliaId: jefe.jefeId,
+          },
+        });
+
+        const censoToUpdate = await ctx.prisma.censo.findFirst({
+          where: {
+            id: {
+              equals: jefeToEdit.censo?.id,
+            },
+          },
+        });
+
+        if (!censoToUpdate)
+          throw new TRPCError({
+            message: "NO EXISTE EL CENSO",
+            code: "CONFLICT",
+          });
+
+        censoToUpdate.cargaFamiliar += 1;
+
+        if (censoToUpdate.cargaFamiliar > 4) {
+          censoToUpdate.tipoFamilia = "multifamiliar";
+        }
+
+        const newCenso = await ctx.prisma.censo.update({
+          where: {
+            id: censoToUpdate.id,
+          },
+          data: {
+            ...censoToUpdate,
+          },
+        });
+
+        return { newFamiliar, newCenso };
+      } catch (error) {
+        throw error;
       }
-
-      const newCenso = await ctx.prisma.censo.update({
-        where: {
-          id: censoToUpdate.id,
-        },
-        data: {
-          ...censoToUpdate,
-        },
-      });
-
-      return { newFamiliar, newCenso };
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -103,43 +107,49 @@ export const familiarRouter = createTRPCRouter({
   deleteById: publicProcedure
     .input(z.object({ id: z.bigint() }))
     .mutation(async ({ ctx, input }) => {
-      const familiarToDelete = await ctx.prisma.familiar.findFirst({
-        where: { id: input.id },
-        include: {
-          jefeFamilia: {
-            include: {
-              censo: true,
+      try {
+        const familiarToDelete = await ctx.prisma.familiar.findFirst({
+          where: { id: input.id },
+          include: {
+            jefeFamilia: {
+              include: {
+                censo: true,
+              },
             },
           },
-        },
-      });
+        });
 
-      if (
-        !familiarToDelete ||
-        !familiarToDelete.jefeFamilia.censo ||
-        !familiarToDelete.jefeFamilia.censo.id
-      )
-        return;
-      const censoId = familiarToDelete.jefeFamilia.censo.id;
+        if (
+          !familiarToDelete ||
+          !familiarToDelete.jefeFamilia.censo ||
+          !familiarToDelete.jefeFamilia.censo.id
+        )
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "NO EXISTE EL REGISTRO",
+          });
+        const censoId = familiarToDelete.jefeFamilia.censo.id;
 
-      await ctx.prisma.censo.update({
-        where: {
-          id: censoId,
-        },
-        data: {
-          cargaFamiliar: familiarToDelete.jefeFamilia.censo.cargaFamiliar - 1,
-          tipoFamilia:
-            familiarToDelete.jefeFamilia.censo.cargaFamiliar - 1 > 4
-              ? "MULTIFAMILIAR"
-              : "UNIFAMILIAR",
-        },
-      });
+        await ctx.prisma.censo.update({
+          where: {
+            id: censoId,
+          },
+          data: {
+            tipoFamilia:
+              familiarToDelete.jefeFamilia.censo.cargaFamiliar - 1 > 4
+                ? "MULTIFAMILIAR"
+                : "UNIFAMILIAR",
+          },
+        });
 
-      const deleted = await ctx.prisma.familiar.delete({
-        where: { id: input.id },
-      });
+        const deleted = await ctx.prisma.familiar.delete({
+          where: { id: input.id },
+        });
 
-      return deleted;
+        return deleted;
+      } catch (error) {
+        throw error;
+      }
     }),
 
   update: publicProcedure
