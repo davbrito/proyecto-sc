@@ -1,3 +1,4 @@
+import { createReactProxyDecoration } from "@trpc/react-query/shared";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -209,5 +210,85 @@ export const jefeRouter = createTRPCRouter({
       });
 
       return jefeUpdated;
+    }),
+
+  changeJefe: publicProcedure
+    .input(
+      z.object({
+        newJefe: z.object({
+          numeroDocumento: z.string(),
+          tipoDocumento: z.string(),
+          email: z.string(),
+          telefono: z.string(),
+        }),
+        idJefe: z.number(),
+        idFamiliar: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const infoFamiliar = await ctx.prisma.familiar.findFirst({
+        where: {
+          id: input.idFamiliar,
+        },
+      });
+
+      if (!infoFamiliar) return null;
+
+      const infoJefe = await ctx.prisma.jefeFamilia.findFirst({
+        where: {
+          id: input.idJefe,
+        },
+      });
+
+      if (!infoJefe) return null;
+
+      const newJefe = await ctx.prisma.jefeFamilia.update({
+        where: {
+          id: infoJefe?.id,
+        },
+        data: {
+          apellidos: infoFamiliar?.apellidos,
+          codCarnetPatria: infoFamiliar?.codCarnetPatria,
+          tipoDocumento: input.newJefe.tipoDocumento,
+          condicionEspecial: infoFamiliar?.condicionEspecial,
+          nombres: infoFamiliar?.nombres,
+          numeroDocumento: input.newJefe.numeroDocumento,
+          genero: infoFamiliar?.genero,
+          telefono: input.newJefe.telefono,
+          observacion: infoFamiliar?.observacion,
+          fechaNacimiento: infoFamiliar?.fechaNacimiento,
+          email: input.newJefe.email,
+        },
+      });
+
+      const newFamiliar = await ctx.prisma.familiar.update({
+        where: {
+          id: infoFamiliar.id,
+        },
+        data: {
+          apellidos: infoJefe.apellidos,
+          codCarnetPatria: infoJefe.codCarnetPatria,
+          condicionEspecial: infoJefe.condicionEspecial,
+          fechaNacimiento: infoJefe.fechaNacimiento,
+          genero: infoJefe.genero,
+          nombres: infoJefe.nombres,
+          tipoDocumento: infoJefe.tipoDocumento,
+          numeroDocumento: infoJefe.numeroDocumento,
+          observacion: infoJefe.observacion,
+          serialCarnetPatria: infoJefe.serialCarnetPatria,
+          parentesco:
+            infoFamiliar.parentesco.at(-1) === "o"
+              ? infoFamiliar.parentesco.slice(
+                  0,
+                  infoFamiliar.parentesco.lastIndexOf("o")
+                ) + "a"
+              : infoFamiliar.parentesco.slice(
+                  0,
+                  infoFamiliar.parentesco.lastIndexOf("a")
+                ) + "o",
+        },
+      });
+
+      return { newJefe, newFamiliar };
     }),
 });

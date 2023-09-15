@@ -198,11 +198,19 @@ export const familiarRouter = createTRPCRouter({
 
       return familiarUpdated;
     }),
-  getById: publicProcedure
+  getByJefeId: publicProcedure
     .input(
       z.object({
-        id: z.string(),
+        id: z.number(),
       })
     )
-    .mutation(() => {}),
+    .query(async ({ ctx, input }) => {
+      const response = await ctx.prisma.familiar.findMany({
+        where: {
+          jefeFamiliaId: input.id,
+        },
+      });
+
+      return response;
+    }),
 });

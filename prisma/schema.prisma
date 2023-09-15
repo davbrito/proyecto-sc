@@ -88,8 +88,7 @@ model Censo {
     fecha                DateTime @default(now())
 
     //FOREIGN KEY
-    jefeFamilia JefeFamilia?
-
+    jefeFamilia      JefeFamilia?
     consejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
     consejoComunalId Int
 }
@@ -118,29 +117,24 @@ model JefeFamilia {
     codCarnetPatria    String
     observacion        String
     condicionEspecial  String
-
-    fechaRegistro DateTime @default(now())
+    fechaRegistro      DateTime @default(now())
 
     //FOREIGN KEY
-    censo   Censo  @relation(fields: [censoId], references: [id])
-    censoId String @unique
-
-    casa   Casa?   @relation(fields: [casaId], references: [id])
-    casaId BigInt?
-
+    censo    Censo      @relation(fields: [censoId], references: [id])
+    censoId  String     @unique
+    casa     Casa?      @relation(fields: [casaId], references: [id])
+    casaId   BigInt?
     familiar Familiar[]
 }
 
 model Familiar {
-    id BigInt @id() @default(autoincrement())
-
-    nombres         String
-    apellidos       String
-    numeroDocumento String
-    tipoDocumento   String
-    fechaNacimiento DateTime
-    genero          String
-
+    id                 BigInt      @id() @default(autoincrement())
+    nombres            String
+    apellidos          String
+    numeroDocumento    String
+    tipoDocumento      String
+    fechaNacimiento    DateTime
+    genero             String
     serialCarnetPatria String
     codCarnetPatria    String
     observacion        String

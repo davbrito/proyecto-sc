@@ -17,6 +17,7 @@ import JefeEditForm from "./JefeEditForm";
 import DeleteConfirmation from "../DeleteConfirmation";
 import { useRouter } from "next/router";
 import EditCajaForm from "./EditCajaForm";
+import { ChangeJefeForm } from "./ChangeJefeForm";
 
 interface Edit {
   data?: Familiar | JefeFamilia;
@@ -52,6 +53,7 @@ const JefeProfile = ({ id }: { id: "string" }) => {
     isOpen: false,
   });
 
+  const [changeJefe, setChangeJefe] = useState(false);
   const [editCaja, setEditCaja] = useState(false);
   const [createFamiliar, setCreateFamiliar] = useState(false);
 
@@ -144,6 +146,13 @@ const JefeProfile = ({ id }: { id: "string" }) => {
             onPress={() => setEditJefe({ isOpen: true })}
           >
             Editar jefe de familia
+          </Button>
+
+          <Button
+            className="bg-violet-600 hover:bg-violet-800"
+            onPress={() => setChangeJefe(true)}
+          >
+            Cambiar jefe
           </Button>
         </Container>
       </Container>
@@ -573,6 +582,25 @@ const JefeProfile = ({ id }: { id: "string" }) => {
         css={{ pt: "0" }}
       >
         <JefeEditForm jefe={data} onClose={closeHandler} />
+      </Modal>
+
+      <Modal
+        closeButton
+        aria-labelledby="modal-change-jefe-form"
+        open={changeJefe}
+        onClose={() => setChangeJefe(false)}
+        width="700px"
+        autoMargin
+      >
+        <Modal.Body>
+          <ChangeJefeForm
+            jefeId={parseInt(data.id.toString())}
+            closeModal={() => {
+              setChangeJefe(false);
+              refetch();
+            }}
+          />
+        </Modal.Body>
       </Modal>
 
       <DeleteConfirmation
