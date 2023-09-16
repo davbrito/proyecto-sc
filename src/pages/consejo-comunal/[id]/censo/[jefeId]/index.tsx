@@ -1,7 +1,6 @@
 import {
-  type GetStaticProps,
-  type GetStaticPropsContext,
-  type InferGetStaticPropsType,
+  type InferGetServerSidePropsType,
+  type GetServerSidePropsContext,
 } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -9,14 +8,12 @@ import React from "react";
 import { LayoutContent } from "~/components/Layout";
 import { CustomLoading } from "~/components/Loading";
 import JefeProfile from "~/components/censo/JefeProfile";
-import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 //Second
-export async function getStaticProps(
-  context: GetStaticPropsContext<{ jefeId: string; id: string }>
+export async function getServerSideProps(
+  context: GetServerSidePropsContext<{ jefeId: string; id: string }>
 ) {
-  console.log(context.params);
   const ssg = generateSSGHelper();
   const id = context?.params?.jefeId;
   const consejoId = context?.params?.id;
@@ -35,26 +32,9 @@ export async function getStaticProps(
   };
 }
 
-//First
-export const getStaticPaths = async () => {
-  const jefes = await prisma.jefeFamilia.findMany({ include: { censo: true } });
-
-  const paths = jefes.map((jefe) => ({
-    params: {
-      jefeId: jefe.id.toString(),
-      id: jefe.censo.consejoComunalId.toString(),
-    },
-  }));
-
-  console.log(paths);
-
-  return {
-    paths,
-    fallback: "blocking",
-  };
-};
-
-const IndexJefeCenso = (props: InferGetStaticPropsType<GetStaticProps>) => {
+const IndexJefeCenso = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+) => {
   const [visible, setVisible] = React.useState(false);
   const handler = () => setVisible(true);
   const { status } = useSession();

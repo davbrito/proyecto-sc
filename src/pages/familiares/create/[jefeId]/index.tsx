@@ -1,20 +1,17 @@
 import { Container } from "@nextui-org/react";
-import React from "react";
 import {
-  type InferGetStaticPropsType,
-  type GetStaticProps,
-  type GetStaticPropsContext,
+  type GetServerSidePropsContext,
+  type InferGetServerSidePropsType,
 } from "next";
-import { LayoutContent } from "~/components/Layout";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
-import { prisma } from "~/server/db";
-import FamiliarForm from "~/components/familiar/FamiliarForm";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { LayoutContent } from "~/components/Layout";
 import { CustomLoading } from "~/components/Loading";
+import FamiliarForm from "~/components/familiar/FamiliarForm";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
-export async function getStaticProps(
-  context: GetStaticPropsContext<{ jefeId: string }>
+export async function getServerSideProps(
+  context: GetServerSidePropsContext<{ jefeId: string }>
 ) {
   const ssg = generateSSGHelper();
   const id = context?.params?.jefeId;
@@ -31,21 +28,8 @@ export async function getStaticProps(
   };
 }
 
-export const getStaticPaths = async () => {
-  const jefes = await prisma.jefeFamilia.findMany();
-
-  const paths = jefes.map((jefe) => ({
-    params: { jefeId: jefe.id.toString() },
-  }));
-
-  return {
-    paths,
-    fallback: false,
-  };
-};
-
 const IndexCreateFamiliar = (
-  props: InferGetStaticPropsType<GetStaticProps>
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { status } = useSession();
 
@@ -72,7 +56,7 @@ const IndexCreateFamiliar = (
   return (
     <LayoutContent>
       <Container css={{ mw: "680px", my: "2rem" }}>
-        <FamiliarForm jefeId={BigInt(props?.id as string)} consejoId="" />
+        <FamiliarForm jefeId={BigInt(props?.id)} consejoId="" />
       </Container>
     </LayoutContent>
   );

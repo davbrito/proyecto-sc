@@ -29,7 +29,7 @@ interface Delete {
   isOpen: boolean;
 }
 
-const JefeProfile = ({ id }: { id: "string" }) => {
+const JefeProfile = ({ id }: { id: string }) => {
   const router = useRouter();
   const consejoId = router.query?.id ? router.query.id.toString() : "";
 

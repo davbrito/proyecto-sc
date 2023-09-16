@@ -1,19 +1,16 @@
 import { Container } from "@nextui-org/react";
-import React from "react";
 import {
-  type InferGetStaticPropsType,
-  type GetStaticProps,
-  type GetStaticPropsContext,
+  type GetServerSidePropsContext,
+  type InferGetServerSidePropsType,
 } from "next";
-import { LayoutContent } from "~/components/Layout";
-import { GreatForm } from "~/components/censo/GreatForm";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { LayoutContent } from "~/components/Layout";
 import { CustomLoading } from "~/components/Loading";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
-export async function getStaticProps(
-  context: GetStaticPropsContext<{ jefeId: string }>
+export async function getServerSideProps(
+  context: GetServerSidePropsContext<{ jefeId: string }>
 ) {
   const ssg = generateSSGHelper();
   const id = context?.params?.jefeId;
@@ -31,7 +28,7 @@ export async function getStaticProps(
 }
 
 const IndexCreateFamiliar = (
-  props: InferGetStaticPropsType<GetStaticProps>
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const { status } = useSession();
 

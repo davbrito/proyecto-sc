@@ -10,7 +10,7 @@ const CreateFamiliar = () => {
     <LayoutContent>
       <Text h1>Nuevo Familiar</Text>
       <Container css={{ mw: "680px", p: "2rem" }}>
-        <FamiliarForm />
+        <FamiliarForm consejoId="" />
       </Container>
     </LayoutContent>
   );
