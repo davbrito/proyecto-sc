@@ -7,12 +7,10 @@ import {
   Input,
   Text,
 } from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
-
-import { type SubmitHandler, useForm } from "react-hook-form";
-
-import { useRouter } from "next/router";
 
 interface FormProps {
   username: string;

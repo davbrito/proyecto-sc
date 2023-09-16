@@ -1,17 +1,20 @@
 import { Grid, Input } from "@nextui-org/react";
-import { type FieldErrors, type UseFormRegister ,  type UseFormWatch} from "react-hook-form";
+import {
+  type FieldErrors,
+  type UseFormRegister,
+  type UseFormWatch,
+} from "react-hook-form";
 import { type JefeProps } from "./GreatForm";
 
 export const CasaForm = ({
   register,
   errors,
-  watch
+  watch,
 }: {
   register: UseFormRegister<JefeProps>;
   errors: FieldErrors<JefeProps>;
-  watch: UseFormWatch<JefeProps>
+  watch: UseFormWatch<JefeProps>;
 }) => {
-
   return (
     <Grid.Container gap={2}>
       <Grid xs={4}>
@@ -66,7 +69,6 @@ export const CasaForm = ({
           helperColor="error"
         />
       </Grid>
-      
     </Grid.Container>
   );
 };

@@ -12,7 +12,7 @@ export const CustomLoading = ({ className }: Props) => {
         textAlign: "center",
         my: "1rem",
       }}
-      className={`${className ? className : ""}`}
+      className={className}
     >
       <Loading size="xl" type="points">
         Cargando...

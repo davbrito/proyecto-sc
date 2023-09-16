@@ -104,13 +104,14 @@ model Casa {
 }
 
 model JefeFamilia {
-    id                 BigInt   @id() @default(autoincrement())
-    nombres            String
-    apellidos          String
-    fechaNacimiento    DateTime
-    genero             String
-    telefono           String
-    email              String
+    id              BigInt   @id() @default(autoincrement())
+    nombres         String
+    apellidos       String
+    fechaNacimiento DateTime
+    genero          String
+    telefono        String
+    email           String
+
     tipoDocumento      String
     numeroDocumento    String
     serialCarnetPatria String

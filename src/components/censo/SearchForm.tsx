@@ -1,9 +1,9 @@
-import { Button, Card, Container, Grid, Input, Text } from "@nextui-org/react";
-import React, {
+import { Button, Card, Grid, Input, Text } from "@nextui-org/react";
+import {
+  useState,
   type Dispatch,
   type FormEvent,
   type SetStateAction,
-  useState,
 } from "react";
 
 interface Props {
