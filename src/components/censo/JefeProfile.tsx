@@ -397,7 +397,6 @@ const JefeProfile = ({ id }: { id: "string" }) => {
                   }}
                   className="mx-auto min-h-[40vh] w-full place-content-center"
                 >
-                  {/* eslint-disable-next-line react/no-unescaped-entities */}
                   <Text
                     h2
                     className="text-2xl font-light"

@@ -45,7 +45,6 @@ export const RegisterForm = () => {
   };
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     <Card as="form" onSubmit={handleSubmit(onSubmit)} className="shadow-lg">
       <Card.Header>
         <Text h3>Register Form</Text>

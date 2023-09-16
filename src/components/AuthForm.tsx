@@ -57,7 +57,6 @@ export const LoginForm = () => {
   return (
     <Card
       as="form"
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={handleSubmit(onSubmit)}
       css={{}}
       className="shadow-lg"

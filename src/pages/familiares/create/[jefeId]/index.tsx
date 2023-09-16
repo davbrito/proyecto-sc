@@ -72,7 +72,7 @@ const IndexCreateFamiliar = (
   return (
     <LayoutContent>
       <Container css={{ mw: "680px", my: "2rem" }}>
-        <FamiliarForm jefeId={BigInt(props?.id as string)} />
+        <FamiliarForm jefeId={BigInt(props?.id as string)} consejoId="" />
       </Container>
     </LayoutContent>
   );

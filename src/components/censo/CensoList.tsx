@@ -46,7 +46,6 @@ export const CensoList = ({
         }}
         className="mx-auto min-h-[40vh] w-full place-content-center"
       >
-        {/* eslint-disable-next-line react/no-unescaped-entities */}
         <Text h2 className="text-2xl font-light" css={{ textAlign: "center" }}>
           {search
             ? `No hay resultados para la busqueda del censo: '${search}'`
@@ -76,38 +75,46 @@ export const CensoList = ({
             <Table.Row key={id}>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
                 <Link
-                  href={`/consejo-comunal/${consejoId}/censo/${jefeFamilia.id.toString()}`}
+                  href={
+                    !jefeFamilia
+                      ? ""
+                      : `/consejo-comunal/${consejoId}/censo/${String(
+                          jefeFamilia.id
+                        )}`
+                  }
                   className="transition-all hover:text-blue-800  "
                 >
                   {id.padStart(8, "0")}
                 </Link>
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {jefeFamilia.casa ? jefeFamilia.casa.manzana : ""}
+                {jefeFamilia?.casa ? jefeFamilia.casa.manzana : ""}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {jefeFamilia.casa ? jefeFamilia.casa.casa.padStart(2, "0") : ""}
+                {jefeFamilia?.casa
+                  ? jefeFamilia.casa.casa.padStart(2, "0")
+                  : ""}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {jefeFamilia.apellidos.toUpperCase()},{" "}
-                {jefeFamilia.nombres.toUpperCase()}.
+                {jefeFamilia?.apellidos.toUpperCase()},{" "}
+                {jefeFamilia?.nombres.toUpperCase()}.
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {jefeFamilia.tipoDocumento.toUpperCase()}-
-                {jefeFamilia.numeroDocumento}
+                {jefeFamilia?.tipoDocumento.toUpperCase()}-
+                {jefeFamilia?.numeroDocumento}
               </Table.Cell>
 
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {formatDate(jefeFamilia.fechaNacimiento as Date)}
+                {formatDate(jefeFamilia?.fechaNacimiento as Date)}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {getRelativeTime(jefeFamilia.fechaNacimiento as Date)}
+                {getRelativeTime(jefeFamilia?.fechaNacimiento as Date)}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
                 {tipoFamilia.toUpperCase()}
               </Table.Cell>
               <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                {jefeFamilia.genero.toUpperCase() === "F"
+                {jefeFamilia?.genero.toUpperCase() === "F"
                   ? "Femenino"
                   : "Masculino"}
               </Table.Cell>
@@ -118,9 +125,11 @@ export const CensoList = ({
                   css={{
                     mx: "auto",
                   }}
-                  onPress={() =>
-                    setOpenModal({ isOpen: true, id: jefeFamilia.id })
-                  }
+                  onPress={() => {
+                    const id = jefeFamilia?.id;
+                    if (!id) return;
+                    setOpenModal({ isOpen: true, id });
+                  }}
                 >
                   Agregar pariente.
                 </Button>

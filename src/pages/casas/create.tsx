@@ -1,5 +1,5 @@
 import { Container } from "@nextui-org/react";
-import { GetServerSidePropsContext } from "next";
+import { type GetServerSidePropsContext } from "next";
 import React from "react";
 import { LayoutContent } from "~/components/Layout";
 import { CasaForm } from "~/components/censo/CasaForm";
