@@ -1,7 +1,14 @@
 import { Grid, Input, Textarea } from "@nextui-org/react";
 import React from "react";
+import { type FieldErrors, type UseFormRegister } from "react-hook-form";
+import { type JefeProps } from "./GreatForm";
 
-export const DocumentosForm = ({ register, errors }: any) => {
+interface Props {
+  register: UseFormRegister<JefeProps>;
+  errors: FieldErrors<JefeProps>;
+}
+
+export const DocumentosForm = ({ register, errors }: Props) => {
   return (
     <Grid.Container gap={1}>
       <Grid xs={4}>
@@ -78,7 +85,7 @@ export const DocumentosForm = ({ register, errors }: any) => {
         />
       </Grid>
 
-      <Grid xs={12}>
+      <Grid xs={8}>
         <Textarea
           fullWidth
           label="Observacion:"
@@ -86,6 +93,17 @@ export const DocumentosForm = ({ register, errors }: any) => {
           bordered
           {...register("documentos.observacion")}
           helperText={errors?.documentos?.observacion?.message}
+          helperColor="error"
+        />
+      </Grid>
+      <Grid xs={4}>
+        <Textarea
+          fullWidth
+          label="Condicion:"
+          placeholder="Escriba si tiene alguna condicion especial"
+          bordered
+          {...register("documentos.condicionEspecial")}
+          helperText={errors?.documentos?.condicionEspecial?.message}
           helperColor="error"
         />
       </Grid>

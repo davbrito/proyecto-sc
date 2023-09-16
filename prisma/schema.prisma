@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider = "prisma-client-js"
 }
@@ -9,12 +6,6 @@ datasource db {
     provider     = "mysql"
     url          = env("DATABASE_URL")
     relationMode = "prisma"
-}
-
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 }
 
 // Necessary for Next auth
@@ -64,7 +55,53 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
+model ConsejoComunal {
+    id             Int    @unique @default(autoincrement())
+    nombre_consejo String
+    nombre_clap    String
+    circuito       Int
+    bms            String
+    comunidad      String
+    sector         String
+    cod_siscod     String
+    estado         String
+    municipio      String
+    parroquia      String
+    rif            String
+
+    cantidad_combos   Int      @default(0)
+    cantidad_familias Int      @default(0)
+    fecha_registro    DateTime @default(now())
+
+    //FOREIGN KEY
+    censos     Censo[]
+    encargados EncargadoClap[]
+}
+
 // CENSO 
+
+model Censo {
+    id                   String   @id()
+    cargaFamiliar        Int      @default(1)
+    tipoFamilia          String   @default("unifamiliar")
+    cajasClapsPorRecibir Int      @default(0)
+    fecha                DateTime @default(now())
+
+    //FOREIGN KEY
+    jefeFamilia      JefeFamilia?
+    consejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+    consejoComunalId Int
+}
+
+model Casa {
+    id      BigInt @id() @default(autoincrement())
+    manzana String
+    casa    String
+    calle   String
+
+    jefeFamilia JefeFamilia[]
+    liderCalle  LiderCalle?
+}
 
 model JefeFamilia {
     id              BigInt   @id() @default(autoincrement())
@@ -80,47 +117,69 @@ model JefeFamilia {
     serialCarnetPatria String
     codCarnetPatria    String
     observacion        String
-    censo              Censo[]
-    familiar           Familiar[]
+    condicionEspecial  String
+    fechaRegistro      DateTime @default(now())
+
+    //FOREIGN KEY
+    censo    Censo      @relation(fields: [censoId], references: [id])
+    censoId  String     @unique
+    casa     Casa?      @relation(fields: [casaId], references: [id])
+    casaId   BigInt?
+    familiar Familiar[]
 }
 
 model Familiar {
-    id BigInt @id() @default(autoincrement())
-
-    nombres         String
-    apellidos       String
-    numeroDocumento String
-    tipoDocumento   String
-    fechaNacimiento DateTime
-    genero          String
-
+    id                 BigInt      @id() @default(autoincrement())
+    nombres            String
+    apellidos          String
+    numeroDocumento    String
+    tipoDocumento      String
+    fechaNacimiento    DateTime
+    genero             String
     serialCarnetPatria String
     codCarnetPatria    String
     observacion        String
     parentesco         String
-
-    jefeFamilia JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
-
-    jefeFamiliaId BigInt
+    condicionEspecial  String
+    fechaRegistro      DateTime    @default(now())
+    //FOREIGN KEY
+    jefeFamilia        JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
+    jefeFamiliaId      BigInt
 }
 
-model Casa {
-    id      BigInt @id() @default(autoincrement())
-    manzana String
-    casa    String
-    calle   String
+// Nuevos Modelos
 
-    Censo Censo[]
+model LiderCalle {
+    id                Int      @unique @default(autoincrement())
+    nombres           String
+    apellidos         String
+    cedula            String
+    telefono          String
+    profesion         String
+    nacionalidad      String
+    genero            String
+    cantidad_familias Int
+    email             String
+    cantidad_combos   Int
+    longitud          Float
+    latitud           Float
+    fechaRegistro     DateTime @default(now())
+    casa              Casa     @relation(fields: [casaId], references: [id])
+    casaId            BigInt   @unique
 }
 
-model Censo {
-    id                   String @id()
-    cargaFamiliar        Int    @default(1)
-    tipoFamilia          String @default("unifamiliar")
-    cajasClapsPorRecibir Int    @default(0)
+model EncargadoClap {
+    id        Int    @unique @default(autoincrement())
+    cargo     String
+    nombres   String
+    apellidos String
+    cedula    String
+    telefono  String
+    profesion String
+    email     String
 
-    jefeFamilia   JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
-    jefeFamiliaId BigInt
-    casa          Casa        @relation(fields: [casaId], references: [id])
-    casaId        BigInt
+    fechaRegistro    DateTime       @default(now())
+    //FOREIGN KEY
+    ConsejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+    consejoComunalId Int
 }

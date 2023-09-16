@@ -20,8 +20,11 @@ class MyDocument extends Document {
   render() {
     return (
       <Html lang="es">
-        <Head>{CssBaseline.flush()}</Head>
-        <body>
+        <Head>
+          {CssBaseline.flush()}
+          <link rel="shortcut icon" href="/venezuela.ico" />
+        </Head>
+        <body className="min-h-screen">
           <Main />
           <NextScript />
         </body>

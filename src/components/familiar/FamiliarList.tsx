@@ -1,16 +1,33 @@
-import { Table } from "@nextui-org/react";
+import { Table, Grid, Text } from "@nextui-org/react";
 import React from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import Link from "next/link";
+import { getRelativeTime } from "~/utils/dates";
 
 export const FamiliarList = () => {
   const { data, isLoading } = api.familia.getAll.useQuery();
 
-  if (isLoading) return <CustomLoading />;
+  if (isLoading) return <CustomLoading className="place-content-center" />;
 
   if (!data) return null;
-  console.log(data);
+
+  if (data.length === 0)
+    return (
+      <Grid.Container
+        css={{
+          border: "1px solid $gray400",
+          borderRadius: "$3xl",
+          padding: "$10 $6",
+        }}
+        className="mx-auto min-h-[40vh] w-full place-content-center"
+      >
+        <Text h2 className="text-2xl font-light" css={{ textAlign: "center" }}>
+          Aun no se han registrados familiares.
+        </Text>
+      </Grid.Container>
+    );
+
   return (
     <div>
       <Table bordered lined headerLined>
@@ -30,15 +47,18 @@ export const FamiliarList = () => {
               nombres,
               numeroDocumento,
               apellidos,
-              fechaNacimiento,
               observacion,
               tipoDocumento,
               jefeFamilia,
               genero,
+              fechaNacimiento,
             }) => (
               <Table.Row key={id.toString()}>
                 <Table.Cell css={{ textAlign: "center" }}>
-                  <Link href={`/censo/${jefeFamilia.id.toString()}`}>
+                  <Link
+                    href={`/censo/${jefeFamilia.id.toString()}`}
+                    className="transition-all hover:text-blue-800  "
+                  >
                     {jefeFamilia.tipoDocumento.toUpperCase()}-
                     {jefeFamilia.numeroDocumento}
                   </Link>
@@ -50,8 +70,7 @@ export const FamiliarList = () => {
                   {nombres.toUpperCase()}
                 </Table.Cell>
                 <Table.Cell css={{ textAlign: "center" }}>
-                  {new Date().getFullYear() -
-                    new Date(fechaNacimiento).getFullYear()}
+                  {getRelativeTime(fechaNacimiento)}
                 </Table.Cell>
                 <Table.Cell css={{ textAlign: "center" }}>
                   {genero.toUpperCase() === "F" ? "Femenino" : "Masculino"}
@@ -62,7 +81,9 @@ export const FamiliarList = () => {
                   {observacion || "No tiene"}.
                 </Table.Cell>
                 <Table.Cell css={{ textAlign: "center" }}>
-                  {tipoDocumento.toUpperCase()}-{numeroDocumento}
+                  {numeroDocumento
+                    ? `${tipoDocumento.toUpperCase()}-${numeroDocumento}`
+                    : "NO POSEE"}
                 </Table.Cell>
               </Table.Row>
             )

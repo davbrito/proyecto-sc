@@ -13,16 +13,14 @@ export const casaRouter = createTRPCRouter({
         manzana: z.string(),
         casa: z.string(),
         calle: z.string(),
-        direccion: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { calle, casa, direccion, manzana } = input;
+      const { calle, casa, manzana } = input;
       const newCasa = await ctx.prisma.casa.create({
         data: {
           calle,
           casa,
-          // direccion,
           manzana,
         },
       });
@@ -32,6 +30,9 @@ export const casaRouter = createTRPCRouter({
   getAllCasas: publicProcedure.query(async ({ ctx }) => {
     const casas = await ctx.prisma.casa.findMany({
       take: 100,
+      include: {
+        jefeFamilia: true,
+      },
     });
 
     return casas;
@@ -39,14 +40,12 @@ export const casaRouter = createTRPCRouter({
   deleteCasaById: protectedProcedure
     .input(z.object({ casaId: z.bigint() }))
     .mutation(async ({ ctx, input }) => {
-      console.log(ctx.session);
       const deleteCasa = await ctx.prisma.casa.delete({
         where: {
           id: input.casaId,
         },
       });
 
-      console.log(deleteCasa);
       return;
     }),
 });

@@ -11,21 +11,55 @@ import {
 
 export const censoRouter = createTRPCRouter({
   getCensoInfor: publicProcedure
-    .input(z.string().default(""))
+    .input(
+      z.object({
+        keyword: z.string().default(""),
+        consejoId: z.string(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       const jefes = await ctx.prisma.censo.findMany({
+        orderBy: {
+          fecha: "asc",
+        },
         take: 20,
         include: {
-          jefeFamilia: true,
-          casa: true,
+          jefeFamilia: {
+            include: {
+              casa: true,
+            },
+          },
         },
         where: {
           id: {
-            contains: input,
+            contains: input.keyword,
           },
+          consejoComunalId: parseInt(input.consejoId),
         },
       });
 
       return jefes;
+    }),
+
+  editCaja: publicProcedure
+    .input(
+      z.object({
+        cajasPorAsignar: z.number(),
+        censoId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { cajasPorAsignar, censoId } = input;
+
+      const response = await ctx.prisma.censo.update({
+        where: {
+          id: censoId,
+        },
+        data: {
+          cajasClapsPorRecibir: cajasPorAsignar,
+        },
+      });
+
+      return response;
     }),
 });

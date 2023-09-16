@@ -21,18 +21,8 @@ const routesHref: Array<RouteHref> = [
     needAuth: false,
   },
   {
-    href: "/censo",
-    pathName: "Censo",
-    needAuth: true,
-  },
-  {
-    href: "/casas",
-    pathName: "Casas",
-    needAuth: true,
-  },
-  {
-    href: "/familiares",
-    pathName: "Familiares",
+    href: "/consejo-comunal",
+    pathName: "Consejo Comunal",
     needAuth: true,
   },
 ];

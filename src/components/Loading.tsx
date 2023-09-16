@@ -1,19 +1,22 @@
 import { Grid, Loading } from "@nextui-org/react";
 import React from "react";
 
-export const CustomLoading = () => {
+interface Props {
+  className?: string;
+}
+export const CustomLoading = ({ className }: Props) => {
   return (
-    <Grid
+    <Grid.Container
       css={{
         width: "100%",
         textAlign: "center",
-        justifyContent: "center",
         my: "1rem",
       }}
+      className={className}
     >
       <Loading size="xl" type="points">
         Cargando...
       </Loading>
-    </Grid>
+    </Grid.Container>
   );
 };

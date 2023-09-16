@@ -1,16 +1,16 @@
 import { Container } from "@nextui-org/react";
 import React from "react";
 import { LayoutContent } from "~/components/Layout";
-import { GreatForm } from "~/components/censo/GreatForm";
+import { ConsejoForm } from "~/components/consejo-comunal/consejoForm";
 
-const CreateCenso = () => {
+const Create = () => {
   return (
     <LayoutContent>
-      <Container css={{ mw: "680px", my: "2rem" }}>
-        <GreatForm />
+      <Container className="my-4 max-w-2xl ">
+        <ConsejoForm />
       </Container>
     </LayoutContent>
   );
 };
 
-export default CreateCenso;
+export default Create;

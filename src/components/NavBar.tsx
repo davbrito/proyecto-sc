@@ -1,6 +1,6 @@
-import { Button, Dropdown, Navbar } from "@nextui-org/react";
-import NavbarContent from "@nextui-org/react/types/navbar/navbar-content";
+import { Button, Dropdown, Navbar, Text, useTheme } from "@nextui-org/react";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -9,28 +9,61 @@ import routesHref from "~/utils/routesNavBar";
 export const NavBar = () => {
   const { data, status } = useSession();
   const router = useRouter();
+  const { isDark } = useTheme();
+
+  const collapseItems = [
+    "Features",
+    "Customers",
+    "Pricing",
+    "Company",
+    "Legal",
+    "Team",
+    "Help & Feedback",
+    "Login",
+    "Sign Up",
+  ];
 
   return (
-    <Navbar variant={"floating"} css={{ mx: "auto", zIndex: "1000" }}>
+    <Navbar
+      variant={"sticky"}
+      className=""
+      shouldHideOnScroll
+      isBordered={isDark}
+      css={{ mx: "auto", zIndex: "1000" }}
+    >
+      <Navbar.Toggle showIn={"xs"} aria-label="toggle navigation" />
+      <Navbar.Brand className="flex items-center gap-2" as={"div"}>
+        <Image
+          src={"/venezuela.ico"}
+          width={32}
+          height={32}
+          alt="logo"
+          className=""
+        />
+        <Text h1 b className=" m-0  text-2xl text-inherit">
+          CLAP
+        </Text>
+      </Navbar.Brand>
       {status === "unauthenticated" && (
-        <Navbar.Content className="flex gap-x-6" hideIn="sm">
+        <Navbar.Content
+          enableCursorHighlight
+          className="flex gap-x-6"
+          hideIn="sm"
+        >
           {routesHref
             .filter(({ needAuth }) => !needAuth)
             .map(({ href, pathName }) => (
-              <Navbar.Link
-                key={pathName}
-                href={href}
-                isActive={pathName === router.route}
-                className="text-lg text-blue-400 transition-all hover:text-blue-200"
-              >
-                {pathName}
-              </Navbar.Link>
+              <Navbar.Item key={pathName}>
+                <Navbar.Link href={href} isActive={pathName === router.route}>
+                  {pathName}
+                </Navbar.Link>
+              </Navbar.Item>
             ))}
         </Navbar.Content>
       )}
 
       {status === "authenticated" && (
-        <Navbar.Content className="flex gap-x-6" hideIn="sm">
+        <Navbar.Content className="hidden gap-x-6 sm:flex">
           {routesHref
             .filter(({ needAuth }) => needAuth)
             .map(({ href, pathName }) => (
@@ -38,13 +71,22 @@ export const NavBar = () => {
                 key={pathName}
                 href={href}
                 isActive={href === router.route}
-                className="text-lg text-blue-400 transition-all hover:text-blue-200"
+                activeColor={"error"}
               >
                 {pathName}
               </Navbar.Link>
             ))}
         </Navbar.Content>
       )}
+      <Navbar.Collapse>
+        {collapseItems.map((item, index) => (
+          <Navbar.CollapseItem key={item}>
+            <Link color="inherit" href="#">
+              {item}
+            </Link>
+          </Navbar.CollapseItem>
+        ))}
+      </Navbar.Collapse>
 
       <div className="self-center">
         {data?.user && (
@@ -61,24 +103,33 @@ export const NavBar = () => {
             </Dropdown.Button>
             <Dropdown.Menu aria-label="Static Actions">
               <Dropdown.Section>
-                <Dropdown.Item key={"editUser"}>
-                  <Link href={"/profile"}>Mi cuenta</Link>
+                <Dropdown.Item key={"editUser"} css={{ textAlign: "center" }}>
+                  <Link href={"/profile"} className="block w-full">
+                    Mi cuenta
+                  </Link>
                 </Dropdown.Item>
               </Dropdown.Section>
               <Dropdown.Section>
-                <Dropdown.Item key="logout" color="error">
+                <Dropdown.Item
+                  key="logout"
+                  css={{
+                    transition: "all 0.3s ease",
+                    "&:focus": {
+                      backgroundColor: "$red",
+                    },
+                  }}
+                >
                   {data && (
                     <Button
-                      className="w-full bg-inherit "
+                      className="w-full bg-inherit font-semibold"
                       onClick={() => {
                         signOut({ callbackUrl: "/login" })
-                          .then(() => {
-                            console.log("signed out");
-                          })
+                          .then(() => {})
                           .catch((err) => {
                             console.error(err);
                           });
                       }}
+                      css={{ color: "$foreground" }}
                     >
                       Cerrar sesion
                     </Button>

@@ -7,14 +7,10 @@ import {
   Input,
   Text,
 } from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
-import Image from "next/image";
-import Link from "next/link";
-import { type SubmitHandler, useForm } from "react-hook-form";
-import { FormEvent } from "react";
-import { redirect } from "next/navigation";
-import { useRouter } from "next/router";
 
 interface FormProps {
   username: string;
@@ -51,92 +47,98 @@ export const EditForm = () => {
   if (isLoading) return <CustomLoading />;
   if (!data) return null;
   return (
-    <>
+    <Container>
       <Card
         as="form"
         onSubmit={handleSubmit(onSubmit)}
+        className="mx-auto max-w-lg"
         css={{
           backgroundColor: "$gray200",
           border: "$gray100",
           borderRadius: "$md",
           p: "$5",
-          minWidth: "fit-content",
-          width: "400px",
-
-          "@smMin": {
-            minWidth: "fit-content",
-            width: "600px",
-            p: "$8",
-          },
         }}
       >
         <Card.Header>
-          <Text h1>Actualizar Informacion</Text>
+          <Text h1 className=" mx-auto  text-2xl font-light">
+            Actualizar Informacion
+          </Text>
         </Card.Header>
         <Divider />
-        <Card.Body>
-          <Grid css={{ mx: "auto" }}>
-            <Grid.Container lg={12} gap={1}>
-              <Container>
-                <Input
-                  fullWidth
-                  bordered
-                  label="Nombre de usuario:"
-                  type="text"
-                  initialValue={data.username}
-                  {...register("username", {
-                    required: {
-                      value: true,
-                      message: "El parentesco es requerido",
-                    },
-                  })}
-                />
-              </Container>
-              <Container>
-                <Input
-                  fullWidth
-                  bordered
-                  label="Nombre:"
-                  type="text"
-                  initialValue={data.name}
-                  {...register("name", {
-                    required: {
-                      value: true,
-                      message: "El parentesco es requerido",
-                    },
-                  })}
-                />
-              </Container>
-              <Container>
-                <Input
-                  fullWidth
-                  bordered
-                  label="Apellido:"
-                  type="text"
-                  initialValue={data.lastName}
-                  {...register("lastName", {
-                    required: {
-                      value: true,
-                      message: "El parentesco es requerido",
-                    },
-                  })}
-                />
-              </Container>
-            </Grid.Container>
-          </Grid>
+        <Card.Body className="px-0 py-4 ">
+          <Grid.Container>
+            <Container>
+              <Input
+                fullWidth
+                bordered
+                label="Nombre de usuario:"
+                type="text"
+                initialValue={data.username}
+                {...register("username", {
+                  required: {
+                    value: true,
+                    message: "El parentesco es requerido",
+                  },
+                })}
+              />
+            </Container>
+            <Container>
+              <Input
+                fullWidth
+                bordered
+                label="Nombre:"
+                type="text"
+                initialValue={data.name}
+                {...register("name", {
+                  required: {
+                    value: true,
+                    message: "El parentesco es requerido",
+                  },
+                })}
+              />
+            </Container>
+            <Container>
+              <Input
+                fullWidth
+                bordered
+                label="Apellido:"
+                type="text"
+                initialValue={data.lastName}
+                {...register("lastName", {
+                  required: {
+                    value: true,
+                    message: "El parentesco es requerido",
+                  },
+                })}
+              />
+            </Container>
+          </Grid.Container>
         </Card.Body>
 
-        <Card.Footer css={{ flexDirection: "column", pt: 0 }}>
+        <Card.Footer
+          css={{ flexDirection: "row", pt: 0 }}
+          className="justify-center gap-4"
+        >
           <Button
             type="submit"
             disabled={isSubmitting}
             css={{ display: "block" }}
-            size={"lg"}
+            size={"md"}
+            className="bg-blue-600 transition-all hover:bg-blue-700"
           >
             Actualizar
           </Button>
+          <Button
+            type="button"
+            css={{ display: "block" }}
+            size={"md"}
+            className="bg-red-600 transition-all hover:bg-red-700"
+            onPress={() => router.back()}
+          >
+            Cancelar
+          </Button>
         </Card.Footer>
       </Card>
-    </>
+    </Container>
   );
 };

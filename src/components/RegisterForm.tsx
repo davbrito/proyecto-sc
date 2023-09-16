@@ -1,4 +1,4 @@
-import { Button, Card, Grid, Input, Text } from "@nextui-org/react";
+import { Button, Card, Grid, Input, Loading, Text } from "@nextui-org/react";
 import { signIn } from "next-auth/react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
@@ -23,7 +23,9 @@ export const RegisterForm = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (values) => {
     try {
-      await mutateAsync(values);
+      const user = await mutateAsync(values);
+
+      console.log(user);
       reset(
         { password: "", username: "", lastName: "", name: "" },
         { keepErrors: true }
@@ -43,8 +45,7 @@ export const RegisterForm = () => {
   };
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    <Card as="form" onSubmit={handleSubmit(onSubmit)}>
+    <Card as="form" onSubmit={handleSubmit(onSubmit)} className="shadow-lg">
       <Card.Header>
         <Text h3>Register Form</Text>
       </Card.Header>
@@ -58,7 +59,10 @@ export const RegisterForm = () => {
               placeholder="Escriba su nombre de usuario..."
               bordered
               {...register("username", {
-                required: { value: true, message: "campo requerido" },
+                required: {
+                  value: true,
+                  message: "El campo de 'usuario' no puede estar vacio.",
+                },
               })}
               helperText={errors.username?.message}
               helperColor="error"
@@ -71,7 +75,10 @@ export const RegisterForm = () => {
               placeholder="Escriba su nombre..."
               bordered
               {...register("name", {
-                required: { value: true, message: "campo requerido" },
+                required: {
+                  value: true,
+                  message: "El campo de 'nombre' no puede estar vacio.",
+                },
               })}
               helperText={errors.name?.message}
               helperColor="error"
@@ -84,7 +91,10 @@ export const RegisterForm = () => {
               placeholder="Escriba su apellido..."
               bordered
               {...register("lastName", {
-                required: { value: true, message: "campo requerido" },
+                required: {
+                  value: true,
+                  message: "El campo de 'apellido' no puede estar vacio.",
+                },
               })}
               helperText={errors.lastName?.message}
               helperColor="error"
@@ -98,12 +108,15 @@ export const RegisterForm = () => {
               placeholder="Escriba su contraseña..."
               bordered
               {...register("password", {
-                required: { value: true, message: "campo requerido" },
-                minLength: { value: 8, message: "mínimo 8 caracteres" },
+                required: {
+                  value: true,
+                  message: "El campo de 'contrasenia' no puede estar vacio.",
+                },
+                minLength: { value: 8, message: "Mínimo 8 caracteres." },
                 pattern: {
-                  value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
+                  value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).+$/,
                   message:
-                    "este campo debe contener mínimo 8 caracteres, al menos una letra, una letra mayúscula y un número",
+                    "Debe contener al menos una minuscula, una mayuscula y un numero.",
                 },
               })}
               helperText={errors.password?.message}
@@ -122,12 +135,20 @@ export const RegisterForm = () => {
       <Card.Divider />
       <Card.Footer>
         <Button
+          size="lg"
           type="submit"
-          size="sm"
-          css={{ ml: "auto" }}
+          css={{
+            ml: "auto",
+            "&:hover": {
+              backgroundColor: "$primarySolidHover",
+            },
+          }}
           disabled={isSubmitting}
         >
-          Registrarse
+          {isSubmitting && (
+            <Loading as="span" color={"secondary"} className="mx-4" />
+          )}
+          <span>{isSubmitting ? " Cargando..." : "Registrate."}</span>
         </Button>
       </Card.Footer>
     </Card>

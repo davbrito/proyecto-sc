@@ -1,4 +1,4 @@
-import { Container } from "@nextui-org/react";
+import { Container, Text } from "@nextui-org/react";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -9,7 +9,7 @@ const Home: NextPage = () => {
   const { data } = useSession();
 
   return (
-    <LayoutContent>
+    <LayoutContent className="flex flex-col items-center justify-center">
       <Container
         css={{
           p: "$10",
@@ -24,36 +24,18 @@ const Home: NextPage = () => {
         }}
       >
         <div>
-          <h1 className="text-2xl">Proyecto de Censo 2023</h1>
+          <Text className="text-4xl font-medium" h1>
+            Proyecto de Censo 2023
+          </Text>
         </div>
-        <div>{data && <p>Hola de nuevo, {data.user.name}</p>}</div>
-        <Container
-          css={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "$4",
-            mt: "$8",
-          }}
-        >
-          <Link
-            href={"/censo"}
-            className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600"
-          >
-            Ver datos del censo
-          </Link>
-          <Link
-            href={"/familiares"}
-            className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600"
-          >
-            Ver familiares
-          </Link>
-          <Link
-            href={"/casas"}
-            className="inline-block cursor-pointer rounded border bg-blue-700 px-3 py-2 transition-all hover:bg-blue-600"
-          >
-            Ver casas
-          </Link>
-        </Container>
+        <div>
+          {data && (
+            <p className="text-lg">
+              Hola de nuevo,{" "}
+              <span className="font-semibold uppercase">{data.user.name}</span>.
+            </p>
+          )}
+        </div>
       </Container>
     </LayoutContent>
   );

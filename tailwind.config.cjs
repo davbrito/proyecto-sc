@@ -2,7 +2,11 @@
 const config = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        independencia: "url('/img/independencia.jpg')",
+      },
+    },
   },
   plugins: [],
 };

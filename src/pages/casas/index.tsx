@@ -1,4 +1,4 @@
-import { Container, Link, Text } from "@nextui-org/react";
+import { Card, Container, Grid, Link, Text } from "@nextui-org/react";
 import { type GetServerSidePropsContext } from "next";
 import { useSession } from "next-auth/react";
 import React, { useContext } from "react";
@@ -8,14 +8,20 @@ import { api } from "~/utils/api";
 import { verifySession } from "~/utils/verifySession";
 
 const CasaIndex = () => {
-  const { isLoading, data } = api.casa.getAllCasas.useQuery();
-  const session = useSession();
-  console.log(session);
-  console.log(data);
   return (
     <LayoutContent>
-      <Text h1>Casas</Text>
-      <CasaList />
+      <Container className="my-5 place-content-center">
+        <Card>
+          <Card.Body>
+            <Text h1 className="mb-6 text-center text-4xl font-light">
+              Casas registradas
+            </Text>
+            <Container>
+              <CasaList />
+            </Container>
+          </Card.Body>
+        </Card>
+      </Container>
     </LayoutContent>
   );
 };

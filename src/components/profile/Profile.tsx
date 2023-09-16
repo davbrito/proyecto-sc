@@ -1,8 +1,7 @@
-import { Container } from "@nextui-org/react";
+import { Avatar, Card, Col, Container, Row, Text } from "@nextui-org/react";
 import React from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
-import Image from "next/image";
 import Link from "next/link";
 
 export const ProfileData = () => {
@@ -12,56 +11,69 @@ export const ProfileData = () => {
   if (!data) return null;
 
   return (
-    <Container
+    <Card
+      variant="bordered"
       css={{
         backgroundColor: "$gray200",
-        border: "$gray100",
-        borderRadius: "$md",
         p: "$10",
+        maxWidth: "600px",
+        margin: "auto",
       }}
     >
-      <h1>Datos del perfil</h1>
-
-      <div className="flex justify-between">
-        <div className="flex flex-col ">
-          <h2>
-            <b>Nombre:</b> {data.name}
-          </h2>
-          <h2>
-            <b>Apellido:</b> {data.lastName}
-          </h2>
-
-          <h2>
-            <b>Usuario:</b> {data.username}
-          </h2>
-        </div>
-        <div className="mx-12 my-6 flex flex-col items-center justify-center gap-4 rounded-md bg-slate-300 p-4 px-6">
-          <Image
-            src={data.image || "/profile.png"}
-            alt={data.username}
-            width={102}
-            height={102}
-          />
-
-          <button
-            className="cursor-pointer rounded border
-            border-solid border-orange-300  bg-orange-400 py-2 font-semibold transition-all hover:bg-orange-300
+      <Container className="flex justify-between" css={{ padding: 0 }}>
+        <Row className="flex flex-col items-center gap-4 sm:flex-row">
+          <Col css={{ maxWidth: "180px" }}>
+            <Avatar
+              css={{ size: "$40" }}
+              pointer
+              text={data.name}
+              src={data.image || "/profile.png"}
+              color="gradient"
+              bordered
+              className="mx-auto"
+            />
+            <button
+              className="mx-auto mt-4
+              block w-fit cursor-pointer rounded border border-solid
+              bg-orange-600 px-4 py-2 font-semibold transition-all hover:bg-orange-700
           "
-          >
-            Cambiar
-          </button>
-        </div>
-      </div>
-      <div className="mx-auto text-center">
-        <Link
-          className="inline-block transform-none cursor-pointer
+            >
+              Cambiar
+            </button>
+          </Col>
+
+          <Row className="flex flex-col sm:self-start">
+            <Col>
+              <Text h2 className="text-base  text-gray-400">
+                Nombre:
+              </Text>
+              <Text h2 className="ml-2 text-2xl font-light">
+                <span className="capitalize">{data.name}</span>{" "}
+                <span className="capitalize">{data.lastName}</span>
+              </Text>
+            </Col>
+            <Col>
+              <Text h2 className="text-base  text-gray-400">
+                Username:
+              </Text>
+              <Text h2 className="ml-2 text-2xl font-light">
+                <span className="capitalize">{data.username}</span>
+              </Text>
+            </Col>
+          </Row>
+        </Row>
+
+        <div className="mx-auto mt-4 text-center">
+          <Link
+            className="inline-block transform-none cursor-pointer
             rounded border border-solid border-red-500 bg-red-500 px-4 py-3 font-semibold  text-white transition-all hover:bg-red-400
           "
-          href={"/profile/edit"}
-        >
-          Actualizar
-        </Link>
-      </div>
-    </Container>
+            href={"/profile/edit"}
+          >
+            Actualizar
+          </Link>
+        </div>
+      </Container>
+    </Card>
   );
 };
