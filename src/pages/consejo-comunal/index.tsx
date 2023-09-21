@@ -1,38 +1,36 @@
-import { Card, Container, Row, Text, Link } from "@nextui-org/react";
-import React from "react";
+import { Button, Card, CardBody, CardHeader, Spacer } from "@nextui-org/react";
 import { LayoutContent } from "~/components/Layout";
 import { ConsejosList } from "~/components/consejo-comunal/consejosList";
+import NextLink from "next/link";
 
 const Index = () => {
   return (
     <LayoutContent>
-      <Container>
-        <Row className="my-4 flex-col gap-4 md:flex-row-reverse">
-          <Card
-            css={{}}
-            className="flex flex-row flex-wrap items-center justify-evenly self-stretch"
-          >
-            <Link
+      <div className="container mx-auto pt-4">
+        <Card shadow="md" className="bg-content2">
+          <CardBody>
+            <Button
+              className="mx-auto"
+              as={NextLink}
               href="/consejo-comunal/create"
-              css={{ my: "1rem" }}
-              className=" h-fit w-fit rounded-md bg-green-700 px-4 py-3 text-lg text-white"
+              color="success"
             >
               Nuevo consejo
-            </Link>
-          </Card>
-        </Row>
-        <Card css={{ mb: "16px !important" }}>
-          <Card.Body>
-            <Text h1 className=" text-center text-4xl font-medium ">
-              Consejos Comunales
-            </Text>
-
-            <Container css={{ mt: "16px" }}>
-              <ConsejosList />
-            </Container>
-          </Card.Body>
+            </Button>
+          </CardBody>
         </Card>
-      </Container>
+        <Spacer y={4} />
+        <Card shadow="md" className="bg-content2">
+          <CardHeader className="px-4">
+            <h2 className="text-center text-3xl font-semibold">
+              Consejos Comunales
+            </h2>
+          </CardHeader>
+          <CardBody>
+            <ConsejosList />
+          </CardBody>
+        </Card>
+      </div>
     </LayoutContent>
   );
 };

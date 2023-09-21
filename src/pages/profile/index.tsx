@@ -1,4 +1,4 @@
-import { Card, Container, Text } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import { type GetServerSidePropsContext } from "next";
 import React from "react";
 import { LayoutContent } from "~/components/Layout";
@@ -8,18 +8,14 @@ import { verifySession } from "~/utils/verifySession";
 function Profile() {
   return (
     <LayoutContent>
-      <Container className="my-5 place-content-center">
-        <Card css={{ padding: "8px 16px" }} className="mx-auto w-fit">
-          <Card.Body>
-            <Text h1 className="mb-4 text-center text-4xl font-light">
-              Datos del perfil
-            </Text>
-            <Container>
-              <ProfileData />
-            </Container>
-          </Card.Body>
-        </Card>
-      </Container>
+      <Card className="mx-auto mt-5 max-w-md bg-content2" fullWidth>
+        <CardHeader className="justify-center">
+          <h2 className="text-center text-2xl font-bold">Datos del perfil</h2>
+        </CardHeader>
+        <CardBody>
+          <ProfileData />
+        </CardBody>
+      </Card>
     </LayoutContent>
   );
 }

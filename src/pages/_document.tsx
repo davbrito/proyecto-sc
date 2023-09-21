@@ -1,4 +1,3 @@
-import { CssBaseline } from "@nextui-org/react";
 import Document, {
   Head,
   Html,
@@ -21,7 +20,6 @@ class MyDocument extends Document {
     return (
       <Html lang="es">
         <Head>
-          {CssBaseline.flush()}
           <link rel="shortcut icon" href="/venezuela.ico" />
         </Head>
         <body className="min-h-screen">

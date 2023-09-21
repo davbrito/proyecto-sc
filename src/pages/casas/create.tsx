@@ -1,4 +1,3 @@
-import { Container } from "@nextui-org/react";
 import { type GetServerSidePropsContext } from "next";
 import React from "react";
 import { LayoutContent } from "~/components/Layout";
@@ -8,7 +7,7 @@ import { verifySession } from "~/utils/verifySession";
 const CreateCasa = () => {
   return (
     <LayoutContent>
-      <Container>{/* <CasaForm /> */}</Container>
+      <div className="container">{/* <CasaForm /> */}</div>
     </LayoutContent>
   );
 };

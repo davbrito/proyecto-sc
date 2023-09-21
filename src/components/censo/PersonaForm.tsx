@@ -1,10 +1,10 @@
-import { Divider, Grid, Input } from "@nextui-org/react";
+import { Divider, Input } from "@nextui-org/react";
 import React from "react";
 
 export const PersonaForm = ({ register, errors, getFieldState }: any) => {
   return (
-    <Grid.Container gap={2}>
-      <Grid xs={6}>
+    <div className="grid grid-cols-12 gap-2">
+      <div className="col-span-6">
         <Input
           fullWidth
           label="Primer nombre:"
@@ -22,9 +22,9 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           helperText={errors?.datosBasicos?.primerNombre?.message}
           helperColor="error"
         />
-      </Grid>
+      </div>
 
-      <Grid xs={6}>
+      <div className="col-span-6">
         <Input
           fullWidth
           label="Segundo nombre:"
@@ -42,9 +42,9 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           helperText={errors?.datosBasicos?.segundoNombre?.message}
           helperColor="error"
         />
-      </Grid>
+      </div>
 
-      <Grid xs={6}>
+      <div className="col-span-6">
         <Input
           fullWidth
           label="Primer apellido:"
@@ -62,9 +62,9 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           helperText={errors?.datosBasicos?.primerApellido?.message}
           helperColor="error"
         />
-      </Grid>
+      </div>
 
-      <Grid xs={6}>
+      <div className="col-span-6">
         <Input
           fullWidth
           label="Segundo apellido:"
@@ -82,11 +82,11 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           helperText={errors?.datosBasicos?.segundoApellido?.message}
           helperColor="error"
         />
-      </Grid>
+      </div>
 
-      <Divider css={{ mt: "1rem" }} />
+      <Divider className="mt-4" />
 
-      <Grid xs={6}>
+      <div className="col-span-6">
         <Input
           fullWidth
           label="Fecha de nacimiento:"
@@ -100,9 +100,9 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           helperText={errors?.datosBasicos?.fechaNacimiento?.message}
           helperColor="error"
         />
-      </Grid>
+      </div>
 
-      <Grid xs={6}>
+      <div className="col-span-6">
         <div className="w-full">
           <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
             Genero:
@@ -120,9 +120,9 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
             <option value="m">Masculino</option>
           </select>
         </div>
-      </Grid>
+      </div>
 
-      <Grid xs={6}>
+      <div className="col-span-6">
         <Input
           fullWidth
           label="Email:"
@@ -139,8 +139,8 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           helperText={errors?.datosBasicos?.email?.message}
           helperColor="error"
         />
-      </Grid>
-      <Grid xs={6}>
+      </div>
+      <div className="col-span-6">
         <Input
           fullWidth
           label="Numero de contacto:"
@@ -157,7 +157,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           helperText={errors?.datosBasicos?.telefono?.message}
           helperColor="error"
         />
-      </Grid>
-    </Grid.Container>
+      </div>
+    </div>
   );
 };

@@ -1,5 +1,4 @@
-import { Button, Container, Modal, Text } from "@nextui-org/react";
-import React from "react";
+import { Button, Modal } from "@nextui-org/react";
 
 interface Props {
   onDelete: () => void;
@@ -17,18 +16,14 @@ const DeleteConfirmation = ({ onDelete, onClose, open }: Props) => {
     <Modal
       closeButton
       aria-labelledby="modal-delete-confirm"
-      width="380px"
-      css={{ py: "$12", px: "$12" }}
-      open={open}
+      size="md"
+      isOpen={open}
       onClose={onClose}
-      autoMargin
     >
-      <Text h1 css={{ fontSize: "$3xl", fontWeight: "$semibold" }}>
+      <h1 className="text-3xl font-semibold">
         Esta seguro de eliminar el registro?
-      </Text>
-      <Container
-        css={{ display: "flex", gap: "$6", justifyContent: "center", mt: "$6" }}
-      >
+      </h1>
+      <div className="mt-6 flex justify-center gap-6">
         <Button
           onPress={() => onClose()}
           className="w-fit min-w-fit bg-blue-500 transition-all hover:bg-blue-600"
@@ -41,7 +36,7 @@ const DeleteConfirmation = ({ onDelete, onClose, open }: Props) => {
         >
           Eliminar
         </Button>
-      </Container>
+      </div>
     </Modal>
   );
 };

@@ -1,45 +1,42 @@
-import { Button, Grid, Table, Text } from "@nextui-org/react";
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@nextui-org/react";
 import Link from "next/link";
-import React from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 
 export const ConsejosList = () => {
   const { data, isLoading } = api.consejo.getAll.useQuery();
 
-  if (isLoading)
-    return <CustomLoading className="h-[30vh] place-content-center" />;
+  if (isLoading) return <CustomLoading />;
 
   if (!data) return null;
 
   if (data.length === 0)
     return (
-      <Grid.Container
-        css={{
-          border: "1px solid $gray400",
-          borderRadius: "$3xl",
-          padding: "$10 $6",
-        }}
-        className="mx-auto min-h-[40vh] w-full place-content-center"
-      >
-        <Text h2 className="text-2xl font-light" css={{ textAlign: "center" }}>
-          Aun no se han registrados censos.
-        </Text>
-      </Grid.Container>
+      <p className="rounded-medium border border-foreground px-6 py-10 text-center text-2xl font-light">
+        Aun no se han registrados censos.
+      </p>
     );
 
   return (
     <>
-      <Table bordered lined headerLined>
-        <Table.Header>
-          <Table.Column align="center">Consejo</Table.Column>
-          <Table.Column align="center">CLAP</Table.Column>
-          <Table.Column align="center">Circuito</Table.Column>
-          <Table.Column align="center">Comunidad</Table.Column>
-          <Table.Column align="center">Sector</Table.Column>
-          <Table.Column align="center">Acciones</Table.Column>
-        </Table.Header>
-        <Table.Body css={{ textTransform: "uppercase" }}>
+      <Table>
+        <TableHeader>
+          <TableColumn align="center">Consejo</TableColumn>
+          <TableColumn align="center">CLAP</TableColumn>
+          <TableColumn align="center">Circuito</TableColumn>
+          <TableColumn align="center">Comunidad</TableColumn>
+          <TableColumn align="center">Sector</TableColumn>
+          <TableColumn align="center">Acciones</TableColumn>
+        </TableHeader>
+        <TableBody className="uppercase">
           {data.map(
             ({
               circuito,
@@ -49,29 +46,27 @@ export const ConsejosList = () => {
               sector,
               id,
             }) => (
-              <Table.Row key={id}>
-                <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+              <TableRow key={id}>
+                <TableCell className="text-center text-sm">
                   <Link href={`/consejo-comunal/${id}`}>{nombre_consejo}</Link>
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                </TableCell>
+                <TableCell className="text-center text-sm">
                   {nombre_clap}
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                </TableCell>
+                <TableCell className="text-center text-sm">
                   {circuito}
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                </TableCell>
+                <TableCell className="text-center text-sm">
                   {comunidad}
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
-                  {sector}
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+                </TableCell>
+                <TableCell className="text-center text-sm">{sector}</TableCell>
+                <TableCell className="text-center text-sm">
                   <Button>Hacer</Button>
-                </Table.Cell>
-              </Table.Row>
+                </TableCell>
+              </TableRow>
             )
           )}
-        </Table.Body>
+        </TableBody>
       </Table>
       {/* <Modal
         closeButton

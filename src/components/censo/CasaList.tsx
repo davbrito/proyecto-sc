@@ -1,4 +1,12 @@
-import { Button, Table, Grid, Text } from "@nextui-org/react";
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@nextui-org/react";
 import React from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
@@ -31,67 +39,40 @@ export const CasaList = () => {
   return (
     <>
       {data.length === 0 && (
-        <Grid.Container
-          css={{
-            border: "1px solid $gray400",
-            borderRadius: "$3xl",
-            padding: "$10 $6",
-          }}
-          className="mx-auto min-h-[40vh] w-full place-content-center"
-        >
-          <Text
-            h2
-            className="text-2xl font-light"
-            css={{ textAlign: "center" }}
-          >
+        <div className="mx-auto min-h-[40vh] w-full place-content-center rounded-3xl border border-solid border-gray-400 px-6 py-10">
+          <h2 className="text-center text-2xl font-light">
             Aun no se han registrados alguna casa.
-          </Text>
-        </Grid.Container>
+          </h2>
+        </div>
       )}
       {data.length > 0 && (
-        <Table
-          css={{ mt: "0.5rem", height: "auto", minWidth: "100%" }}
-          className="text-center"
-          bordered
-          lined
-          headerLined
-          hoverable
-        >
-          <Table.Header>
-            <Table.Column
-              align="center"
-              css={{ fontSize: "16px", fontWeight: 600 }}
-            >
-              N° Calle{" "}
-            </Table.Column>
-            <Table.Column
-              align="center"
-              css={{ fontSize: "16px", fontWeight: 600 }}
-            >
-              N° Manzana{" "}
-            </Table.Column>
-            <Table.Column
-              align="center"
-              css={{ fontSize: "16px", fontWeight: 600 }}
-            >
-              N° Casa{" "}
-            </Table.Column>
-            <Table.Column
+        <Table className="mt-2 h-auto min-w-full text-center">
+          <TableHeader>
+            <TableColumn align="center" className="text-xl font-semibold">
+              N° Calle
+            </TableColumn>
+            <TableColumn align="center" className="text-xl font-semibold">
+              N° Manzana
+            </TableColumn>
+            <TableColumn align="center" className="text-xl font-semibold">
+              N° Casa
+            </TableColumn>
+            <TableColumn
               align="center"
               width={50}
-              css={{ fontSize: "16px", fontWeight: 600 }}
+              className="text-xl font-semibold"
             >
               Acciones
-            </Table.Column>
-          </Table.Header>
-          <Table.Body>
+            </TableColumn>
+          </TableHeader>
+          <TableBody>
             {data &&
               data.map(({ id, calle, casa, manzana, jefeFamilia }) => (
-                <Table.Row key={`${id}`}>
-                  <Table.Cell>{calle.toUpperCase()}</Table.Cell>
-                  <Table.Cell>{manzana}</Table.Cell>
-                  <Table.Cell>{casa}</Table.Cell>
-                  <Table.Cell>
+                <TableRow key={id}>
+                  <TableCell>{calle.toUpperCase()}</TableCell>
+                  <TableCell>{manzana}</TableCell>
+                  <TableCell>{casa}</TableCell>
+                  <TableCell>
                     {jefeFamilia[0]?.id ? (
                       <Link
                         href={`/consejo-comunal/id/censo/${jefeFamilia[0].censoId}`}
@@ -102,10 +83,10 @@ export const CasaList = () => {
                     ) : (
                       <Button disabled>Ver informacion</Button>
                     )}
-                  </Table.Cell>
-                </Table.Row>
+                  </TableCell>
+                </TableRow>
               ))}
-          </Table.Body>
+          </TableBody>
         </Table>
       )}
     </>

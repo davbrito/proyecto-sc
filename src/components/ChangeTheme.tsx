@@ -8,26 +8,12 @@ interface Props {
 const ChangeTheme = ({ toggleTheme, theme }: Props) => {
   return (
     <Button
+      isIconOnly
       onClick={() => {
         toggleTheme();
       }}
-      as={"button"}
-      auto
-      css={{
-        position: "fixed",
-        bottom: "10px",
-        right: "10px",
-        zIndex: "9999",
-        width: "2.5rem",
-        height: "2.5rem",
-        display: "inline-block",
-        "&:hover": {
-          backgroundColor: "$neutralBorder",
-        },
-        backgroundColor: "$neutralSolidHover",
-        color: "$blue500",
-      }}
-      className=" p-1.5 text-xl "
+      variant="faded"
+      className="fixed bottom-2 right-2 w-4 p-2 text-xl"
     >
       {theme.includes("dark") ? (
         <svg

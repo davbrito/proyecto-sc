@@ -1,23 +1,28 @@
 import {
   Button,
   Card,
-  Container,
+  CardBody,
+  CardHeader,
   Modal,
+  ModalBody,
   Table,
-  Text,
-  Grid,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
 } from "@nextui-org/react";
-import React, { useState } from "react";
-import { api } from "~/utils/api";
-import { CustomLoading } from "../Loading";
-import { formatDate, getRelativeTime } from "~/utils/dates";
-import FamiliarForm from "../familiar/FamiliarForm";
-import { type JefeFamilia, type Familiar } from "@prisma/client";
-import JefeEditForm from "./JefeEditForm";
-import DeleteConfirmation from "../DeleteConfirmation";
+import { type Familiar, type JefeFamilia } from "@prisma/client";
 import { useRouter } from "next/router";
-import EditCajaForm from "./EditCajaForm";
+import { useState } from "react";
+import { api } from "~/utils/api";
+import { formatDate, getRelativeTime } from "~/utils/dates";
+import DeleteConfirmation from "../DeleteConfirmation";
+import { CustomLoading } from "../Loading";
+import FamiliarForm from "../familiar/FamiliarForm";
 import { ChangeJefeForm } from "./ChangeJefeForm";
+import EditCajaForm from "./EditCajaForm";
+import JefeEditForm from "./JefeEditForm";
 
 interface Edit {
   data?: Familiar | JefeFamilia;
@@ -119,25 +124,16 @@ const JefeProfile = ({ id }: { id: string }) => {
   return (
     <>
       {/* CABECERA DEL CENSO */}
-      <Container
-        css={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          my: "$8",
-        }}
-      >
-        <Text h1>
+      <div className="container my-8 flex flex-row justify-center">
+        <h1>
           Perfil de,{" "}
           <span className="font-thin uppercase text-gray-400">
             {data?.nombres}.
           </span>
-        </Text>
+        </h1>
 
-        <Container
-          css={{ display: "flex", justifyContent: "center", gap: "$4" }}
-        >
-          <Button color={"error"} disabled onPress={() => handleDeleteJefe()}>
+        <div className="container flex justify-center gap-4">
+          <Button color="danger" disabled onPress={() => handleDeleteJefe()}>
             Eliminar este censo
           </Button>
 
@@ -154,16 +150,16 @@ const JefeProfile = ({ id }: { id: string }) => {
           >
             Cambiar jefe
           </Button>
-        </Container>
-      </Container>
+        </div>
+      </div>
 
       {/* Informacion JEFE FAMILIA */}
-      <Container gap={2} fluid>
+      <div className="container gap-2">
         <div className="flex flex-col  gap-3 md:flex-row">
           <div className="w-full  md:w-3/12 ">
             {/* Informacion General */}
             <Card>
-              <Card.Body className="justify-center  ">
+              <CardBody className="justify-center  ">
                 <div className="flex flex-col px-3">
                   <h1 className="my-1 text-2xl font-light uppercase ">
                     {data.nombres.split(",")[0]} {data.apellidos.split(",")[0]}
@@ -174,26 +170,21 @@ const JefeProfile = ({ id }: { id: string }) => {
                   <h3 className="font-medium  uppercase   text-gray-600">
                     {data.tipoDocumento}-{data.numeroDocumento}
                   </h3>
-                  <Container
-                    as={"ul"}
-                    fluid
-                    className="mx-0  rounded  p-3  text-green-700 
-                    hover:text-green-600 "
-                  >
+                  <ul className="mx-0 rounded p-3 text-green-700 hover:text-green-600 ">
                     <li className="flex flex-col  sm:flex-row sm:items-center sm:justify-between">
                       <span>Desde</span>
                       <span className=" text-right font-medium">
                         {formatDate(data.censo?.fecha)}
                       </span>
                     </li>
-                  </Container>
+                  </ul>
                 </div>
-              </Card.Body>
+              </CardBody>
             </Card>
             <div className="my-4"></div>
 
             <Card>
-              <Card.Body className="justify-center  ">
+              <CardBody className="justify-center  ">
                 <div className="flex items-center justify-center  space-x-2 px-2 leading-8">
                   <span className="text-gray-500">
                     <svg
@@ -208,33 +199,33 @@ const JefeProfile = ({ id }: { id: string }) => {
                   </span>
                   <h2 className="text-2xl  font-normal  text-gray-400">Casa</h2>
                 </div>
-                <Grid.Container gap={2} className="grid  text-sm ">
-                  <Grid.Container className="grid grid-cols-2  gap-6 px-3 py-2">
+                <div className="grid gap-2 text-sm">
+                  <div className="grid grid-cols-2  gap-6 px-3 py-2">
                     <div className=" font-semibold">Nro</div>
                     <div className="text-right uppercase">
                       {data.casa?.casa}
                     </div>
-                  </Grid.Container>
-                  <Grid.Container className="grid  grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid  grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Manzana</div>
                     <div className="text-right uppercase">
                       {data.casa?.manzana}
                     </div>
-                  </Grid.Container>
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Calle</div>
                     <div className="text-right capitalize">
                       {data.casa?.calle}
                     </div>
-                  </Grid.Container>
-                </Grid.Container>
-              </Card.Body>
+                  </div>
+                </div>
+              </CardBody>
             </Card>
           </div>
 
           <div className="w-full  text-gray-600  md:w-9/12 ">
             <Card className="">
-              <Card.Body>
+              <CardBody>
                 <div className="flex items-center justify-center  space-x-2 px-2 font-semibold leading-8">
                   <span className="text-gray-500">
                     <svg
@@ -257,46 +248,43 @@ const JefeProfile = ({ id }: { id: string }) => {
                   </h2>
                 </div>
 
-                <Grid.Container
-                  gap={2}
-                  className="grid  text-sm md:grid-cols-2"
-                >
+                <div className="grid  gap-2 text-sm md:grid-cols-2">
                   {/* className="grid grid-cols-2 gap-6" */}
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Nombres</div>
                     <div className="uppercase">{data.nombres}</div>
-                  </Grid.Container>
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Apellidos</div>
                     <div className="uppercase">{data.apellidos}</div>
-                  </Grid.Container>
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Genero</div>
                     <div className="">
                       {data.genero === "f" ? "Femenino" : "Masculino"}
                     </div>
-                  </Grid.Container>
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Numero de contacto</div>
                     <div className="">{data.telefono}</div>
-                  </Grid.Container>
+                  </div>
 
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Correo Electronico</div>
                     <div className=" font-medium text-blue-700">
                       {data.email}
                     </div>
-                  </Grid.Container>
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Fecha nacimiento</div>
                     <div className="">{formatDate(data.fechaNacimiento)}</div>
-                  </Grid.Container>
-                </Grid.Container>
-              </Card.Body>
+                  </div>
+                </div>
+              </CardBody>
             </Card>
             <div className="my-4"></div>
             <Card className="">
-              <Card.Header>
+              <CardHeader>
                 <div className="mx-auto flex items-center justify-center  space-x-2 px-2 font-semibold leading-8">
                   <span className="text-gray-500">
                     <svg
@@ -309,9 +297,9 @@ const JefeProfile = ({ id }: { id: string }) => {
                       <path d="M50.7 58.5L0 160H208V32H93.7C75.5 32 58.9 42.3 50.7 58.5zM240 160H448L397.3 58.5C389.1 42.3 372.5 32 354.3 32H240V160zm208 32H0V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192z" />
                     </svg>
                   </span>
-                  <Text h2 className="text-2xl  font-normal text-gray-400">
+                  <h2 className="text-2xl  font-normal text-gray-400">
                     Caja CLAP
-                  </Text>
+                  </h2>
                 </div>
                 <button
                   onClick={() => setEditCaja(true)}
@@ -319,120 +307,88 @@ const JefeProfile = ({ id }: { id: string }) => {
                 >
                   Editar
                 </button>
-              </Card.Header>
-              <Card.Body>
-                <Grid.Container
-                  gap={2}
-                  className="grid  text-sm md:grid-cols-2"
-                >
+              </CardHeader>
+              <CardBody>
+                <div className="grid  gap-2 text-sm md:grid-cols-2">
                   {/* className="grid grid-cols-2 gap-6" */}
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Cajas asignadas</div>
                     <div className="uppercase">
                       {data.censo?.cajasClapsPorRecibir}
                     </div>
-                  </Grid.Container>
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Carga familiar</div>
                     <div className="uppercase">{data.censo?.cargaFamiliar}</div>
-                  </Grid.Container>
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Tipo familia</div>
                     <div className="">{data.censo?.tipoFamilia}</div>
-                  </Grid.Container>
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Observacion</div>
                     <div className="">
                       {data.observacion ? data.observacion : "NINGUNA"}
                     </div>
-                  </Grid.Container>
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Serial carnet</div>
                     <div className="">
                       {data.serialCarnetPatria
                         ? data.serialCarnetPatria
                         : "NO POSEE"}
                     </div>
-                  </Grid.Container>
-                  <Grid.Container className="grid grid-cols-2 gap-6 px-3 py-2">
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 px-3 py-2">
                     <div className=" font-semibold">Cod carnet</div>
                     <div className="">
                       {data.codCarnetPatria ? data.codCarnetPatria : "NO POSEE"}
                     </div>
-                  </Grid.Container>
-                </Grid.Container>
-              </Card.Body>
+                  </div>
+                </div>
+              </CardBody>
             </Card>
           </div>
         </div>
 
         <div className="my-4">
           <Card>
-            <Card.Header className="justify-between">
-              <Text
-                h2
-                css={{
-                  fontSize: "$4xl",
-                  fontWeight: "$normal",
-                  textAlign: "center",
-                  mx: "auto",
-                }}
-              >
+            <CardHeader className="justify-between">
+              <h2 className="mx-auto text-center text-4xl font-normal">
                 Familiares
-              </Text>
+              </h2>
               <button
                 className="w-min rounded-lg border-solid border-green-600 bg-green-600  p-2 transition-all hover:bg-green-700"
                 onClick={() => setCreateFamiliar(true)}
               >
                 Añadir
               </button>
-            </Card.Header>
-            <Card.Body>
+            </CardHeader>
+            <CardBody>
               {data.familiar.length === 0 && (
-                <Grid.Container
-                  css={{
-                    border: "1px solid $gray400",
-                    borderRadius: "$3xl",
-                    padding: "$10 $6",
-                  }}
-                  className="mx-auto min-h-[40vh] w-full place-content-center"
-                >
-                  <Text
-                    h2
-                    className="text-2xl font-light"
-                    css={{ textAlign: "center" }}
-                  >
+                <div className="mx-auto min-h-[40vh] w-full place-content-center border border-gray-400 px-6 py-10">
+                  <h2 className="text-center text-2xl font-light">
                     Aun no se han registrados familiares.
-                  </Text>
-                </Grid.Container>
+                  </h2>
+                </div>
               )}
 
               {data.familiar.length > 0 && (
-                <Table headerLined lined bordered css={{ paddingTop: "$0" }}>
-                  <Table.Header>
-                    <Table.Column css={{ textAlign: "center" }}>
-                      Nombres
-                    </Table.Column>
-                    <Table.Column css={{ textAlign: "center" }}>
-                      Apellidos
-                    </Table.Column>
-                    <Table.Column css={{ textAlign: "center" }}>
-                      Edad
-                    </Table.Column>
-                    <Table.Column css={{ textAlign: "center" }}>
-                      Genero
-                    </Table.Column>
-                    <Table.Column css={{ textAlign: "center" }}>
+                <Table>
+                  <TableHeader>
+                    <TableColumn className="text-center">Nombres</TableColumn>
+                    <TableColumn className="text-center">Apellidos</TableColumn>
+                    <TableColumn className="text-center">Edad</TableColumn>
+                    <TableColumn className="text-center">Genero</TableColumn>
+                    <TableColumn className="text-center">
                       Parentesco
-                    </Table.Column>
-                    <Table.Column css={{ textAlign: "center" }}>
+                    </TableColumn>
+                    <TableColumn className="text-center">
                       Observacion
-                    </Table.Column>
-                    <Table.Column css={{ textAlign: "center" }}>
-                      Acciones
-                    </Table.Column>
-                  </Table.Header>
-                  <Table.Body
+                    </TableColumn>
+                    <TableColumn className="text-center">Acciones</TableColumn>
+                  </TableHeader>
+                  <TableBody
                     loadingState={familiar.isLoading ? "loading" : "idle"}
                   >
                     {data.familiar.map(
@@ -445,41 +401,28 @@ const JefeProfile = ({ id }: { id: string }) => {
                         observacion,
                         parentesco,
                       }) => (
-                        <Table.Row key={id.toString()}>
-                          <Table.Cell css={{ textAlign: "center" }}>
+                        <TableRow key={id.toString()}>
+                          <TableCell className="text-center">
                             {nombres.toUpperCase()}
-                          </Table.Cell>
-                          <Table.Cell css={{ textAlign: "center" }}>
+                          </TableCell>
+                          <TableCell className="text-center">
                             {apellidos.toUpperCase()}
-                          </Table.Cell>
-                          <Table.Cell css={{ textAlign: "center" }}>
+                          </TableCell>
+                          <TableCell className="text-center">
                             {getRelativeTime(fechaNacimiento)}
-                          </Table.Cell>
-                          <Table.Cell css={{ textAlign: "center" }}>
+                          </TableCell>
+                          <TableCell className="text-center">
                             {genero.toLocaleLowerCase() === "m"
                               ? "Masculino"
                               : "Femenino"}
-                          </Table.Cell>
-                          <Table.Cell
-                            css={{
-                              textAlign: "center",
-                              textTransform: "capitalize",
-                            }}
-                          >
+                          </TableCell>
+                          <TableCell className="text-center capitalize">
                             {parentesco}
-                          </Table.Cell>
-                          <Table.Cell css={{ textAlign: "center" }}>
+                          </TableCell>
+                          <TableCell className="text-center">
                             {observacion || "Ninguna"}
-                          </Table.Cell>
-                          <Table.Cell
-                            css={{
-                              textAlign: "center",
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              gap: "$4 0",
-                            }}
-                          >
+                          </TableCell>
+                          <TableCell className="flex flex-col items-center gap-y-4 text-center">
                             <Button
                               size={"sm"}
                               className="bg-red-700 transition-all hover:bg-red-800"
@@ -499,28 +442,27 @@ const JefeProfile = ({ id }: { id: string }) => {
                             >
                               Actualizar
                             </Button>
-                          </Table.Cell>
-                        </Table.Row>
+                          </TableCell>
+                        </TableRow>
                       )
                     )}
-                  </Table.Body>
+                  </TableBody>
                 </Table>
               )}
-            </Card.Body>
+            </CardBody>
           </Card>
         </div>
-      </Container>
+      </div>
 
       {/* Modales */}
       <Modal
         closeButton
         aria-labelledby="modal-create-familiar-form"
-        open={editCaja}
+        isOpen={editCaja}
         onClose={() => setEditCaja(false)}
-        width="350px"
-        autoMargin
+        size="xl"
       >
-        <Modal.Body>
+        <ModalBody>
           <EditCajaForm
             censoId={data.censoId}
             closeModal={() => {
@@ -528,18 +470,17 @@ const JefeProfile = ({ id }: { id: string }) => {
               refetch();
             }}
           />
-        </Modal.Body>
+        </ModalBody>
       </Modal>
 
       <Modal
         closeButton
         aria-labelledby="modal-create-familiar-form"
-        open={createFamiliar}
+        isOpen={createFamiliar}
         onClose={() => setCreateFamiliar(false)}
-        width="700px"
-        autoMargin
+        size="2xl"
       >
-        <Modal.Body>
+        <ModalBody>
           <FamiliarForm
             consejoId={consejoId}
             jefeId={BigInt(id)}
@@ -548,18 +489,17 @@ const JefeProfile = ({ id }: { id: string }) => {
               refetch();
             }}
           />
-        </Modal.Body>
+        </ModalBody>
       </Modal>
 
       <Modal
         closeButton
         aria-labelledby="modal-edit-familiar-form"
-        open={editFamiliar.isOpen}
+        isOpen={editFamiliar.isOpen}
         onClose={closeHandler}
-        width="700px"
-        autoMargin
+        size="2xl"
       >
-        <Modal.Body>
+        <ModalBody>
           {editFamiliar.data && (
             <FamiliarForm
               consejoId={consejoId}
@@ -568,17 +508,14 @@ const JefeProfile = ({ id }: { id: string }) => {
               closeModal={closeHandler}
             />
           )}
-        </Modal.Body>
+        </ModalBody>
       </Modal>
       <Modal
-        aria-labelledby="modal-title2"
-        width="580px"
-        open={editJefe.isOpen}
+        size="xl"
+        isOpen={editJefe.isOpen}
         onClose={() => {
           setEditJefe({ isOpen: false });
         }}
-        autoMargin
-        css={{ pt: "0" }}
       >
         <JefeEditForm jefe={data} onClose={closeHandler} />
       </Modal>
@@ -586,12 +523,11 @@ const JefeProfile = ({ id }: { id: string }) => {
       <Modal
         closeButton
         aria-labelledby="modal-change-jefe-form"
-        open={changeJefe}
+        isOpen={changeJefe}
         onClose={() => setChangeJefe(false)}
-        width="700px"
-        autoMargin
+        size="2xl"
       >
-        <Modal.Body>
+        <ModalBody>
           <ChangeJefeForm
             jefeId={parseInt(data.id.toString())}
             closeModal={() => {
@@ -599,7 +535,7 @@ const JefeProfile = ({ id }: { id: string }) => {
               refetch();
             }}
           />
-        </Modal.Body>
+        </ModalBody>
       </Modal>
 
       <DeleteConfirmation

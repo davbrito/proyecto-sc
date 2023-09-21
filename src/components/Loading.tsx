@@ -1,22 +1,14 @@
-import { Grid, Loading } from "@nextui-org/react";
-import React from "react";
+import { Spinner } from "@nextui-org/react";
+import { clsx } from "clsx";
 
 interface Props {
   className?: string;
 }
+
 export const CustomLoading = ({ className }: Props) => {
   return (
-    <Grid.Container
-      css={{
-        width: "100%",
-        textAlign: "center",
-        my: "1rem",
-      }}
-      className={className}
-    >
-      <Loading size="xl" type="points">
-        Cargando...
-      </Loading>
-    </Grid.Container>
+    <div className={clsx(className, "container my-4 w-full text-center")}>
+      <Spinner size="lg" label="Cargando..." />
+    </div>
   );
 };

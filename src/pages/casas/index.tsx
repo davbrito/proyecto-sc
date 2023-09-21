@@ -1,4 +1,4 @@
-import { Card, Container, Grid, Link, Text } from "@nextui-org/react";
+import { Card, CardBody, Link } from "@nextui-org/react";
 import { type GetServerSidePropsContext } from "next";
 import { useSession } from "next-auth/react";
 import React, { useContext } from "react";
@@ -10,18 +10,18 @@ import { verifySession } from "~/utils/verifySession";
 const CasaIndex = () => {
   return (
     <LayoutContent>
-      <Container className="my-5 place-content-center">
+      <div className="container my-5 place-content-center">
         <Card>
-          <Card.Body>
-            <Text h1 className="mb-6 text-center text-4xl font-light">
+          <CardBody>
+            <h3 className="mb-6 text-center text-4xl font-light">
               Casas registradas
-            </Text>
-            <Container>
+            </h3>
+            <div className="container">
               <CasaList />
-            </Container>
-          </Card.Body>
+            </div>
+          </CardBody>
         </Card>
-      </Container>
+      </div>
     </LayoutContent>
   );
 };

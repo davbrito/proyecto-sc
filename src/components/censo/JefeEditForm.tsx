@@ -1,11 +1,12 @@
 import {
   Button,
   Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
   Divider,
-  Grid,
   Input,
-  Loading,
-  Text,
+  Spinner,
   Textarea,
 } from "@nextui-org/react";
 import { type JefeFamilia } from "@prisma/client";
@@ -97,20 +98,16 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
 
   return (
     <Card as={"form"} onSubmit={handleSubmit(onSubmit)}>
-      <Card.Header css={{ mt: 0, pt: 0 }}>
-        <Text h2 className="mx-auto">
-          {" "}
-          Datos personales
-        </Text>
-      </Card.Header>
-      <Card.Body css={{ mt: 0, pt: 0 }}>
-        <Grid.Container gap={2} css={{ mt: 0, pt: 0 }}>
-          <Grid xs={6}>
+      <CardHeader>
+        <h2 className="mx-auto">Datos personales</h2>
+      </CardHeader>
+      <CardBody>
+        <div className="grid grid-cols-12 gap-2">
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Primer nombre:"
               placeholder="Ej: pedro"
-              bordered
               type="text"
               {...register("primerNombre", {
                 required: { value: true, message: "Campo requerido" },
@@ -120,17 +117,16 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                   message: "El nombre no es valido",
                 },
               })}
-              helperText={errors?.primerNombre?.message}
-              helperColor="error"
+              isInvalid={!!errors.primerNombre}
+              errorMessage={errors.primerNombre?.message}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Segundo nombre:"
               placeholder="Ej: jose"
-              bordered
               type="text"
               {...register("segundoNombre", {
                 required: { value: true, message: "Campo requerido" },
@@ -140,17 +136,16 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                   message: "El nombre no es valido",
                 },
               })}
-              helperText={errors?.segundoNombre?.message}
-              helperColor="error"
+              isInvalid={!!errors.segundoNombre}
+              errorMessage={errors.segundoNombre?.message}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Primer apellido:"
               placeholder="Ej: perez"
-              bordered
               type="text"
               {...register("primerApellido", {
                 required: { value: true, message: "Campo requerido" },
@@ -160,17 +155,16 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                   message: "El apellido no es valido",
                 },
               })}
-              helperText={errors?.primerApellido?.message}
-              helperColor="error"
+              isInvalid={!!errors.primerApellido}
+              errorMessage={errors.primerApellido?.message}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Segundo apellido:"
               placeholder="Ej: jimenez"
-              bordered
               type="text"
               {...register("segundoApellido", {
                 required: { value: true, message: "Campo requerido" },
@@ -180,30 +174,29 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                   message: "El apellido no es valido",
                 },
               })}
-              helperText={errors?.segundoApellido?.message}
-              helperColor="error"
+              isInvalid={!!errors.segundoApellido}
+              errorMessage={errors.segundoApellido?.message}
             />
-          </Grid>
+          </div>
 
-          <Divider css={{ mt: "1rem" }} />
+          <Divider className="mt-4" />
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Fecha de nacimiento:"
               placeholder="Ingrese la fecha de nacimiento..."
-              bordered
               type="date"
               max={new Date().toISOString().split("T")[0]}
               {...register("fechaNacimiento", {
                 required: { value: true, message: "Campo requerido" },
               })}
-              helperText={errors?.fechaNacimiento?.message}
-              helperColor="error"
+              isInvalid={!!errors.fechaNacimiento}
+              errorMessage={errors.fechaNacimiento?.message}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <div className="w-full">
               <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
                 Genero:
@@ -221,14 +214,13 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                 <option value="m">Masculino</option>
               </select>
             </div>
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Email:"
               placeholder="Ej: pedro@gmail.com"
-              bordered
               type="text"
               {...register("email", {
                 required: { value: true, message: "Campo requerido" },
@@ -237,16 +229,15 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                   message: "La direccion del correo no es valida.",
                 },
               })}
-              helperText={errors?.email?.message}
-              helperColor="error"
+              isInvalid={!!errors.email}
+              errorMessage={errors.email?.message}
             />
-          </Grid>
-          <Grid xs={6}>
+          </div>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Numero de contacto:"
               placeholder="Ej: 0414-1234567"
-              bordered
               type="text"
               {...register("telefono", {
                 required: { value: true, message: "Campo requerido" },
@@ -255,21 +246,19 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                   message: "El numero no es valido.",
                 },
               })}
-              helperText={errors?.telefono?.message}
-              helperColor="error"
+              isInvalid={!!errors.telefono}
+              errorMessage={errors.telefono?.message}
             />
-          </Grid>
-        </Grid.Container>
-      </Card.Body>
+          </div>
+        </div>
+      </CardBody>
 
-      <Card.Header css={{ mt: 0, pt: 0 }}>
-        <Text h2 className="mx-auto">
-          Documentos personales
-        </Text>
-      </Card.Header>
-      <Card.Body css={{ mt: 0, pt: 0 }}>
-        <Grid.Container gap={2} css={{ mt: 0, pt: 0 }}>
-          <Grid xs={4}>
+      <CardHeader>
+        <h2 className="mx-auto">Documentos personales</h2>
+      </CardHeader>
+      <CardBody>
+        <div className="grid grid-cols-12 gap-2">
+          <div className="col-span-4">
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
                 Tipo documento:
@@ -291,13 +280,12 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                 <option value={"f"}>Firma</option>
               </select>
             </div>
-          </Grid>
-          <Grid xs={8}>
+          </div>
+          <div className="col-span-8">
             <Input
               fullWidth
               label="Cedula:"
               placeholder="Ejemplo: 1234578"
-              bordered
               type="text"
               {...register("numeroDocumento", {
                 required: {
@@ -314,70 +302,61 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                   message: "Corrija el numero de cedula por favor.",
                 },
               })}
-              helperText={errors?.numeroDocumento?.message}
-              helperColor="error"
+              isInvalid={!!errors.numeroDocumento}
+              errorMessage={errors.numeroDocumento?.message}
             />
-          </Grid>
-          <Grid xs={6}>
+          </div>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Serial Carnet de la patria:"
               placeholder="Escriba el serial del carnet de la patria..."
-              bordered
               type="text"
               {...register("serialCarnetPatria")}
-              helperText={errors?.serialCarnetPatria?.message}
-              helperColor="error"
+              isInvalid={!!errors.serialCarnetPatria}
+              errorMessage={errors.serialCarnetPatria?.message}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Codigo del carnet de la patria:"
               placeholder="Escriba el codigo del carnet de la patria..."
-              bordered
               type="text"
               {...register("codCarnetPatria")}
-              helperText={errors?.codCarnetPatria?.message}
-              helperColor="error"
+              isInvalid={!!errors.codCarnetPatria}
+              errorMessage={errors.codCarnetPatria?.message}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={12}>
+          <div className="col-span-12">
             <Textarea
               fullWidth
               label="Observacion:"
               placeholder="Escriba alguna observacion (opcional)"
-              bordered
               {...register("observacion")}
-              helperText={errors?.observacion?.message}
-              helperColor="error"
+              isInvalid={!!errors.observacion}
+              errorMessage={errors.observacion?.message}
             />
-          </Grid>
-        </Grid.Container>
-      </Card.Body>
-      <Card.Footer css={{ flexDirection: "column", pt: 0 }}>
+          </div>
+        </div>
+      </CardBody>
+      <CardFooter className="flex-col">
         {errors?.root && (
-          <Text
-            color="error"
-            h4
-            css={{ textTransform: "capitalize", display: "inline-block" }}
-          >
-            {errors?.root?.message}.
-          </Text>
+          <h4 className="capitalize text-red-600">{errors?.root?.message}.</h4>
         )}
         <Button
           type="submit"
           disabled={isSubmitting}
-          css={{ width: "100%", margin: "8px 12px", mt: "0" }}
+          className="mx-3 mb-2 w-full"
         >
           {isSubmitting && (
-            <Loading as={"span"} className="mx-4" color={"secondary"} />
+            <Spinner as={"span"} className="mx-4" color={"secondary"} />
           )}
           Actualizar.
         </Button>
-      </Card.Footer>
+      </CardFooter>
     </Card>
   );
 };

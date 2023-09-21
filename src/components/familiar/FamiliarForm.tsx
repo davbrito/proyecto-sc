@@ -1,21 +1,10 @@
-import {
-  Container,
-  Input,
-  Grid,
-  Card,
-  Button,
-  Divider,
-  Text,
-  Textarea,
-  Loading,
-} from "@nextui-org/react";
-import React from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
-import { api } from "~/utils/api";
-import { type NextPage } from "next";
-import { CustomLoading } from "../Loading";
-import { useRouter } from "next/router";
+import { Button, Divider, Input, Spinner, Textarea } from "@nextui-org/react";
 import { type Familiar } from "@prisma/client";
+import { type NextPage } from "next";
+import { useRouter } from "next/router";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { api } from "~/utils/api";
+import { CustomLoading } from "../Loading";
 
 interface OtrosProps {
   tipoDocumento: string;
@@ -188,14 +177,13 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid css={{ mx: "auto" }}>
-        <Grid.Container gap={2}>
-          <Grid xs={6}>
+      <div className="mx-auto w-fit">
+        <div className="grid grid-cols-12 gap-2">
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Primer nombre:"
               placeholder="Ej: pedro"
-              bordered
               type="text"
               {...register("datosBasicos.primerNombre", {
                 required: { value: true, message: "Campo requerido" },
@@ -205,17 +193,16 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                   message: "El nombre no es valido",
                 },
               })}
-              helperText={errors?.datosBasicos?.primerNombre?.message}
-              helperColor="error"
+              errorMessage={errors?.datosBasicos?.primerNombre?.message}
+              isInvalid={!!errors?.datosBasicos?.primerNombre}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Segundo nombre:"
               placeholder="Ej: jose"
-              bordered
               type="text"
               {...register("datosBasicos.segundoNombre", {
                 required: { value: true, message: "Campo requerido" },
@@ -225,17 +212,16 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                   message: "El nombre no es valido",
                 },
               })}
-              helperText={errors?.datosBasicos?.segundoNombre?.message}
-              helperColor="error"
+              errorMessage={errors?.datosBasicos?.segundoNombre?.message}
+              isInvalid={!!errors?.datosBasicos?.segundoNombre}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Primer apellido:"
               placeholder="Ej: perez"
-              bordered
               type="text"
               {...register("datosBasicos.primerApellido", {
                 required: { value: true, message: "Campo requerido" },
@@ -245,17 +231,16 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                   message: "El apellido no es valido",
                 },
               })}
-              helperText={errors?.datosBasicos?.primerApellido?.message}
-              helperColor="error"
+              errorMessage={errors?.datosBasicos?.primerApellido?.message}
+              isInvalid={!!errors?.datosBasicos?.primerApellido}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Segundo apellido:"
               placeholder="Ej: jimenez"
-              bordered
               type="text"
               {...register("datosBasicos.segundoApellido", {
                 required: { value: true, message: "Campo requerido" },
@@ -265,30 +250,29 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                   message: "El apellido no es valido",
                 },
               })}
-              helperText={errors?.datosBasicos?.segundoApellido?.message}
-              helperColor="error"
+              errorMessage={errors?.datosBasicos?.segundoApellido?.message}
+              isInvalid={!!errors?.datosBasicos?.segundoApellido}
             />
-          </Grid>
+          </div>
 
-          <Divider css={{ mt: "1rem" }} />
+          <Divider className="mt-4" />
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Fecha de nacimiento:"
               placeholder="Ingrese la fecha de nacimiento..."
-              bordered
               type="date"
               max={new Date().toISOString().split("T")[0]}
               {...register("datosBasicos.fechaNacimiento", {
                 required: { value: true, message: "Campo requerido" },
               })}
-              helperText={errors?.datosBasicos?.fechaNacimiento?.message}
-              helperColor="error"
+              errorMessage={errors?.datosBasicos?.fechaNacimiento?.message}
+              isInvalid={!!errors?.datosBasicos?.fechaNacimiento}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <div className="w-full">
               <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
                 Genero:
@@ -306,12 +290,12 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                 <option value="m">Masculino</option>
               </select>
             </div>
-          </Grid>
-        </Grid.Container>
-        <Divider css={{ my: "$8" }} />
+          </div>
+        </div>
+        <Divider className="mt-8" />
 
-        <Grid.Container gap={1}>
-          <Grid xs={4}>
+        <div className="grid grid-cols-12 gap-1">
+          <div className="col-span-4">
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
                 Tipo documento:
@@ -333,13 +317,12 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                 <option value={"f"}>Firma</option>
               </select>
             </div>
-          </Grid>
-          <Grid xs={8}>
+          </div>
+          <div className="col-span-8">
             <Input
               fullWidth
               label="Cedula:"
               placeholder="Ejemplo: 1234578"
-              bordered
               type="text"
               {...register("documentos.numeroDocumento", {
                 pattern: {
@@ -348,55 +331,51 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                     "Debe escribirlo en el siguiente formato: '12345678'",
                 },
               })}
-              helperText={errors?.documentos?.numeroDocumento?.message}
-              helperColor="error"
+              errorMessage={errors?.documentos?.numeroDocumento?.message}
+              isInvalid={!!errors?.documentos?.numeroDocumento}
             />
-          </Grid>
-          <Grid xs={6}>
+          </div>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Serial Carnet de la patria:"
               placeholder="Escriba el serial del carnet de la patria..."
-              bordered
               type="text"
               {...register("documentos.serialCarnetPatria")}
-              helperText={errors?.documentos?.serialCarnetPatria?.message}
-              helperColor="error"
+              errorMessage={errors?.documentos?.serialCarnetPatria?.message}
+              isInvalid={!!errors?.documentos?.serialCarnetPatria}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={6}>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Codigo del carnet de la patria:"
               placeholder="Escriba el codigo del carnet de la patria..."
-              bordered
               type="text"
               {...register("documentos.codCarnetPatria")}
-              helperText={errors?.documentos?.codCarnetPatria?.message}
-              helperColor="error"
+              errorMessage={errors?.documentos?.codCarnetPatria?.message}
+              isInvalid={!!errors?.documentos?.codCarnetPatria}
             />
-          </Grid>
+          </div>
 
-          <Grid xs={12}>
+          <div className="col-span-1">
             <Textarea
               fullWidth
               label="Observacion:"
               placeholder="Escriba alguna observacion (opcional)"
-              bordered
               {...register("documentos.observacion")}
-              helperText={errors?.documentos?.observacion?.message}
-              helperColor="error"
+              errorMessage={errors?.documentos?.observacion?.message}
+              isInvalid={!!errors?.documentos?.observacion}
             />
-          </Grid>
-        </Grid.Container>
+          </div>
+        </div>
 
-        <Divider css={{ my: "$8" }} />
-        <Grid.Container lg={12} gap={1}>
-          <Grid lg={4}>
+        <Divider className="mt-8" />
+        <div className="grid grid-cols-12 gap-2">
+          <div className="col-span-4">
             <Input
               fullWidth
-              bordered
               label="Parentesco:"
               placeholder="Ej: hijo"
               type="text"
@@ -406,11 +385,11 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                   message: "El parentesco es requerido",
                 },
               })}
-              helperColor="error"
-              helperText={errors.parentesco?.message}
+              errorMessage={errors.parentesco?.message}
+              isInvalid={!!errors.parentesco}
             />
-          </Grid>
-          <Grid lg={8}>
+          </div>
+          <div className="col-span-8">
             <label className="mb-2 block text-sm font-medium ">
               Jefe de Familia:
             </label>
@@ -457,34 +436,24 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                       )
                     )}
             </select>
-          </Grid>
-        </Grid.Container>
-      </Grid>
+          </div>
+        </div>
+      </div>
 
       <div>
         {errors?.root && (
-          <Text
-            color="error"
-            h4
-            css={{ textTransform: "capitalize", display: "inline-block" }}
-          >
+          <h4 className="inline-block capitalize text-red-600">
             {errors?.root?.message}.
-          </Text>
+          </h4>
         )}
         <Button
           disabled={isSubmitting}
           type="submit"
-          css={{
-            display: "block",
-            "&:hover": {
-              backgroundColor: "$blue300",
-            },
-          }}
           className="mx-auto mt-2"
           size={"lg"}
         >
           {isSubmitting && (
-            <Loading as="span" color={"secondary"} className="mx-4" />
+            <Spinner as="span" color={"secondary"} className="mx-4" />
           )}
           {!familia ? "Agregar familiar." : "Actualizar familiar."}
         </Button>
