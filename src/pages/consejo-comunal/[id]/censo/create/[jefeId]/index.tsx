@@ -1,4 +1,3 @@
-import { Container } from "@nextui-org/react";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
@@ -54,7 +53,7 @@ const IndexCreateFamiliar = (
 
   return (
     <LayoutContent>
-      <Container css={{ mw: "680px", my: "2rem" }}>hola</Container>
+      <div className="container max-w-2xl p-8">hola</div>
     </LayoutContent>
   );
 };

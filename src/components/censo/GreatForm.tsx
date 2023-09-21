@@ -1,12 +1,20 @@
-import { Button, Card, Grid, Loading, Text } from "@nextui-org/react";
-import React, { useState } from "react";
-import { type FieldError, type SubmitHandler, useForm } from "react-hook-form";
-import { api } from "~/utils/api";
-import { PersonaForm } from "./PersonaForm";
-import { CasaForm } from "./CasaForm";
-import { DocumentosForm } from "./documentosForm";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Spinner,
+} from "@nextui-org/react";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { api } from "~/utils/api";
 import { CirclesReference } from "../Circles";
+import { CasaForm } from "./CasaForm";
+import { PersonaForm } from "./PersonaForm";
+import { DocumentosForm } from "./documentosForm";
 
 interface CasaProps {
   manzana: string;
@@ -152,16 +160,14 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
   return (
     <>
       <Card as="form" onSubmit={handleSubmit(onSubmit)}>
-        <Card.Header>
-          <Text h3 css={{ mx: "auto" }}>
-            Datos personales del Jefe de Familia
-          </Text>
-        </Card.Header>
+        <CardHeader>
+          <h3 className="mx-auto">Datos personales del Jefe de Familia</h3>
+        </CardHeader>
 
-        <Card.Divider />
+        <Divider />
 
-        <Card.Body>
-          <Grid css={{ mx: "auto" }}>
+        <CardBody>
+          <div className="mx-auto flex flex-wrap">
             {sections.map((section, index) => (
               <section
                 className={`transition-all ${
@@ -174,31 +180,16 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
                 {section}
               </section>
             ))}
-          </Grid>
-        </Card.Body>
+          </div>
+        </CardBody>
         {errors?.root && (
-          <Text
-            color="error"
-            h3
-            css={{
-              textTransform: "capitalize",
-              display: "inline-block",
-              backgroundColor: "$red50",
-              padding: "4px 0",
-              margin: "8px 16px",
-              textAlign: "center",
-              border: "1px solid",
-              borderRadius: "4px",
-            }}
-          >
+          <h3 className="mx-4 my-2 inline-block rounded-md border border-solid bg-red-50 py-1 text-center capitalize text-red-600">
             {errors?.root?.message}
-          </Text>
+          </h3>
         )}
-        <Card.Divider />
+        <Divider />
 
-        <Card.Footer
-          css={{ display: "flex", justifyContent: "center", gap: 4 }}
-        >
+        <CardFooter className="flex justify-center gap-4">
           <Button
             color={"secondary"}
             disabled={isDisabledBackButton()}
@@ -210,13 +201,9 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
           <Button
             disabled={isSubmitting}
             type="submit"
-            css={{
-              display: `${
-                step.currentPos !== sections.length - 1 ? "none" : "block"
-              }`,
-              "&:hover": {
-                backgroundColor: "$blue300",
-              },
+            style={{
+              display:
+                step.currentPos !== sections.length - 1 ? "none" : "block",
             }}
           >
             Guardar datos
@@ -225,21 +212,17 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
           <Button
             type="button"
             onPress={() => handleSteps(1)}
-            css={{
-              display: `${
-                step.currentPos !== sections.length - 1 ? "block" : "none"
-              }`,
-              "&:hover": {
-                backgroundColor: "$blue300",
-              },
+            style={{
+              display:
+                step.currentPos !== sections.length - 1 ? "block" : "none",
             }}
           >
             {isSubmitting && (
-              <Loading as="span" color={"secondary"} className="mx-4" />
+              <Spinner as="span" color={"secondary"} className="mx-4" />
             )}
             Continuar
           </Button>
-        </Card.Footer>
+        </CardFooter>
 
         <CirclesReference
           count={sections.length}

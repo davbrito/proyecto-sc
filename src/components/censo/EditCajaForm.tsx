@@ -1,4 +1,4 @@
-import { Button, Card, Grid, Input, Loading, Text } from "@nextui-org/react";
+import { Button, Card, Input, Spinner } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { api } from "~/utils/api";
 import { parse } from "path";
@@ -38,31 +38,25 @@ const EditCajaForm = ({ censoId, closeModal }: Props) => {
 
   return (
     <form onSubmit={onSubmit}>
-      <Text h2 className="mx-auto"></Text>
+      <h2 className="mx-auto"></h2>
 
-      <Grid.Container gap={2} css={{ mt: 0, pt: 0 }}>
+      <div className="container">
         <Input
           label="Cajas asignadas:"
           fullWidth
-          bordered
           type="number"
           {...register("cajas", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors?.cajas?.message}
-          helperColor="error"
+          isInvalid={!!errors?.cajas}
+          errorMessage={errors?.cajas?.message}
         />
-      </Grid.Container>
+      </div>
 
       {errors.root && (
-        <Text
-          color="error"
-          h4
-          css={{ textTransform: "capitalize", display: "inline-block" }}
-          className="my-1"
-        >
+        <h4 className="my-1 capitalize text-red-700">
           {errors?.root?.message}.
-        </Text>
+        </h4>
       )}
 
       <Button
@@ -71,9 +65,7 @@ const EditCajaForm = ({ censoId, closeModal }: Props) => {
         className="mx-auto mt-4 hover:bg-blue-700"
       >
         Guardar
-        {isSubmitting && (
-          <Loading as={"span"} className="mx-4" color={"secondary"} />
-        )}
+        {isSubmitting && <Spinner className="mx-4" color={"secondary"} />}
       </Button>
     </form>
   );

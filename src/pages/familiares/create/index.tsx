@@ -1,6 +1,4 @@
-import { Container, Text } from "@nextui-org/react";
 import { type GetServerSidePropsContext } from "next";
-import React from "react";
 import { LayoutContent } from "~/components/Layout";
 import FamiliarForm from "~/components/familiar/FamiliarForm";
 import { verifySession } from "~/utils/verifySession";
@@ -8,10 +6,10 @@ import { verifySession } from "~/utils/verifySession";
 const CreateFamiliar = () => {
   return (
     <LayoutContent>
-      <Text h1>Nuevo Familiar</Text>
-      <Container css={{ mw: "680px", p: "2rem" }}>
+      <h2>Nuevo Familiar</h2>
+      <div className="container max-w-2xl p-8">
         <FamiliarForm consejoId="" />
-      </Container>
+      </div>
     </LayoutContent>
   );
 };

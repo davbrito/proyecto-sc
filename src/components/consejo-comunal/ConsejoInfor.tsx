@@ -1,11 +1,16 @@
 import {
   Button,
   Card,
-  Container,
-  Grid,
+  CardBody,
+  CardFooter,
+  CardHeader,
   Link,
   Table,
-  Text,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
 } from "@nextui-org/react";
 import React from "react";
 import { api } from "~/utils/api";
@@ -23,29 +28,20 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
   if (!data) return <div>Error</div>;
 
   return (
-    <Container>
-      <Card css={{ mt: "$10" }}>
-        <Card.Body>
-          <Text h1 className="text-center text-lg font-medium uppercase">
+    <div>
+      <Card className="mt-10">
+        <CardBody>
+          <h1 className="text-center text-lg font-medium uppercase">
             Sistema Popular de Distribucion de Alimentos Comites Locales de
             Abastecimiento y Produccion Socialista
-          </Text>
-          <Text h2 className="text-center text-lg uppercase">
-            Estado Bolivar
-          </Text>
-        </Card.Body>
+          </h1>
+          <h2 className="text-center text-lg uppercase">Estado Bolivar</h2>
+        </CardBody>
       </Card>
 
-      <Card css={{ mt: "$10" }}>
-        <Card.Body>
-          <Container
-            css={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "$4",
-              mt: "$8",
-            }}
-          >
+      <Card className="mt-10">
+        <CardBody>
+          <div className="mt-8 flex justify-center gap-4">
             <Link
               href={`/consejo-comunal/${consejoId}/censo`}
               className="inline-block cursor-pointer rounded  border bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
@@ -64,196 +60,184 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
             >
               Ver casas
             </Link>
-          </Container>
-        </Card.Body>
+          </div>
+        </CardBody>
       </Card>
 
-      <Card css={{ mt: "$10" }}>
-        <Card.Header>
-          <Text h1 className="mx-auto text-center text-2xl font-medium">
+      <Card className="mt-10">
+        <CardHeader>
+          <h1 className="mx-auto text-center text-2xl font-medium">
             Identificacion del CLAP
-          </Text>
-        </Card.Header>
-        <Card.Body>
-          <Grid.Container className="grid  grid-cols-2 gap-1  lg:grid-cols-3  lg:text-base">
-            <Grid.Container className="grid grid-cols-2 gap-3 border border-gray-500   px-3 py-2 lg:gap-0 lg:border-solid">
+          </h1>
+        </CardHeader>
+        <CardBody>
+          <div className="grid  grid-cols-2 gap-1  lg:grid-cols-3  lg:text-base">
+            <div className="grid grid-cols-2 gap-3 border border-gray-500   px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Municipio:</div>
               <div className="text-right uppercase">{data.municipio}</div>
-            </Grid.Container>
-            <Grid.Container className="grid  grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
+            </div>
+            <div className="grid  grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Parroquia:</div>
               <div className="text-right uppercase">{data.parroquia}</div>
-            </Grid.Container>
-            <Grid.Container className="grid grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
+            </div>
+            <div className="grid grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Nombre CLAP:</div>
               <div className="text-right capitalize">{data.nombre_clap}</div>
-            </Grid.Container>
-          </Grid.Container>
+            </div>
+          </div>
 
-          <Grid.Container
-            gap={2}
-            className="mt-1 grid  grid-cols-2 gap-1  lg:grid-cols-3  lg:text-base"
-          >
-            <Grid.Container className="grid grid-cols-2 gap-3 rounded-lg  border border-gray-500   px-3 py-2 lg:gap-0 lg:border-solid">
+          <div className="mt-1 grid  grid-cols-2 gap-1  lg:grid-cols-3  lg:text-base">
+            <div className="grid grid-cols-2 gap-3 rounded-lg  border border-gray-500   px-3 py-2 lg:gap-0 lg:border-solid">
               <div className="  font-semibold">Consejo Comunal:</div>
               <div className="text-right uppercase">{data.nombre_consejo}</div>
-            </Grid.Container>
-            <Grid.Container className="grid  grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
+            </div>
+            <div className="grid  grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">RIF:</div>
               <div className="text-right uppercase">{data.rif}</div>
-            </Grid.Container>
-            <Grid.Container className="grid grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
+            </div>
+            <div className="grid grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Circuito:</div>
               <div className="text-right uppercase">{data.circuito}</div>
-            </Grid.Container>
-          </Grid.Container>
+            </div>
+          </div>
 
-          <Grid.Container
-            gap={2}
-            className="mt-1 grid gap-1 border  lg:grid-cols-2  lg:text-base"
-          >
-            <Grid.Container className="grid grid-cols-2 gap-3 border border-gray-500 px-3 py-2 lg:gap-0 lg:border-solid">
+          <div className="mt-1 grid gap-1 border  lg:grid-cols-2  lg:text-base">
+            <div className="grid grid-cols-2 gap-3 border border-gray-500 px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Cantidad de familias:</div>
               <div className="text-right uppercase">
                 {data.cantidad_familias}
               </div>
-            </Grid.Container>
-            <Grid.Container className="grid  grid-cols-2 gap-3 border border-gray-500 px-3 py-2 lg:gap-0 lg:border-solid">
+            </div>
+            <div className="grid  grid-cols-2 gap-3 border border-gray-500 px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Cantidad de Combos:</div>
               <div className="text-right uppercase">{data.cantidad_combos}</div>
-            </Grid.Container>
-          </Grid.Container>
-        </Card.Body>
-        <Card.Footer>
+            </div>
+          </div>
+        </CardBody>
+        <CardFooter>
           <Link
             href={`/consejo-comunal/${consejoId}/censo`}
             className="mx-auto h-fit w-fit rounded-md bg-blue-600 px-4 py-3 text-white transition-colors hover:bg-blue-700"
           >
             Ver Censados
           </Link>
-        </Card.Footer>
+        </CardFooter>
       </Card>
 
-      <Card css={{ mb: "$10" }}>
-        <Card.Header css={{ position: "relative" }}>
-          <Text
-            h1
-            className="mx-auto flex-shrink text-center text-2xl font-medium"
-          >
+      <Card className="mb-10">
+        <CardHeader className="relative">
+          <h1 className="mx-auto flex-shrink text-center text-2xl font-medium">
             Ficha General del CLAP
-          </Text>
+          </h1>
           <button className=" h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600">
             Añadir
           </button>
-        </Card.Header>
-        <Card.Body>
-          <Table bordered lined headerLined striped>
-            <Table.Header>
-              <Table.Column>Estructura</Table.Column>
-              <Table.Column>Nombres y Apellidos</Table.Column>
-              <Table.Column>Cedula</Table.Column>
-              <Table.Column>Telefono</Table.Column>
-              <Table.Column>Profesion</Table.Column>
-              <Table.Column>Correo Electronico</Table.Column>
-              <Table.Column>Direccion</Table.Column>
-            </Table.Header>
-            <Table.Body>
-              <Table.Row key={1}>
-                <Table.Cell>LIDER DE COMUNIDAD:</Table.Cell>
-                <Table.Cell>YESSICA GONZÁLEZ GÓMEZ</Table.Cell>
-                <Table.Cell>10184914</Table.Cell>
-                <Table.Cell>04249033196</Table.Cell>
-                <Table.Cell>LIC. GESTIÓN SOCIAL </Table.Cell>
-                <Table.Cell>yessigonza@gmail.com</Table.Cell>
-                <Table.Cell>C. KAVANAYEN, MZNA 13, # 9</Table.Cell>
-              </Table.Row>
-              <Table.Row key={2}>
-                <Table.Cell>LIDER DE COMUNIDAD:</Table.Cell>
-                <Table.Cell>YESSICA GONZÁLEZ GÓMEZ</Table.Cell>
-                <Table.Cell>10184914</Table.Cell>
-                <Table.Cell>04249033196</Table.Cell>
-                <Table.Cell>LIC. GESTIÓN SOCIAL </Table.Cell>
-                <Table.Cell>yessigonza@gmail.com</Table.Cell>
-                <Table.Cell>C. KAVANAYEN, MZNA 13, # 9</Table.Cell>
-              </Table.Row>
-              <Table.Row key={3}>
-                <Table.Cell>LIDER DE COMUNIDAD:</Table.Cell>
-                <Table.Cell>YESSICA GONZÁLEZ GÓMEZ</Table.Cell>
-                <Table.Cell>10184914</Table.Cell>
-                <Table.Cell>04249033196</Table.Cell>
-                <Table.Cell>LIC. GESTIÓN SOCIAL </Table.Cell>
-                <Table.Cell>yessigonza@gmail.com</Table.Cell>
-                <Table.Cell>C. KAVANAYEN, MZNA 13, # 9</Table.Cell>
-              </Table.Row>
-              <Table.Row key={4}>
-                <Table.Cell>LIDER DE COMUNIDAD:</Table.Cell>
-                <Table.Cell>YESSICA GONZÁLEZ GÓMEZ</Table.Cell>
-                <Table.Cell>10184914</Table.Cell>
-                <Table.Cell>04249033196</Table.Cell>
-                <Table.Cell>LIC. GESTIÓN SOCIAL </Table.Cell>
-                <Table.Cell>yessigonza@gmail.com</Table.Cell>
-                <Table.Cell>C. KAVANAYEN, MZNA 13, # 9</Table.Cell>
-              </Table.Row>
-            </Table.Body>
+        </CardHeader>
+        <CardBody>
+          <Table>
+            <TableHeader>
+              <TableColumn>Estructura</TableColumn>
+              <TableColumn>Nombres y Apellidos</TableColumn>
+              <TableColumn>Cedula</TableColumn>
+              <TableColumn>Telefono</TableColumn>
+              <TableColumn>Profesion</TableColumn>
+              <TableColumn>Correo Electronico</TableColumn>
+              <TableColumn>Direccion</TableColumn>
+            </TableHeader>
+            <TableBody>
+              <TableRow key={1}>
+                <TableCell>LIDER DE COMUNIDAD:</TableCell>
+                <TableCell>YESSICA GONZÁLEZ GÓMEZ</TableCell>
+                <TableCell>10184914</TableCell>
+                <TableCell>04249033196</TableCell>
+                <TableCell>LIC. GESTIÓN SOCIAL </TableCell>
+                <TableCell>yessigonza@gmail.com</TableCell>
+                <TableCell>C. KAVANAYEN, MZNA 13, # 9</TableCell>
+              </TableRow>
+              <TableRow key={2}>
+                <TableCell>LIDER DE COMUNIDAD:</TableCell>
+                <TableCell>YESSICA GONZÁLEZ GÓMEZ</TableCell>
+                <TableCell>10184914</TableCell>
+                <TableCell>04249033196</TableCell>
+                <TableCell>LIC. GESTIÓN SOCIAL </TableCell>
+                <TableCell>yessigonza@gmail.com</TableCell>
+                <TableCell>C. KAVANAYEN, MZNA 13, # 9</TableCell>
+              </TableRow>
+              <TableRow key={3}>
+                <TableCell>LIDER DE COMUNIDAD:</TableCell>
+                <TableCell>YESSICA GONZÁLEZ GÓMEZ</TableCell>
+                <TableCell>10184914</TableCell>
+                <TableCell>04249033196</TableCell>
+                <TableCell>LIC. GESTIÓN SOCIAL </TableCell>
+                <TableCell>yessigonza@gmail.com</TableCell>
+                <TableCell>C. KAVANAYEN, MZNA 13, # 9</TableCell>
+              </TableRow>
+              <TableRow key={4}>
+                <TableCell>LIDER DE COMUNIDAD:</TableCell>
+                <TableCell>YESSICA GONZÁLEZ GÓMEZ</TableCell>
+                <TableCell>10184914</TableCell>
+                <TableCell>04249033196</TableCell>
+                <TableCell>LIC. GESTIÓN SOCIAL </TableCell>
+                <TableCell>yessigonza@gmail.com</TableCell>
+                <TableCell>C. KAVANAYEN, MZNA 13, # 9</TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
-        </Card.Body>
+        </CardBody>
       </Card>
 
-      <Card css={{ mb: "$10" }}>
-        <Card.Header css={{ position: "relative" }}>
-          <Text
-            h1
-            className="mx-auto flex-shrink text-center text-2xl font-medium"
-          >
+      <Card className="mb-10">
+        <CardHeader className="relative">
+          <h1 className="mx-auto flex-shrink text-center text-2xl font-medium">
             Lideres de calle
-          </Text>
+          </h1>
           <button className=" h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600">
             Añadir
           </button>
-        </Card.Header>
-        <Card.Body>
-          <Table bordered lined headerLined striped>
-            <Table.Header>
-              <Table.Column align="center">N#</Table.Column>
-              <Table.Column align="center">Cedula</Table.Column>
-              <Table.Column align="center">Nacionalidad</Table.Column>
-              <Table.Column align="center" css={{ width: "max-content" }}>
+        </CardHeader>
+        <CardBody>
+          <Table>
+            <TableHeader>
+              <TableColumn align="center">N#</TableColumn>
+              <TableColumn align="center">Cedula</TableColumn>
+              <TableColumn align="center">Nacionalidad</TableColumn>
+              <TableColumn align="center" className="w-max">
                 Fecha de nacimiento
-              </Table.Column>
-              <Table.Column align="center">Genero</Table.Column>
-              <Table.Column align="center">Profesion</Table.Column>
-              <Table.Column align="center">Nombres y Apellidos</Table.Column>
-              <Table.Column align="center">Familias</Table.Column>
-              <Table.Column align="center">Combos</Table.Column>
-              <Table.Column align="center">Telefono</Table.Column>
-              <Table.Column align="center">Correo Electronico</Table.Column>
-              <Table.Column align="center">Direccion</Table.Column>
-            </Table.Header>
-            <Table.Body>
-              <Table.Row key={1}>
-                <Table.Cell>1</Table.Cell>
-                <Table.Cell>17339263</Table.Cell>
-                <Table.Cell>V</Table.Cell>
-                <Table.Cell>3/6/1985</Table.Cell>
-                <Table.Cell>F</Table.Cell>
-                <Table.Cell>AMA DE CASA</Table.Cell>
-                <Table.Cell>YHANEDDY RIVAS</Table.Cell>
-                <Table.Cell>28</Table.Cell>
-                <Table.Cell>29</Table.Cell>
-                <Table.Cell>04168674166</Table.Cell>
-                <Table.Cell>yhannedys15@gmail.com</Table.Cell>
-                <Table.Cell>CLL. PIJIGUAOS, MZNA 16, CASA 14</Table.Cell>
-              </Table.Row>
-            </Table.Body>
+              </TableColumn>
+              <TableColumn align="center">Genero</TableColumn>
+              <TableColumn align="center">Profesion</TableColumn>
+              <TableColumn align="center">Nombres y Apellidos</TableColumn>
+              <TableColumn align="center">Familias</TableColumn>
+              <TableColumn align="center">Combos</TableColumn>
+              <TableColumn align="center">Telefono</TableColumn>
+              <TableColumn align="center">Correo Electronico</TableColumn>
+              <TableColumn align="center">Direccion</TableColumn>
+            </TableHeader>
+            <TableBody>
+              <TableRow key={1}>
+                <TableCell>1</TableCell>
+                <TableCell>17339263</TableCell>
+                <TableCell>V</TableCell>
+                <TableCell>3/6/1985</TableCell>
+                <TableCell>F</TableCell>
+                <TableCell>AMA DE CASA</TableCell>
+                <TableCell>YHANEDDY RIVAS</TableCell>
+                <TableCell>28</TableCell>
+                <TableCell>29</TableCell>
+                <TableCell>04168674166</TableCell>
+                <TableCell>yhannedys15@gmail.com</TableCell>
+                <TableCell>CLL. PIJIGUAOS, MZNA 16, CASA 14</TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
 
           <div className="mt-2 text-center">
-            <Text h4 className="mx-auto font-normal">
+            <h4 className="mx-auto font-normal">
               TOTAL COMBOS: <span className="font-bold">56</span>
-            </Text>
+            </h4>
           </div>
-        </Card.Body>
+        </CardBody>
       </Card>
-    </Container>
+    </div>
   );
 };

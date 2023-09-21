@@ -1,11 +1,13 @@
 import {
   Button,
   Card,
-  Grid,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
   Input,
-  Loading,
   Spacer,
-  Text,
+  Spinner,
 } from "@nextui-org/react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -58,83 +60,63 @@ export const LoginForm = () => {
     <Card
       as="form"
       onSubmit={handleSubmit(onSubmit)}
-      css={{}}
-      className="shadow-lg"
+      className="container mx-auto max-w-md shadow-lg"
     >
-      <Card.Header>
-        <Text h3>CENSO {new Date().getFullYear()}</Text>
-      </Card.Header>
-      <Card.Divider />
-      <Card.Body>
-        <Grid.Container gap={2}>
-          <Grid xs={12}>
-            <Input
-              fullWidth
-              type="text"
-              label="Nombre de usuario:"
-              placeholder="Escriba su nombre de usuario..."
-              bordered
-              {...register("username", {
-                required: {
-                  value: true,
-                  message: "Se requiere del nombre de usuario.",
-                },
-              })}
-              helperText={errors.username?.message}
-              helperColor="error"
-            />
-          </Grid>
-          <Spacer y={0.5} />
-          <Grid xs={12}>
-            <Input
-              fullWidth
-              type="password"
-              label="Contraseña:"
-              placeholder="Escriba su contraseña..."
-              bordered
-              {...register("password", {
-                required: {
-                  value: true,
-                  message: "Se requiere la contraseña.",
-                },
-              })}
-              helperText={errors.password?.message}
-              helperColor="error"
-            />
-          </Grid>
+      <CardHeader>
+        <h2 className="text-xl font-bold">CENSO {new Date().getFullYear()}</h2>
+      </CardHeader>
+      <Divider />
+      <CardBody>
+        <Input
+          type="text"
+          label="Nombre de usuario:"
+          placeholder="Escriba su nombre de usuario..."
+          {...register("username", {
+            required: {
+              value: true,
+              message: "Se requiere del nombre de usuario.",
+            },
+          })}
+          isInvalid={!!errors.username}
+          errorMessage={errors.username?.message}
+        />
+        <Spacer y={4} />
+        <Input
+          type="password"
+          label="Contraseña:"
+          placeholder="Escriba su contraseña..."
+          {...register("password", {
+            required: {
+              value: true,
+              message: "Se requiere la contraseña.",
+            },
+          })}
+          isInvalid={!!errors.password}
+          errorMessage={errors.password?.message}
+        />
 
-          {errors.root && (
-            <Grid xs={12}>
-              <Text
-                em
-                color="error"
-                className="w-full rounded-md bg-red-600 bg-opacity-20 px-4 py-1 text-center font-semibold"
-              >
-                {errors.root.message}
-              </Text>
-            </Grid>
-          )}
-        </Grid.Container>
-      </Card.Body>
-      <Card.Divider />
-      <Card.Footer>
+        {errors.root && (
+          <>
+            <Spacer y={4} />
+            <em className="w-full rounded-medium bg-danger px-4 py-2 text-center text-danger-foreground">
+              {errors.root.message}
+            </em>
+          </>
+        )}
+      </CardBody>
+      <Divider />
+      <CardFooter>
         <Button
+          color="primary"
           size="lg"
           type="submit"
-          css={{
-            ml: "auto",
-            "&:hover": {
-              backgroundColor: "$primarySolidHover",
-            },
-          }}
-          disabled={isSubmitting}
+          className="ml-auto"
+          spinner={<Spinner color="current" size="sm" />}
+          isLoading={isSubmitting}
         >
-          {isSubmitting && (
-            <Loading as="span" color={"secondary"} className="mx-4" />
-          )}
-          <span>{isSubmitting ? " Cargando..." : "Iniciar sesion."}</span>
+          {isSubmitting ? " Cargando..." : "Iniciar sesion."}
         </Button>
-      </Card.Footer>
+      </CardFooter>
     </Card>
   );
 };

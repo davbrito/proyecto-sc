@@ -1,6 +1,4 @@
-import { Container } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import React from "react";
 import { LayoutContent } from "~/components/Layout";
 import { GreatForm } from "~/components/censo/GreatForm";
 
@@ -9,9 +7,9 @@ const CreateCenso = () => {
   const consejoComunalId = router.query.id ? router.query.id.toString() : "";
   return (
     <LayoutContent>
-      <Container css={{ mw: "680px", my: "2rem" }}>
+      <div className="container max-w-2xl p-8">
         <GreatForm consejoComunalId={consejoComunalId} />
-      </Container>
+      </div>
     </LayoutContent>
   );
 };

@@ -1,9 +1,10 @@
-import { Button, Card, Grid, Input, Text } from "@nextui-org/react";
+import { Button, Card, CardBody, Input } from "@nextui-org/react";
 import {
   useState,
   type Dispatch,
   type FormEvent,
   type SetStateAction,
+  useId,
 } from "react";
 
 interface Props {
@@ -11,30 +12,30 @@ interface Props {
 }
 
 export const SearchForm = ({ setSearchValue }: Props) => {
+  const id = useId();
   const [search, setSearch] = useState("");
+
   const handlerSubmit = (event: FormEvent<HTMLInputElement>) => {
     event.preventDefault();
     setSearchValue(search);
   };
 
   return (
-    <Card className=" mx-auto p-5" css={{ maxW: "350px" }}>
-      <Grid.Container
+    <Card className="mx-auto p-5" style={{ maxWidth: "350px" }}>
+      <CardBody
         as="form"
         className="flex flex-col justify-center gap-2"
         onSubmit={handlerSubmit}
       >
-        <Text as="label" h3 className="text-xl font-medium">
+        <label htmlFor={id} className="text-xl font-medium">
           Busqueda:
-        </Text>
+        </label>
         <Input
           placeholder="Ej: 102500001"
-          bordered
-          id="search-input"
+          id={id}
           name="search"
           type="search"
           value={search}
-          helperColor="error"
           onChange={({ target }) => setSearch(target.value)}
         />
         <Button
@@ -43,7 +44,7 @@ export const SearchForm = ({ setSearchValue }: Props) => {
         >
           Buscar
         </Button>
-      </Grid.Container>
+      </CardBody>
     </Card>
   );
 };

@@ -1,4 +1,4 @@
-import { type ReactNode, type PropsWithChildren } from "react";
+import { type ReactNode } from "react";
 
 interface Props {
   className?: string;
@@ -7,7 +7,9 @@ interface Props {
 
 export const LayoutContent = ({ children, className }: Props) => {
   return (
-    <main className={`min-h-screen  ${!!className ? className : ""}`}>
+    <main
+      className={`flex min-h-screen flex-col ${!!className ? className : ""}`}
+    >
       {children}
     </main>
   );

@@ -1,4 +1,3 @@
-import { Container } from "@nextui-org/react";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
@@ -55,9 +54,9 @@ const IndexCreateFamiliar = (
 
   return (
     <LayoutContent>
-      <Container css={{ mw: "680px", my: "2rem" }}>
+      <div className="container max-w-2xl p-8">
         <FamiliarForm jefeId={BigInt(props?.id)} consejoId="" />
-      </Container>
+      </div>
     </LayoutContent>
   );
 };

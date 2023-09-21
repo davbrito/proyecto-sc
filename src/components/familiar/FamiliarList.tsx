@@ -1,9 +1,15 @@
-import { Table, Grid, Text } from "@nextui-org/react";
-import React from "react";
-import { api } from "~/utils/api";
-import { CustomLoading } from "../Loading";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@nextui-org/react";
 import Link from "next/link";
+import { api } from "~/utils/api";
 import { getRelativeTime } from "~/utils/dates";
+import { CustomLoading } from "../Loading";
 
 export const FamiliarList = () => {
   const { data, isLoading } = api.familia.getAll.useQuery();
@@ -14,33 +20,26 @@ export const FamiliarList = () => {
 
   if (data.length === 0)
     return (
-      <Grid.Container
-        css={{
-          border: "1px solid $gray400",
-          borderRadius: "$3xl",
-          padding: "$10 $6",
-        }}
-        className="mx-auto min-h-[40vh] w-full place-content-center"
-      >
-        <Text h2 className="text-2xl font-light" css={{ textAlign: "center" }}>
+      <div className="mx-auto min-h-[40vh] w-full place-content-center rounded-3xl border border-gray-400 px-6 py-10">
+        <h2 className="text-center text-2xl font-light">
           Aun no se han registrados familiares.
-        </Text>
-      </Grid.Container>
+        </h2>
+      </div>
     );
 
   return (
     <div>
-      <Table bordered lined headerLined>
-        <Table.Header>
-          <Table.Column align="center">Jefe de Familia</Table.Column>
-          <Table.Column align="center">Apellidos</Table.Column>
-          <Table.Column align="center">Nombres</Table.Column>
-          <Table.Column align="center">Edad</Table.Column>
-          <Table.Column align="center">Genero</Table.Column>
-          <Table.Column align="center">Observacion</Table.Column>
-          <Table.Column align="center">Documento de identidad</Table.Column>
-        </Table.Header>
-        <Table.Body>
+      <Table>
+        <TableHeader>
+          <TableColumn align="center">Jefe de Familia</TableColumn>
+          <TableColumn align="center">Apellidos</TableColumn>
+          <TableColumn align="center">Nombres</TableColumn>
+          <TableColumn align="center">Edad</TableColumn>
+          <TableColumn align="center">Genero</TableColumn>
+          <TableColumn align="center">Observacion</TableColumn>
+          <TableColumn align="center">Documento de identidad</TableColumn>
+        </TableHeader>
+        <TableBody>
           {data.map(
             ({
               id,
@@ -53,8 +52,8 @@ export const FamiliarList = () => {
               genero,
               fechaNacimiento,
             }) => (
-              <Table.Row key={id.toString()}>
-                <Table.Cell css={{ textAlign: "center" }}>
+              <TableRow key={id.toString()}>
+                <TableCell className="text-center">
                   <Link
                     href={`/censo/${jefeFamilia.id.toString()}`}
                     className="transition-all hover:text-blue-800  "
@@ -62,33 +61,31 @@ export const FamiliarList = () => {
                     {jefeFamilia.tipoDocumento.toUpperCase()}-
                     {jefeFamilia.numeroDocumento}
                   </Link>
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>
+                </TableCell>
+                <TableCell className="text-center">
                   {apellidos.toUpperCase()}
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>
+                </TableCell>
+                <TableCell className="text-center">
                   {nombres.toUpperCase()}
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>
+                </TableCell>
+                <TableCell className="text-center">
                   {getRelativeTime(fechaNacimiento)}
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>
+                </TableCell>
+                <TableCell className="text-center">
                   {genero.toUpperCase() === "F" ? "Femenino" : "Masculino"}
-                </Table.Cell>
-                <Table.Cell
-                  css={{ textAlign: "center", textTransform: "capitalize" }}
-                >
+                </TableCell>
+                <TableCell className="text-center capitalize">
                   {observacion || "No tiene"}.
-                </Table.Cell>
-                <Table.Cell css={{ textAlign: "center" }}>
+                </TableCell>
+                <TableCell className="text-center">
                   {numeroDocumento
                     ? `${tipoDocumento.toUpperCase()}-${numeroDocumento}`
                     : "NO POSEE"}
-                </Table.Cell>
-              </Table.Row>
+                </TableCell>
+              </TableRow>
             )
           )}
-        </Table.Body>
+        </TableBody>
       </Table>
     </div>
   );

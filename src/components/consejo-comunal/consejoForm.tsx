@@ -1,8 +1,16 @@
-import { Button, Card, Grid, Input, Text } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Input,
+} from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useCiudades } from "~/hooks/useCiudades";
 import { api } from "~/utils/api";
-import { useRouter } from "next/navigation";
 
 interface FormState {
   nombre_consejo: string;
@@ -41,17 +49,17 @@ export const ConsejoForm = () => {
 
   return (
     <Card as="form" onSubmit={onSubmit}>
-      <Card.Header>
-        <Text h3 css={{ mx: "auto" }} className="text-4xl font-light">
+      <CardHeader>
+        <h3 className="mx-auto text-4xl font-light">
           Datos del Consejo Comunal
-        </Text>
-      </Card.Header>
+        </h3>
+      </CardHeader>
 
-      <Card.Divider />
+      <Divider />
 
-      <Card.Body>
-        <Grid.Container gap={2}>
-          <Grid xs={6}>
+      <CardBody>
+        <div className="grid grid-cols-12 gap-2">
+          <div className="col-span-6">
             <Input
               {...register("nombre_consejo", {
                 required: { value: true, message: "El nombre es requerido" },
@@ -59,13 +67,12 @@ export const ConsejoForm = () => {
               id="nombre_consejo"
               fullWidth
               label="Nombre consejo comunal:"
-              bordered
               type="text"
-              helperText={errors?.nombre_consejo?.message}
-              helperColor="error"
+              errorMessage={errors?.nombre_consejo?.message}
+              isInvalid={!!errors?.nombre_consejo}
             />
-          </Grid>
-          <Grid xs={6}>
+          </div>
+          <div className="col-span-6">
             <Input
               {...register("nombre_clap", {
                 required: {
@@ -76,26 +83,25 @@ export const ConsejoForm = () => {
               id="nombre_clap"
               fullWidth
               label="Nombre CLAP:"
-              bordered
               type="text"
-              helperText={errors?.nombre_consejo?.message}
-              helperColor="error"
+              errorMessage={errors?.nombre_consejo?.message}
+              isInvalid={!!errors?.nombre_consejo}
             />
-          </Grid>
-          <Grid xs={8}>
+          </div>
+          <div className="col-span-8">
             <Input
               {...register("comunidad", {
                 required: { value: true, message: "La comunidad es requerido" },
               })}
               fullWidth
               label="Comunidad:"
-              bordered
               type="text"
-              helperText={errors?.comunidad?.message}
-              helperColor="error"
+              errorMessage={errors?.comunidad?.message}
+              isInvalid={!!errors?.comunidad}
             />
-          </Grid>
-          <Grid xs={4}>
+          </div>
+
+          <div className="col-span-4">
             <Input
               {...register("circuito", {
                 required: { value: true, message: "El circuito es requerido" },
@@ -107,14 +113,13 @@ export const ConsejoForm = () => {
               id="circuito"
               fullWidth
               label="Circuito:"
-              bordered
               type="text"
-              helperText={errors?.circuito?.message}
-              helperColor="error"
+              errorMessage={errors?.circuito?.message}
+              isInvalid={!!errors?.circuito}
             />
-          </Grid>
-          <Card.Divider css={{ my: "$6" }} />
-          <Grid xs={6}>
+          </div>
+          <Divider className="my-6" />
+          <div className="col-span-6">
             <Input
               {...register("sector", {
                 required: { value: true, message: "El sector es requerido" },
@@ -122,13 +127,12 @@ export const ConsejoForm = () => {
               id="sector"
               fullWidth
               label="Sector:"
-              bordered
               type="text"
-              helperText={errors?.sector?.message}
-              helperColor="error"
+              errorMessage={errors?.sector?.message}
+              isInvalid={!!errors?.sector}
             />
-          </Grid>
-          <Grid xs={6}>
+          </div>
+          <div className="col-span-6">
             <Input
               {...register("rif", {
                 required: {
@@ -143,38 +147,36 @@ export const ConsejoForm = () => {
               id="rif"
               fullWidth
               label="RIF:"
-              bordered
               type="text"
-              helperText={errors?.rif?.message}
-              helperColor="error"
+              errorMessage={errors?.rif?.message}
+              isInvalid={!!errors?.rif}
             />
-          </Grid>
-          <Grid xs={6}>
+          </div>
+          <div className="col-span-6">
             <Input
               {...register("bms")}
               id="bms"
               fullWidth
               label="BMS:"
-              bordered
               type="text"
-              helperText={errors?.bms?.message}
-              helperColor="error"
+              errorMessage={errors?.bms?.message}
+              isInvalid={!!errors?.bms}
             />
-          </Grid>
-          <Grid xs={6}>
+          </div>
+          <div className="col-span-6">
             <Input
               {...register("cod_siscod")}
               id="cod_siscod"
               fullWidth
               label="Codigo SISCOD:"
-              bordered
               type="text"
-              helperText={errors?.nombre_consejo?.message}
-              helperColor="error"
+              errorMessage={errors?.nombre_consejo?.message}
+              isInvalid={!!errors?.nombre_consejo}
             />
-          </Grid>
-          <Card.Divider css={{ my: "$6" }} />
-          <Grid xs={4}>
+          </div>
+          <Divider className="my-6" />
+
+          <div className="col-span-4">
             <div className="w-full">
               <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
                 Estado:
@@ -194,8 +196,9 @@ export const ConsejoForm = () => {
                 ))}
               </select>
             </div>
-          </Grid>
-          <Grid xs={4}>
+          </div>
+
+          <div className="col-span-4">
             <div className="w-full">
               <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
                 Municipio:
@@ -219,8 +222,9 @@ export const ConsejoForm = () => {
                 ))}
               </select>
             </div>
-          </Grid>
-          <Grid xs={4}>
+          </div>
+
+          <div className="col-span-4">
             <div className="w-full">
               <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
                 Parroquia:
@@ -243,16 +247,16 @@ export const ConsejoForm = () => {
                 ))}
               </select>
             </div>
-          </Grid>
-        </Grid.Container>
-      </Card.Body>
-      <Card.Divider />
+          </div>
+        </div>
+      </CardBody>
+      <Divider />
 
-      <Card.Footer className="py-6">
+      <CardFooter className="py-6">
         <Button className="mx-auto" type="submit" disabled={isLoading}>
           Crear
         </Button>
-      </Card.Footer>
+      </CardFooter>
     </Card>
   );
 };

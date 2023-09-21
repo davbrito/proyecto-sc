@@ -1,4 +1,4 @@
-import { Grid, Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 import {
   type FieldErrors,
   type UseFormRegister,
@@ -16,59 +16,50 @@ export const CasaForm = ({
   watch: UseFormWatch<JefeProps>;
 }) => {
   return (
-    <Grid.Container gap={2}>
-      <Grid xs={4}>
-        <Input
-          autoFocus={false}
-          fullWidth
-          label="N° Calle:"
-          placeholder="Escriba el numero de calle..."
-          bordered
-          {...register("casa.calle", {
-            required: {
-              message: "Este campo no puede estar vacio",
-              value: true,
-            },
-          })}
-          helperText={errors?.casa?.calle?.message}
-          helperColor="error"
-        />
-      </Grid>
-      <Grid xs={4}>
-        <Input
-          autoFocus={false}
-          fullWidth
-          label="N° Manzana:"
-          placeholder="Escriba el numero de manzana..."
-          bordered
-          {...register("casa.manzana", {
-            required: {
-              message: "Este campo no puede estar vacio",
-              value: true,
-            },
-          })}
-          helperText={errors?.casa?.manzana?.message}
-          helperColor="error"
-        />
-      </Grid>
+    <div className="grid grid-cols-3">
+      <Input
+        autoFocus={false}
+        fullWidth
+        label="N° Calle:"
+        placeholder="Escriba el numero de calle..."
+        {...register("casa.calle", {
+          required: {
+            message: "Este campo no puede estar vacio",
+            value: true,
+          },
+        })}
+        errorMessage={errors?.casa?.calle?.message}
+        isInvalid={!!errors?.casa?.calle}
+      />
+      <Input
+        autoFocus={false}
+        fullWidth
+        label="N° Manzana:"
+        placeholder="Escriba el numero de manzana..."
+        {...register("casa.manzana", {
+          required: {
+            message: "Este campo no puede estar vacio",
+            value: true,
+          },
+        })}
+        isInvalid={!!errors?.casa?.manzana}
+        errorMessage={errors?.casa?.manzana?.message}
+      />
 
-      <Grid xs={4}>
-        <Input
-          fullWidth
-          autoFocus={false}
-          label="N° Casa:"
-          placeholder="Escriba el numero de casa..."
-          bordered
-          {...register("casa.casa", {
-            required: {
-              message: "Este campo no puede estar vacio",
-              value: true,
-            },
-          })}
-          helperText={errors?.casa?.casa?.message}
-          helperColor="error"
-        />
-      </Grid>
-    </Grid.Container>
+      <Input
+        fullWidth
+        autoFocus={false}
+        label="N° Casa:"
+        placeholder="Escriba el numero de casa..."
+        {...register("casa.casa", {
+          required: {
+            message: "Este campo no puede estar vacio",
+            value: true,
+          },
+        })}
+        errorMessage={errors?.casa?.casa?.message}
+        isInvalid={!!errors?.casa?.casa}
+      />
+    </div>
   );
 };

@@ -1,4 +1,14 @@
-import { Table, Text, Button, Modal, Grid } from "@nextui-org/react";
+import {
+  Table,
+  Button,
+  Modal,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  ModalBody,
+} from "@nextui-org/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
@@ -38,42 +48,35 @@ export const CensoList = ({
 
   if (data.length === 0)
     return (
-      <Grid.Container
-        css={{
-          border: "1px solid $gray400",
-          borderRadius: "$3xl",
-          padding: "$10 $6",
-        }}
-        className="mx-auto min-h-[40vh] w-full place-content-center"
-      >
-        <Text h2 className="text-2xl font-light" css={{ textAlign: "center" }}>
+      <div className="mx-auto min-h-[40vh] w-full place-content-center rounded-3xl border border-gray-400 px-6 py-10">
+        <h2 className="text-center text-2xl font-light">
           {search
             ? `No hay resultados para la busqueda del censo: '${search}'`
             : "Aun no se han registrados censos."}
-        </Text>
-      </Grid.Container>
+        </h2>
+      </div>
     );
 
   if (!data) return <div>Error</div>;
   return (
     <>
-      <Table bordered lined headerLined>
-        <Table.Header>
-          <Table.Column align="center">Codigo</Table.Column>
-          <Table.Column align="center">Manzana</Table.Column>
-          <Table.Column align="center">Casa</Table.Column>
-          <Table.Column align="center">Nombres</Table.Column>
-          <Table.Column align="center">Documento</Table.Column>
-          <Table.Column align="center">Fecha Nacimiento</Table.Column>
-          <Table.Column align="center">Edad</Table.Column>
-          <Table.Column align="center">Familia</Table.Column>
-          <Table.Column align="center">Genero</Table.Column>
-          <Table.Column align="center">Acciones</Table.Column>
-        </Table.Header>
-        <Table.Body>
+      <Table>
+        <TableHeader>
+          <TableColumn align="center">Codigo</TableColumn>
+          <TableColumn align="center">Manzana</TableColumn>
+          <TableColumn align="center">Casa</TableColumn>
+          <TableColumn align="center">Nombres</TableColumn>
+          <TableColumn align="center">Documento</TableColumn>
+          <TableColumn align="center">Fecha Nacimiento</TableColumn>
+          <TableColumn align="center">Edad</TableColumn>
+          <TableColumn align="center">Familia</TableColumn>
+          <TableColumn align="center">Genero</TableColumn>
+          <TableColumn align="center">Acciones</TableColumn>
+        </TableHeader>
+        <TableBody>
           {data.map(({ jefeFamilia, id, tipoFamilia }) => (
-            <Table.Row key={id}>
-              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+            <TableRow key={id}>
+              <TableCell className="text-center text-sm">
                 <Link
                   href={
                     !jefeFamilia
@@ -82,49 +85,45 @@ export const CensoList = ({
                           jefeFamilia.id
                         )}`
                   }
-                  className="transition-all hover:text-blue-800  "
+                  className="transition-all hover:text-blue-800"
                 >
                   {id.padStart(8, "0")}
                 </Link>
-              </Table.Cell>
-              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+              </TableCell>
+              <TableCell className="text-center text-sm">
                 {jefeFamilia?.casa ? jefeFamilia.casa.manzana : ""}
-              </Table.Cell>
-              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+              </TableCell>
+              <TableCell className="text-center text-sm">
                 {jefeFamilia?.casa
                   ? jefeFamilia.casa.casa.padStart(2, "0")
                   : ""}
-              </Table.Cell>
-              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+              </TableCell>
+              <TableCell className="text-center text-sm">
                 {jefeFamilia?.apellidos.toUpperCase()},{" "}
                 {jefeFamilia?.nombres.toUpperCase()}.
-              </Table.Cell>
-              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+              </TableCell>
+              <TableCell className="text-center text-sm">
                 {jefeFamilia?.tipoDocumento.toUpperCase()}-
                 {jefeFamilia?.numeroDocumento}
-              </Table.Cell>
-
-              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+              </TableCell>
+              <TableCell className="text-center text-sm">
                 {formatDate(jefeFamilia?.fechaNacimiento as Date)}
-              </Table.Cell>
-              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+              </TableCell>
+              <TableCell className="text-center text-sm">
                 {getRelativeTime(jefeFamilia?.fechaNacimiento as Date)}
-              </Table.Cell>
-              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+              </TableCell>
+              <TableCell className="text-center text-sm">
                 {tipoFamilia.toUpperCase()}
-              </Table.Cell>
-              <Table.Cell css={{ textAlign: "center", fontSize: "$sm" }}>
+              </TableCell>
+              <TableCell className="text-center text-sm">
                 {jefeFamilia?.genero.toUpperCase() === "F"
                   ? "Femenino"
                   : "Masculino"}
-              </Table.Cell>
-              <Table.Cell>
+              </TableCell>
+              <TableCell>
                 <Button
-                  className={`bg-blue-700 transition-all hover:bg-blue-900`}
-                  size={"sm"}
-                  css={{
-                    mx: "auto",
-                  }}
+                  className="mx-auto bg-blue-700 transition-all hover:bg-blue-900"
+                  size="sm"
                   onPress={() => {
                     const id = jefeFamilia?.id;
                     if (!id) return;
@@ -133,27 +132,26 @@ export const CensoList = ({
                 >
                   Agregar pariente.
                 </Button>
-              </Table.Cell>
-            </Table.Row>
+              </TableCell>
+            </TableRow>
           ))}
-        </Table.Body>
+        </TableBody>
       </Table>
       <Modal
         closeButton
         aria-labelledby="modal-title2"
-        width="700px"
-        open={openModal.isOpen}
+        size="3xl"
+        isOpen={openModal.isOpen}
         onClose={closeHandler}
-        autoMargin
       >
         {!!openModal.id && (
-          <Modal.Body>
+          <ModalBody>
             <FamiliarForm
               consejoId={consejoId}
               jefeId={openModal.id}
               closeModal={closeHandler}
             />
-          </Modal.Body>
+          </ModalBody>
         )}
       </Modal>
     </>

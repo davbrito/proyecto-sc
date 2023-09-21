@@ -1,14 +1,15 @@
 import {
   Button,
   Card,
-  Container,
-  Divider,
-  Grid,
+  CardBody,
+  CardFooter,
+  CardHeader,
   Input,
-  Text,
+  Spacer,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useMemo } from "react";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 
@@ -19,126 +20,113 @@ interface FormProps {
 }
 
 export const EditForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<FormProps>();
   const { data, isLoading } = api.user.getById.useQuery();
-  const { mutate } = api.user.updateDataInfoById.useMutation();
+  const mutation = api.user.updateDataInfoById.useMutation({
+    onError(error) {
+      console.log(error);
+    },
+    onSuccess(data) {
+      console.log(data);
+      router.push("/profile");
+    },
+  });
   const router = useRouter();
-  const onSubmit: SubmitHandler<FormProps> = (value, event) => {
-    event?.preventDefault();
-
-    mutate(
-      { ...value, id: data?.id as string },
-      {
-        onError(error, variables, context) {
-          console.log(error);
-        },
-        onSuccess(data, variables, context) {
-          console.log(data);
-          router.push("/profile");
-        },
-      }
-    );
+  const onSubmit: SubmitHandler<FormProps> = async (value) => {
+    await mutation
+      .mutateAsync({ ...value, id: data?.id as string })
+      .catch(() => {});
   };
+
+  const {
+    handleSubmit,
+    control,
+    register,
+    formState: { isSubmitting },
+  } = useForm<FormProps>({
+    values: useMemo(
+      () => ({
+        username: data?.username ?? "",
+        name: data?.name ?? "",
+        lastName: data?.lastName ?? "",
+      }),
+      [data]
+    ),
+    resetOptions: { keepDefaultValues: true },
+  });
 
   if (isLoading) return <CustomLoading />;
   if (!data) return null;
   return (
-    <Container>
+    <div className="container">
       <Card
         as="form"
         onSubmit={handleSubmit(onSubmit)}
         className="mx-auto max-w-lg"
-        css={{
-          backgroundColor: "$gray200",
-          border: "$gray100",
-          borderRadius: "$md",
-          p: "$5",
-        }}
       >
-        <Card.Header>
-          <Text h1 className=" mx-auto  text-2xl font-light">
+        <CardHeader>
+          <h2 className=" mx-auto  text-2xl font-bold">
             Actualizar Informacion
-          </Text>
-        </Card.Header>
-        <Divider />
-        <Card.Body className="px-0 py-4 ">
-          <Grid.Container>
-            <Container>
+          </h2>
+        </CardHeader>
+        <CardBody className="grid gap-4">
+          <Controller
+            name="username"
+            control={control}
+            rules={{ required: "El username es requerido" }}
+            render={({ field, fieldState }) => (
               <Input
-                fullWidth
-                bordered
                 label="Nombre de usuario:"
                 type="text"
-                initialValue={data.username}
-                {...register("username", {
-                  required: {
-                    value: true,
-                    message: "El parentesco es requerido",
-                  },
-                })}
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
               />
-            </Container>
-            <Container>
+            )}
+          />
+          <Controller
+            name="name"
+            control={control}
+            rules={{ required: "El nombre es requerido" }}
+            render={({ field, fieldState }) => (
               <Input
-                fullWidth
-                bordered
                 label="Nombre:"
                 type="text"
-                initialValue={data.name}
-                {...register("name", {
-                  required: {
-                    value: true,
-                    message: "El parentesco es requerido",
-                  },
-                })}
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
               />
-            </Container>
-            <Container>
+            )}
+          />
+          <Controller
+            name="lastName"
+            control={control}
+            rules={{ required: "El apellido es requerido" }}
+            render={({ field, fieldState }) => (
               <Input
-                fullWidth
-                bordered
                 label="Apellido:"
                 type="text"
-                initialValue={data.lastName}
-                {...register("lastName", {
-                  required: {
-                    value: true,
-                    message: "El parentesco es requerido",
-                  },
-                })}
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
               />
-            </Container>
-          </Grid.Container>
-        </Card.Body>
+            )}
+          />
+        </CardBody>
 
-        <Card.Footer
-          css={{ flexDirection: "row", pt: 0 }}
-          className="justify-center gap-4"
-        >
+        <CardFooter className="justify-end gap-3">
           <Button
             type="submit"
-            disabled={isSubmitting}
-            css={{ display: "block" }}
+            isLoading={isSubmitting}
             size={"md"}
-            className="bg-blue-600 transition-all hover:bg-blue-700"
+            color="primary"
           >
             Actualizar
           </Button>
-          <Button
-            type="button"
-            css={{ display: "block" }}
-            size={"md"}
-            className="bg-red-600 transition-all hover:bg-red-700"
-            onPress={() => router.back()}
-          >
+          <Button type="button" size="md" onPress={() => router.back()}>
             Cancelar
           </Button>
-        </Card.Footer>
+        </CardFooter>
       </Card>
-    </Container>
+    </div>
   );
 };

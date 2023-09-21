@@ -1,4 +1,4 @@
-import { Grid, Input, Textarea } from "@nextui-org/react";
+import { Input, Textarea } from "@nextui-org/react";
 import React from "react";
 import { type FieldErrors, type UseFormRegister } from "react-hook-form";
 import { type JefeProps } from "./GreatForm";
@@ -10,8 +10,8 @@ interface Props {
 
 export const DocumentosForm = ({ register, errors }: Props) => {
   return (
-    <Grid.Container gap={1}>
-      <Grid xs={4}>
+    <div className="grid grid-cols-12 gap-1">
+      <div className="col-span-4">
         <div>
           <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
             Tipo documento:
@@ -33,13 +33,12 @@ export const DocumentosForm = ({ register, errors }: Props) => {
             <option value={"f"}>Firma</option>
           </select>
         </div>
-      </Grid>
-      <Grid xs={8}>
+      </div>
+      <div className="col-span-8">
         <Input
           fullWidth
           label="Cedula:"
           placeholder="Ejemplo: 1234578"
-          bordered
           type="text"
           {...register("documentos.numeroDocumento", {
             required: {
@@ -55,58 +54,54 @@ export const DocumentosForm = ({ register, errors }: Props) => {
               message: "Corrija el numero de cedula por favor.",
             },
           })}
-          helperText={errors?.documentos?.numeroDocumento?.message}
-          helperColor="error"
+          isInvalid={!!errors?.documentos?.numeroDocumento}
+          errorMessage={errors?.documentos?.numeroDocumento?.message}
         />
-      </Grid>
-      <Grid xs={6}>
+      </div>
+      <div className="col-span-6">
         <Input
           fullWidth
           label="Serial Carnet de la patria:"
           placeholder="Escriba el serial del carnet de la patria..."
-          bordered
           type="text"
           {...register("documentos.serialCarnetPatria")}
-          helperText={errors?.documentos?.serialCarnetPatria?.message}
-          helperColor="error"
+          isInvalid={!!errors?.documentos?.serialCarnetPatria}
+          errorMessage={errors?.documentos?.serialCarnetPatria?.message}
         />
-      </Grid>
+      </div>
 
-      <Grid xs={6}>
+      <div className="col-span-6">
         <Input
           fullWidth
           label="Codigo del carnet de la patria:"
           placeholder="Escriba el codigo del carnet de la patria..."
-          bordered
           type="text"
           {...register("documentos.codCarnetPatria")}
-          helperText={errors?.documentos?.codCarnetPatria?.message}
-          helperColor="error"
+          isInvalid={!!errors?.documentos?.codCarnetPatria}
+          errorMessage={errors?.documentos?.codCarnetPatria?.message}
         />
-      </Grid>
+      </div>
 
-      <Grid xs={8}>
+      <div className="col-span-8">
         <Textarea
           fullWidth
           label="Observacion:"
           placeholder="Escriba alguna observacion (opcional)"
-          bordered
           {...register("documentos.observacion")}
-          helperText={errors?.documentos?.observacion?.message}
-          helperColor="error"
+          isInvalid={!!errors?.documentos?.observacion}
+          errorMessage={errors?.documentos?.observacion?.message}
         />
-      </Grid>
-      <Grid xs={4}>
+      </div>
+      <div className="col-span-4">
         <Textarea
           fullWidth
           label="Condicion:"
           placeholder="Escriba si tiene alguna condicion especial"
-          bordered
           {...register("documentos.condicionEspecial")}
-          helperText={errors?.documentos?.condicionEspecial?.message}
-          helperColor="error"
+          isInvalid={!!errors?.documentos?.condicionEspecial}
+          errorMessage={errors?.documentos?.condicionEspecial?.message}
         />
-      </Grid>
-    </Grid.Container>
+      </div>
+    </div>
   );
 };

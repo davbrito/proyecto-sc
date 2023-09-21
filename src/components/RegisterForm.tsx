@@ -1,6 +1,15 @@
-import { Button, Card, Grid, Input, Loading, Text } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Input,
+  Spinner,
+} from "@nextui-org/react";
 import { signIn } from "next-auth/react";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { api } from "~/utils/api";
 
 interface Inputs {
@@ -46,67 +55,63 @@ export const RegisterForm = () => {
 
   return (
     <Card as="form" onSubmit={handleSubmit(onSubmit)} className="shadow-lg">
-      <Card.Header>
-        <Text h3>Register Form</Text>
-      </Card.Header>
-      <Card.Divider />
-      <Card.Body>
-        <Grid.Container gap={2}>
-          <Grid xs={12}>
+      <CardHeader>
+        <h3>Register Form</h3>
+      </CardHeader>
+      <Divider />
+      <CardBody>
+        <div className="grid grid-cols-12 gap-2">
+          <div className="col-span-12">
             <Input
               fullWidth
               label="Nombre de usuario:"
               placeholder="Escriba su nombre de usuario..."
-              bordered
               {...register("username", {
                 required: {
                   value: true,
                   message: "El campo de 'usuario' no puede estar vacio.",
                 },
               })}
-              helperText={errors.username?.message}
-              helperColor="error"
+              isInvalid={!!errors.username}
+              errorMessage={errors.username?.message}
             />
-          </Grid>
-          <Grid xs={6}>
+          </div>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Nombre:"
               placeholder="Escriba su nombre..."
-              bordered
               {...register("name", {
                 required: {
                   value: true,
                   message: "El campo de 'nombre' no puede estar vacio.",
                 },
               })}
-              helperText={errors.name?.message}
-              helperColor="error"
+              isInvalid={!!errors.name}
+              errorMessage={errors.name?.message}
             />
-          </Grid>
-          <Grid xs={6}>
+          </div>
+          <div className="col-span-6">
             <Input
               fullWidth
               label="Apellido:"
               placeholder="Escriba su apellido..."
-              bordered
               {...register("lastName", {
                 required: {
                   value: true,
                   message: "El campo de 'apellido' no puede estar vacio.",
                 },
               })}
-              helperText={errors.lastName?.message}
-              helperColor="error"
+              isInvalid={!!errors.lastName}
+              errorMessage={errors.lastName?.message}
             />
-          </Grid>
-          <Grid xs={12}>
+          </div>
+          <div className="col-span-12">
             <Input
               fullWidth
               type="password"
               label="Contraseña:"
               placeholder="Escriba su contraseña..."
-              bordered
               {...register("password", {
                 required: {
                   value: true,
@@ -119,38 +124,31 @@ export const RegisterForm = () => {
                     "Debe contener al menos una minuscula, una mayuscula y un numero.",
                 },
               })}
-              helperText={errors.password?.message}
-              helperColor="error"
+              isInvalid={!!errors.password}
+              errorMessage={errors.password?.message}
             />
-          </Grid>
+          </div>
           {errors.root && (
-            <Grid xs={12}>
-              <Text em color="error">
-                {errors.root.message}
-              </Text>
-            </Grid>
+            <div className="col-span-12">
+              <em className="font-bold text-red-700">{errors.root.message}</em>
+            </div>
           )}
-        </Grid.Container>
-      </Card.Body>
-      <Card.Divider />
-      <Card.Footer>
+        </div>
+      </CardBody>
+      <Divider />
+      <CardFooter>
         <Button
           size="lg"
           type="submit"
-          css={{
-            ml: "auto",
-            "&:hover": {
-              backgroundColor: "$primarySolidHover",
-            },
-          }}
+          className="ml-auto"
           disabled={isSubmitting}
         >
           {isSubmitting && (
-            <Loading as="span" color={"secondary"} className="mx-4" />
+            <Spinner as="span" color={"secondary"} className="mx-4" />
           )}
           <span>{isSubmitting ? " Cargando..." : "Registrate."}</span>
         </Button>
-      </Card.Footer>
+      </CardFooter>
     </Card>
   );
 };
