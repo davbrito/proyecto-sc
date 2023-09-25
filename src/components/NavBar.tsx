@@ -39,7 +39,7 @@ export const NavBar = () => {
         </NavbarBrand>
       </NavbarContent>
       {status === "unauthenticated" && (
-        <NavbarContent justify="end">
+        <NavbarContent justify="end" className="hidden gap-x-6 sm:flex">
           {routesHref
             .filter(({ needAuth }) => !needAuth)
             .map(({ href, pathName }) => {
@@ -118,16 +118,31 @@ export const NavBar = () => {
         )}
       </NavbarContent>
       <NavbarMenu>
-        <NavbarMenuItem>
-          <Link as={NextLink} href="/" color="foreground">
-            Home
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem>
-          <Link as={NextLink} href="/consejo-comunal" color="foreground">
-            Consejos comunales
-          </Link>
-        </NavbarMenuItem>
+        {status === "authenticated" &&
+          routesHref
+            .filter(({ needAuth }) => needAuth)
+            .map(({ href, pathName }) => {
+              return (
+                <NavbarMenuItem key={pathName}>
+                  <Link color="foreground" href={href} isBlock as={NextLink}>
+                    {pathName}
+                  </Link>
+                </NavbarMenuItem>
+              );
+            })}
+
+        {status === "unauthenticated" &&
+          routesHref
+            .filter(({ needAuth }) => !needAuth)
+            .map(({ href, pathName }) => {
+              return (
+                <NavbarMenuItem key={pathName}>
+                  <Link color="foreground" href={href} isBlock as={NextLink}>
+                    {pathName}
+                  </Link>
+                </NavbarMenuItem>
+              );
+            })}
       </NavbarMenu>
     </Navbar>
   );
