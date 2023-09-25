@@ -26,6 +26,7 @@ import FamiliarForm from "../familiar/FamiliarForm";
 import { ChangeJefeForm } from "./ChangeJefeForm";
 import EditCajaForm from "./EditCajaForm";
 import JefeEditForm from "./JefeEditForm";
+import { ErrorMessage } from "../ErrorMessage";
 
 interface Edit {
   data?: Familiar | JefeFamilia;
@@ -42,7 +43,7 @@ const JefeProfile = ({ id }: { id: string }) => {
   const consejoId = router.query?.id ? router.query.id.toString() : "";
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
-  const { data, isLoading, refetch } = api.jefe.getById.useQuery(
+  const { data, isLoading, refetch, error } = api.jefe.getById.useQuery(
     {
       id,
     },
@@ -123,7 +124,16 @@ const JefeProfile = ({ id }: { id: string }) => {
   };
 
   if (isLoading) <CustomLoading />;
-  if (!data) return null;
+
+  if (!data || error)
+    return (
+      <div className="container mx-auto">
+        <ErrorMessage
+          title="Error al recuperar la informacion del jefe de familia."
+          body="Revise su conexion de internet, e intente nuevamente."
+        />
+      </div>
+    );
 
   return (
     <div className="container mx-auto">
@@ -573,7 +583,7 @@ const JefeProfile = ({ id }: { id: string }) => {
       </Modal>
 
       <Modal
-        closeButton
+        scrollBehavior="inside"
         aria-labelledby="modal-change-jefe-form"
         isOpen={changeJefe}
         onClose={() => setChangeJefe(false)}

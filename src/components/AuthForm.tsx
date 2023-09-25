@@ -111,7 +111,7 @@ export const LoginForm = () => {
           color="primary"
           size="lg"
           type="submit"
-          className="ml-auto"
+          className="ml-auto hover:bg-blue-950"
           spinner={<Spinner color="current" size="sm" />}
           isLoading={isSubmitting}
         >

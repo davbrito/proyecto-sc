@@ -18,6 +18,7 @@ import { CustomLoading } from "../Loading";
 import Link from "next/link";
 import { formatDate, getRelativeTime } from "~/utils/dates";
 import FamiliarForm from "../familiar/FamiliarForm";
+import { ErrorMessage } from "../ErrorMessage";
 
 interface stateFamiliarModal {
   isOpen: boolean;
@@ -31,7 +32,7 @@ export const CensoList = ({
   search?: string;
   consejoId: string;
 }) => {
-  const { data, isLoading } = api.censo.getCensoInfor.useQuery(
+  const { data, isLoading, error } = api.censo.getCensoInfor.useQuery(
     {
       keyword: search,
       consejoId,
@@ -63,7 +64,14 @@ export const CensoList = ({
       </div>
     );
 
-  if (!data) return <div>Error</div>;
+  if (!data || error)
+    return (
+      <ErrorMessage
+        title="Error al recuperar los registros de los censados."
+        body="Revise su conexion de internet, e intente nuevamente."
+      />
+    );
+
   return (
     <>
       <Table>

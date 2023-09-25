@@ -15,6 +15,7 @@ import {
 import React from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
+import { ErrorMessage } from "../ErrorMessage";
 
 interface Props {
   consejoId: string;
@@ -25,7 +26,16 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
   });
 
   if (isLoading) return <CustomLoading className="place-content-center" />;
-  if (!data) return <div>Error</div>;
+  
+  if (!data || error)
+    return (
+      <div className="container mx-auto">
+        <ErrorMessage
+          title="Error al recuperar la informacion del consejo comunal."
+          body="Revise su conexion de internet, e intente nuevamente."
+        />
+      </div>
+    );
 
   return (
     <div className="container mx-auto">

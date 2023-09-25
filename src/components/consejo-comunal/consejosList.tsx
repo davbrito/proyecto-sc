@@ -10,13 +10,22 @@ import {
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
+import { ErrorMessage } from "../ErrorMessage";
 
 export const ConsejosList = () => {
-  const { data, isLoading } = api.consejo.getAll.useQuery();
+  const { data, isLoading,error } = api.consejo.getAll.useQuery();
 
   if (isLoading) return <CustomLoading />;
 
-  if (!data) return null;
+  if (!data || error)
+    return (
+      <div className="container mx-auto">
+        <ErrorMessage
+          title="Error al recuperar la informacion de los consejos comunales."
+          body="Revise su conexion de internet, e intente nuevamente."
+        />
+      </div>
+    );
 
   if (data.length === 0)
     return (

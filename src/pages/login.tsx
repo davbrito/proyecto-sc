@@ -4,7 +4,7 @@ import { LayoutContent } from "~/components/Layout";
 
 const LoginPage: NextPage = () => {
   return (
-    <LayoutContent className="flex flex-col bg-independencia bg-cover py-12">
+    <LayoutContent className="place-content-center bg-independencia bg-cover ">
       <LoginForm />
     </LayoutContent>
   );

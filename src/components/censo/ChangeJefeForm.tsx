@@ -1,6 +1,7 @@
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { api } from "~/utils/api";
+import { CustomLoading } from "../Loading";
 
 interface Form {
   email: string;
@@ -53,7 +54,10 @@ export const ChangeJefeForm = ({ jefeId }: Props) => {
       }
     }
   );
-  console.log(errors);
+
+  if (isLoading) return <CustomLoading className="place-content-center" />;
+
+  if (!data) return null;
 
   return (
     <form onSubmit={onSubmit}>

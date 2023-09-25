@@ -143,6 +143,7 @@ export const familiarRouter = createTRPCRouter({
               familiarToDelete.jefeFamilia.censo.cargaFamiliar - 1 > 4
                 ? "MULTIFAMILIAR"
                 : "UNIFAMILIAR",
+            cargaFamiliar: familiarToDelete.jefeFamilia.censo.cargaFamiliar - 1,
           },
         });
 
