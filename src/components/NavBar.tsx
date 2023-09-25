@@ -27,7 +27,11 @@ export const NavBar = () => {
     <Navbar className="mx-auto bg-content2 shadow-medium" shouldHideOnScroll>
       <NavbarContent>
         <NavbarMenuToggle className="sm:hidden" />
-        <NavbarBrand className="flex items-center gap-3">
+        <NavbarBrand
+          className="flex items-center gap-3 text-black dark:text-white"
+          as={Link}
+          href={"/"}
+        >
           <Image
             src={"/venezuela.ico"}
             width={32}
@@ -35,7 +39,10 @@ export const NavBar = () => {
             alt="logo"
             className=""
           />
-          <h1 className="m-0 text-2xl  font-bold text-inherit">CLAP</h1>
+
+          <h1 className="app-brand-title m-0  text-2xl font-bold  text-inherit">
+            CLAP
+          </h1>
         </NavbarBrand>
       </NavbarContent>
       {status === "unauthenticated" && (

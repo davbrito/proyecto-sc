@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css2?family=Kanit&display=swap");
 .select-form {
   @apply block w-full rounded-xl border-2 p-2.5 px-3 text-sm placeholder-gray-400 transition-all hover:border-neutral-300 focus:border-blue-500 focus:ring-blue-500 dark:border-neutral-700 dark:text-white dark:focus:border-neutral-300 dark:focus:ring-blue-500;
+}
+
+.app-brand-title{
+  font-family: 'Kanit', sans-serif;
 }

@@ -13,7 +13,7 @@ import { CustomLoading } from "../Loading";
 import { ErrorMessage } from "../ErrorMessage";
 
 export const ConsejosList = () => {
-  const { data, isLoading,error } = api.consejo.getAll.useQuery();
+  const { data, isLoading, error } = api.consejo.getAll.useQuery();
 
   if (isLoading) return <CustomLoading />;
 
@@ -67,7 +67,7 @@ export const ConsejosList = () => {
               sector,
               id,
             }) => (
-              <TableRow key={id}>
+              <TableRow key={id} className="border-b-2">
                 <TableCell className="text-center text-sm uppercase">
                   {nombre_consejo}
                 </TableCell>

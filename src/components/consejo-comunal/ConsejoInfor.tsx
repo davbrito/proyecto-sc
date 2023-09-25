@@ -26,7 +26,7 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
   });
 
   if (isLoading) return <CustomLoading className="place-content-center" />;
-  
+
   if (!data || error)
     return (
       <div className="container mx-auto">
@@ -109,13 +109,16 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
           <div className="mt-1 grid gap-1   lg:grid-cols-2  lg:text-base">
             <div className="grid grid-cols-2 gap-3 rounded-lg border border-gray-500 px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Cantidad de familias:</div>
-              <div className="text-right uppercase">
-                {data.cantidad_familias}
-              </div>
+              <div className="text-right uppercase">{data.censos.length}</div>
             </div>
             <div className="grid  grid-cols-2 gap-3 rounded-lg border border-gray-500 px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Cantidad de Combos:</div>
-              <div className="text-right uppercase">{data.cantidad_combos}</div>
+              <div className="text-right uppercase">
+                {data.censos.reduce(
+                  (prev, current) => prev + current.cajasClapsPorRecibir,
+                  0
+                )}
+              </div>
             </div>
           </div>
         </CardBody>

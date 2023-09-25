@@ -17,7 +17,11 @@ export const consejoRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const consejo = await ctx.prisma.consejoComunal.findFirst({
         where: { id: input.id },
+        include: {
+          censos: true,
+        },
       });
+
       return consejo;
     }),
   create: publicProcedure
@@ -53,5 +57,4 @@ export const consejoRouter = createTRPCRouter({
         where: { id: input.id },
       });
     }),
-  
 });
