@@ -21,7 +21,7 @@ export const SearchForm = ({ setSearchValue }: Props) => {
   };
 
   return (
-    <Card className="mx-auto p-5" style={{ maxWidth: "350px" }}>
+    <Card className=" p-5" style={{ maxWidth: "350px" }}>
       <CardBody
         as="form"
         className="flex flex-col justify-center gap-2"
@@ -40,7 +40,7 @@ export const SearchForm = ({ setSearchValue }: Props) => {
         />
         <Button
           type="submit"
-          className="bg-blue-600 transition-all hover:bg-blue-950"
+          className="bg-blue-600 text-white transition-all hover:bg-blue-950"
         >
           Buscar
         </Button>

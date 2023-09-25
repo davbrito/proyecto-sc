@@ -18,10 +18,12 @@ export async function getServerSideProps(
 
   return {
     props: {
+      title: "Consejo Comunal",
+      content: "Informacion del consejo comunal",
       trpcState: ssg.dehydrate(),
       id,
     },
-    revalidate: 1,
+    // revalidate: 1,
   };
 }
 
@@ -29,7 +31,7 @@ const Index = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   return (
-    <LayoutContent className="flex flex-col  ">
+    <LayoutContent className="flex-col  ">
       <ConsejoInfor consejoId={props.id} />
     </LayoutContent>
   );

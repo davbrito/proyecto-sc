@@ -4,8 +4,8 @@ import { RegisterForm } from "~/components/RegisterForm";
 
 const RegisterPage: NextPage = () => {
   return (
-    <LayoutContent className="flex flex-col bg-independencia bg-cover py-12">
-      <div className="container">
+    <LayoutContent className=" flex-col bg-independencia bg-cover py-12">
+      <div className="container mx-auto">
         <RegisterForm />
       </div>
     </LayoutContent>

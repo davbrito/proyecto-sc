@@ -6,6 +6,8 @@ import {
   CardHeader,
   Divider,
   Input,
+  Select,
+  SelectItem,
   Spinner,
   Textarea,
 } from "@nextui-org/react";
@@ -51,7 +53,7 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
       email: jefe.email,
       fechaNacimiento: jefe.fechaNacimiento?.toISOString()?.split("T")[0],
       genero: jefe.genero,
-      numeroDocumento: jefe.genero,
+      numeroDocumento: jefe.numeroDocumento,
       observacion: jefe.observacion,
       serialCarnetPatria: jefe.serialCarnetPatria,
       telefono: jefe.telefono,
@@ -97,267 +99,255 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
   };
 
   return (
-    <Card as={"form"} onSubmit={handleSubmit(onSubmit)}>
-      <CardHeader>
-        <h2 className="mx-auto">Datos personales</h2>
-      </CardHeader>
-      <CardBody>
-        <div className="grid grid-cols-12 gap-2">
-          <div className="col-span-6">
-            <Input
-              fullWidth
-              label="Primer nombre:"
-              placeholder="Ej: pedro"
-              type="text"
-              {...register("primerNombre", {
-                required: { value: true, message: "Campo requerido" },
-                pattern: {
-                  value:
-                    /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
-                  message: "El nombre no es valido",
-                },
-              })}
-              isInvalid={!!errors.primerNombre}
-              errorMessage={errors.primerNombre?.message}
-            />
-          </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <h2 className="mx-auto my-2 text-xl">Datos personales</h2>
 
-          <div className="col-span-6">
-            <Input
-              fullWidth
-              label="Segundo nombre:"
-              placeholder="Ej: jose"
-              type="text"
-              {...register("segundoNombre", {
-                required: { value: true, message: "Campo requerido" },
-                pattern: {
-                  value:
-                    /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
-                  message: "El nombre no es valido",
-                },
-              })}
-              isInvalid={!!errors.segundoNombre}
-              errorMessage={errors.segundoNombre?.message}
-            />
-          </div>
-
-          <div className="col-span-6">
-            <Input
-              fullWidth
-              label="Primer apellido:"
-              placeholder="Ej: perez"
-              type="text"
-              {...register("primerApellido", {
-                required: { value: true, message: "Campo requerido" },
-                pattern: {
-                  value:
-                    /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
-                  message: "El apellido no es valido",
-                },
-              })}
-              isInvalid={!!errors.primerApellido}
-              errorMessage={errors.primerApellido?.message}
-            />
-          </div>
-
-          <div className="col-span-6">
-            <Input
-              fullWidth
-              label="Segundo apellido:"
-              placeholder="Ej: jimenez"
-              type="text"
-              {...register("segundoApellido", {
-                required: { value: true, message: "Campo requerido" },
-                pattern: {
-                  value:
-                    /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
-                  message: "El apellido no es valido",
-                },
-              })}
-              isInvalid={!!errors.segundoApellido}
-              errorMessage={errors.segundoApellido?.message}
-            />
-          </div>
-
-          <Divider className="mt-4" />
-
-          <div className="col-span-6">
-            <Input
-              fullWidth
-              label="Fecha de nacimiento:"
-              placeholder="Ingrese la fecha de nacimiento..."
-              type="date"
-              max={new Date().toISOString().split("T")[0]}
-              {...register("fechaNacimiento", {
-                required: { value: true, message: "Campo requerido" },
-              })}
-              isInvalid={!!errors.fechaNacimiento}
-              errorMessage={errors.fechaNacimiento?.message}
-            />
-          </div>
-
-          <div className="col-span-6">
-            <div className="w-full">
-              <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
-                Genero:
-              </label>
-              <select
-                {...register("genero", {
-                  required: {
-                    value: true,
-                    message: "Este campo no puede estar vacio",
-                  },
-                })}
-                className="select-form"
-              >
-                <option value="f">Femenino</option>
-                <option value="m">Masculino</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="col-span-6">
-            <Input
-              fullWidth
-              label="Email:"
-              placeholder="Ej: pedro@gmail.com"
-              type="text"
-              {...register("email", {
-                required: { value: true, message: "Campo requerido" },
-                pattern: {
-                  value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                  message: "La direccion del correo no es valida.",
-                },
-              })}
-              isInvalid={!!errors.email}
-              errorMessage={errors.email?.message}
-            />
-          </div>
-          <div className="col-span-6">
-            <Input
-              fullWidth
-              label="Numero de contacto:"
-              placeholder="Ej: 0414-1234567"
-              type="text"
-              {...register("telefono", {
-                required: { value: true, message: "Campo requerido" },
-                pattern: {
-                  value: /^(0414|0424|0412|0416|0426)[-][0-9]{7}$/,
-                  message: "El numero no es valido.",
-                },
-              })}
-              isInvalid={!!errors.telefono}
-              errorMessage={errors.telefono?.message}
-            />
-          </div>
+      <div className="grid grid-cols-12 gap-2">
+        <div className="col-span-6">
+          <Input
+            fullWidth
+            label="Primer nombre:"
+            placeholder="Ej: pedro"
+            type="text"
+            {...register("primerNombre", {
+              required: { value: true, message: "Campo requerido" },
+              pattern: {
+                value:
+                  /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
+                message: "El nombre no es valido",
+              },
+            })}
+            isInvalid={!!errors.primerNombre}
+            errorMessage={errors.primerNombre?.message}
+          />
         </div>
-      </CardBody>
 
-      <CardHeader>
-        <h2 className="mx-auto">Documentos personales</h2>
-      </CardHeader>
-      <CardBody>
-        <div className="grid grid-cols-12 gap-2">
-          <div className="col-span-4">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
-                Tipo documento:
-              </label>
-              <select
-                {...register("tipoDocumento", {
-                  required: {
-                    message: "Este campo no puede estar vacio",
-                    value: true,
-                  },
-                })}
-                className="select-form"
-              >
-                <option value={""} disabled>
-                  Seleccione una opcion
-                </option>
-                <option value={"v"}>Venezolano</option>
-                <option value={"e"}>Extranjero</option>
-                <option value={"f"}>Firma</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-span-8">
-            <Input
-              fullWidth
-              label="Cedula:"
-              placeholder="Ejemplo: 1234578"
-              type="text"
-              {...register("numeroDocumento", {
-                required: {
-                  value: true,
-                  message: "Este campo es obligatorio",
-                },
-                pattern: {
-                  value: /^[0-9]*$/,
-                  message:
-                    "Debe escribirlo en el siguiente formato: '12345678'",
-                },
-                maxLength: {
-                  value: 8,
-                  message: "Corrija el numero de cedula por favor.",
-                },
-              })}
-              isInvalid={!!errors.numeroDocumento}
-              errorMessage={errors.numeroDocumento?.message}
-            />
-          </div>
-          <div className="col-span-6">
-            <Input
-              fullWidth
-              label="Serial Carnet de la patria:"
-              placeholder="Escriba el serial del carnet de la patria..."
-              type="text"
-              {...register("serialCarnetPatria")}
-              isInvalid={!!errors.serialCarnetPatria}
-              errorMessage={errors.serialCarnetPatria?.message}
-            />
-          </div>
-
-          <div className="col-span-6">
-            <Input
-              fullWidth
-              label="Codigo del carnet de la patria:"
-              placeholder="Escriba el codigo del carnet de la patria..."
-              type="text"
-              {...register("codCarnetPatria")}
-              isInvalid={!!errors.codCarnetPatria}
-              errorMessage={errors.codCarnetPatria?.message}
-            />
-          </div>
-
-          <div className="col-span-12">
-            <Textarea
-              fullWidth
-              label="Observacion:"
-              placeholder="Escriba alguna observacion (opcional)"
-              {...register("observacion")}
-              isInvalid={!!errors.observacion}
-              errorMessage={errors.observacion?.message}
-            />
-          </div>
+        <div className="col-span-6">
+          <Input
+            fullWidth
+            label="Segundo nombre:"
+            placeholder="Ej: jose"
+            type="text"
+            {...register("segundoNombre", {
+              required: { value: true, message: "Campo requerido" },
+              pattern: {
+                value:
+                  /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
+                message: "El nombre no es valido",
+              },
+            })}
+            isInvalid={!!errors.segundoNombre}
+            errorMessage={errors.segundoNombre?.message}
+          />
         </div>
-      </CardBody>
-      <CardFooter className="flex-col">
-        {errors?.root && (
-          <h4 className="capitalize text-red-600">{errors?.root?.message}.</h4>
+
+        <div className="col-span-6">
+          <Input
+            fullWidth
+            label="Primer apellido:"
+            placeholder="Ej: perez"
+            type="text"
+            {...register("primerApellido", {
+              required: { value: true, message: "Campo requerido" },
+              pattern: {
+                value:
+                  /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
+                message: "El apellido no es valido",
+              },
+            })}
+            isInvalid={!!errors.primerApellido}
+            errorMessage={errors.primerApellido?.message}
+          />
+        </div>
+
+        <div className="col-span-6">
+          <Input
+            fullWidth
+            label="Segundo apellido:"
+            placeholder="Ej: jimenez"
+            type="text"
+            {...register("segundoApellido", {
+              required: { value: true, message: "Campo requerido" },
+              pattern: {
+                value:
+                  /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
+                message: "El apellido no es valido",
+              },
+            })}
+            isInvalid={!!errors.segundoApellido}
+            errorMessage={errors.segundoApellido?.message}
+          />
+        </div>
+
+        <div className="col-span-6">
+          <Input
+            fullWidth
+            label="Fecha de nacimiento:"
+            placeholder="Ingrese la fecha de nacimiento..."
+            type="date"
+            max={new Date().toISOString().split("T")[0]}
+            {...register("fechaNacimiento", {
+              required: { value: true, message: "Campo requerido" },
+            })}
+            isInvalid={!!errors.fechaNacimiento}
+            errorMessage={errors.fechaNacimiento?.message}
+          />
+        </div>
+
+        <div className="col-span-6">
+          <Select
+            label="Genero:"
+            placeholder="Seleccione el genero"
+            {...register("genero", {
+              required: {
+                value: true,
+                message: "Este campo no puede estar vacio",
+              },
+            })}
+            isInvalid={!!errors.genero}
+            errorMessage={errors.genero?.message}
+            defaultSelectedKeys={jefe.genero}
+          >
+            <SelectItem key="f">Femenino</SelectItem>
+            <SelectItem key="m">Masculino</SelectItem>
+          </Select>
+        </div>
+
+        <div className="col-span-6">
+          <Input
+            fullWidth
+            label="Email:"
+            placeholder="Ej: pedro@gmail.com"
+            type="text"
+            {...register("email", {
+              required: { value: true, message: "Campo requerido" },
+              pattern: {
+                value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                message: "La direccion del correo no es valida.",
+              },
+            })}
+            isInvalid={!!errors.email}
+            errorMessage={errors.email?.message}
+          />
+        </div>
+        <div className="col-span-6">
+          <Input
+            fullWidth
+            label="Numero de contacto:"
+            placeholder="Ej: 0414-1234567"
+            type="text"
+            {...register("telefono", {
+              required: { value: true, message: "Campo requerido" },
+              pattern: {
+                value: /^(0414|0424|0412|0416|0426)[-][0-9]{7}$/,
+                message: "El numero no es valido.",
+              },
+            })}
+            isInvalid={!!errors.telefono}
+            errorMessage={errors.telefono?.message}
+          />
+        </div>
+      </div>
+
+      <h2 className="mx-auto my-2 text-xl">Documentos personales</h2>
+
+      <div className="grid grid-cols-12 gap-2">
+        <div className="col-span-4">
+          <Select
+            label="Tipo documento:"
+            placeholder="Seleccione una opcion"
+            {...register("tipoDocumento", {
+              required: {
+                message: "Este campo no puede estar vacio",
+                value: true,
+              },
+            })}
+            isInvalid={!!errors.tipoDocumento}
+            errorMessage={errors.tipoDocumento?.message}
+            selectedKeys={jefe.tipoDocumento}
+          >
+            <SelectItem key={"v"}>Venezolano</SelectItem>
+            <SelectItem key={"e"}>Extranjero</SelectItem>
+            <SelectItem key={"f"}>Firma</SelectItem>
+          </Select>
+        </div>
+        <div className="col-span-8">
+          <Input
+            fullWidth
+            label="Numero documento:"
+            placeholder="Ejemplo: 1234578"
+            type="text"
+            {...register("numeroDocumento", {
+              required: {
+                value: true,
+                message: "Este campo es obligatorio",
+              },
+              pattern: {
+                value: /^[0-9]*$/,
+                message: "Debe escribirlo en el siguiente formato: '12345678'",
+              },
+              maxLength: {
+                value: 8,
+                message: "Corrija el numero de cedula por favor.",
+              },
+            })}
+            isInvalid={!!errors.numeroDocumento}
+            errorMessage={errors.numeroDocumento?.message}
+          />
+        </div>
+        <div className="col-span-6">
+          <Input
+            fullWidth
+            label="Serial Carnet de la patria:"
+            placeholder="Escriba el serial del carnet de la patria..."
+            type="text"
+            {...register("serialCarnetPatria")}
+            isInvalid={!!errors.serialCarnetPatria}
+            errorMessage={errors.serialCarnetPatria?.message}
+          />
+        </div>
+
+        <div className="col-span-6">
+          <Input
+            fullWidth
+            label="Codigo del carnet de la patria:"
+            placeholder="Escriba el codigo del carnet de la patria..."
+            type="text"
+            {...register("codCarnetPatria")}
+            isInvalid={!!errors.codCarnetPatria}
+            errorMessage={errors.codCarnetPatria?.message}
+          />
+        </div>
+
+        <div className="col-span-12">
+          <Textarea
+            fullWidth
+            label="Observacion:"
+            placeholder="Escriba alguna observacion (opcional)"
+            {...register("observacion")}
+            isInvalid={!!errors.observacion}
+            errorMessage={errors.observacion?.message}
+          />
+        </div>
+      </div>
+
+      {errors?.root && (
+        <h4 className="my-2 block capitalize text-red-600">
+          {errors?.root?.message}.
+        </h4>
+      )}
+      <Button
+        type="submit"
+        fullWidth
+        disabled={isSubmitting}
+        className=" my-2 bg-blue-600 hover:bg-blue-800 disabled:bg-gray-500"
+      >
+        {isSubmitting && (
+          <Spinner as={"span"} className="mx-4" color={"secondary"} />
         )}
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="mx-3 mb-2 w-full"
-        >
-          {isSubmitting && (
-            <Spinner as={"span"} className="mx-4" color={"secondary"} />
-          )}
-          Actualizar.
-        </Button>
-      </CardFooter>
-    </Card>
+        Actualizar.
+      </Button>
+    </form>
   );
 };
 

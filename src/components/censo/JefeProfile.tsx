@@ -5,12 +5,15 @@ import {
   CardHeader,
   Modal,
   ModalBody,
+  ModalContent,
+  ModalHeader,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
+  useDisclosure,
 } from "@nextui-org/react";
 import { type Familiar, type JefeFamilia } from "@prisma/client";
 import { useRouter } from "next/router";
@@ -37,6 +40,7 @@ interface Delete {
 const JefeProfile = ({ id }: { id: string }) => {
   const router = useRouter();
   const consejoId = router.query?.id ? router.query.id.toString() : "";
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
   const { data, isLoading, refetch } = api.jefe.getById.useQuery(
     {
@@ -122,30 +126,34 @@ const JefeProfile = ({ id }: { id: string }) => {
   if (!data) return null;
 
   return (
-    <>
+    <div className="container mx-auto">
       {/* CABECERA DEL CENSO */}
-      <div className="container my-8 flex flex-row justify-center">
-        <h1>
+      <div className="my-8 flex flex-col justify-center  gap-4">
+        <h1 className="text-center text-4xl">
           Perfil de,{" "}
           <span className="font-thin uppercase text-gray-400">
             {data?.nombres}.
           </span>
         </h1>
 
-        <div className="container flex justify-center gap-4">
-          <Button color="danger" disabled onPress={() => handleDeleteJefe()}>
+        <div className="container flex items-center justify-center gap-4">
+          <Button
+            disabled
+            onPress={() => handleDeleteJefe()}
+            className="bg-red-600 text-white  hover:bg-red-700 disabled:bg-red-950"
+          >
             Eliminar este censo
           </Button>
 
           <Button
-            color={"warning"}
             onPress={() => setEditJefe({ isOpen: true })}
+            className="bg-orange-600 text-white transition-colors hover:bg-orange-700  "
           >
             Editar jefe de familia
           </Button>
 
           <Button
-            className="bg-violet-600 hover:bg-violet-800"
+            className="bg-violet-600 text-center text-white hover:bg-violet-800"
             onPress={() => setChangeJefe(true)}
           >
             Cambiar jefe
@@ -302,8 +310,11 @@ const JefeProfile = ({ id }: { id: string }) => {
                   </h2>
                 </div>
                 <button
-                  onClick={() => setEditCaja(true)}
-                  className="rounded-lg border-solid border-orange-800 bg-orange-700 p-2 text-sm transition-all hover:bg-orange-800"
+                  onClick={() => {
+                    setEditCaja(true);
+                    onOpen();
+                  }}
+                  className="rounded-lg border-solid border-orange-800 bg-orange-600 p-2 text-sm text-white transition-all hover:bg-orange-800"
                 >
                   Editar
                 </button>
@@ -358,8 +369,10 @@ const JefeProfile = ({ id }: { id: string }) => {
                 Familiares
               </h2>
               <button
-                className="w-min rounded-lg border-solid border-green-600 bg-green-600  p-2 transition-all hover:bg-green-700"
-                onClick={() => setCreateFamiliar(true)}
+                className="w-min rounded-lg border-solid border-green-600 bg-green-600 p-2  text-white transition-all hover:bg-green-700"
+                onClick={() => {
+                  setCreateFamiliar(true);
+                }}
               >
                 Añadir
               </button>
@@ -425,7 +438,7 @@ const JefeProfile = ({ id }: { id: string }) => {
                           <TableCell className="flex flex-col items-center gap-y-4 text-center">
                             <Button
                               size={"sm"}
-                              className="bg-red-700 transition-all hover:bg-red-800"
+                              className="bg-red-600 text-white transition-all hover:bg-red-800"
                               onPress={() =>
                                 setDeleteFamiliar({ isOpen: true, id })
                               }
@@ -435,7 +448,7 @@ const JefeProfile = ({ id }: { id: string }) => {
                             </Button>
                             <Button
                               size={"sm"}
-                              className="bg-orange-700 transition-all hover:bg-orange-800"
+                              className="bg-orange-600 text-white transition-all hover:bg-orange-800"
                               onPress={() => {
                                 handleEditFamiliar(id.toString());
                               }}
@@ -456,68 +469,107 @@ const JefeProfile = ({ id }: { id: string }) => {
 
       {/* Modales */}
       <Modal
+        isOpen={isOpen}
+        scrollBehavior="inside"
+        onOpenChange={() => {
+          setEditCaja(false);
+          onOpenChange();
+        }}
         closeButton
-        aria-labelledby="modal-create-familiar-form"
-        isOpen={editCaja}
-        onClose={() => setEditCaja(false)}
+        aria-labelledby="edit-caja-form"
         size="xl"
       >
-        <ModalBody>
-          <EditCajaForm
-            censoId={data.censoId}
-            closeModal={() => {
-              setEditCaja(false);
-              refetch();
-            }}
-          />
-        </ModalBody>
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader as={"h2"} className="mx-auto text-2xl">
+                Numero de cajas
+              </ModalHeader>
+              <ModalBody>
+                <EditCajaForm
+                  censoId={data.censoId}
+                  closeModal={() => {
+                    setEditCaja(false);
+                    refetch();
+                  }}
+                />
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
       </Modal>
 
       <Modal
-        closeButton
         aria-labelledby="modal-create-familiar-form"
-        isOpen={createFamiliar}
-        onClose={() => setCreateFamiliar(false)}
         size="2xl"
+        isOpen={createFamiliar}
+        scrollBehavior="inside"
+        onOpenChange={() => {
+          setCreateFamiliar(false);
+        }}
       >
-        <ModalBody>
-          <FamiliarForm
-            consejoId={consejoId}
-            jefeId={BigInt(id)}
-            closeModal={() => {
-              setCreateFamiliar(false);
-              refetch();
-            }}
-          />
-        </ModalBody>
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader as={"h2"} className="mx-auto text-2xl">
+                Datos del familiar
+              </ModalHeader>
+              <ModalBody>
+                <FamiliarForm
+                  consejoId={consejoId}
+                  jefeId={BigInt(id)}
+                  closeModal={() => {
+                    setCreateFamiliar(false);
+                    refetch();
+                  }}
+                />
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
       </Modal>
 
       <Modal
-        closeButton
         aria-labelledby="modal-edit-familiar-form"
         isOpen={editFamiliar.isOpen}
         onClose={closeHandler}
         size="2xl"
+        scrollBehavior="inside"
       >
-        <ModalBody>
-          {editFamiliar.data && (
-            <FamiliarForm
-              consejoId={consejoId}
-              familia={editFamiliar.data as Familiar}
-              jefeId={data.id}
-              closeModal={closeHandler}
-            />
-          )}
-        </ModalBody>
+        <ModalContent>
+          <ModalHeader as={"h2"} className="mx-auto text-2xl">
+            Datos del familiar
+          </ModalHeader>
+          <ModalBody>
+            {editFamiliar.data && (
+              <FamiliarForm
+                consejoId={consejoId}
+                familia={editFamiliar.data as Familiar}
+                jefeId={data.id}
+                closeModal={closeHandler}
+              />
+            )}
+          </ModalBody>
+        </ModalContent>
       </Modal>
+
       <Modal
+        scrollBehavior="inside"
+        aria-labelledby="modal-edit-jefe-form"
         size="xl"
         isOpen={editJefe.isOpen}
         onClose={() => {
           setEditJefe({ isOpen: false });
         }}
       >
-        <JefeEditForm jefe={data} onClose={closeHandler} />
+        <ModalContent>
+          <ModalHeader as={"h2"} className="mx-auto text-2xl">
+            Actualizar datos del jefe familia
+          </ModalHeader>
+          <ModalBody>
+            <JefeEditForm jefe={data} onClose={closeHandler} />
+          </ModalBody>
+        </ModalContent>
       </Modal>
 
       <Modal
@@ -527,15 +579,22 @@ const JefeProfile = ({ id }: { id: string }) => {
         onClose={() => setChangeJefe(false)}
         size="2xl"
       >
-        <ModalBody>
-          <ChangeJefeForm
-            jefeId={parseInt(data.id.toString())}
-            closeModal={() => {
-              setChangeJefe(false);
-              refetch();
-            }}
-          />
-        </ModalBody>
+        <ModalContent>
+          <ModalHeader>
+            <h2 className="mx-auto text-center text-2xl font-light">
+              Cambio de Jefe de familia
+            </h2>
+          </ModalHeader>
+          <ModalBody>
+            <ChangeJefeForm
+              jefeId={parseInt(data.id.toString())}
+              closeModal={() => {
+                setChangeJefe(false);
+                refetch();
+              }}
+            />
+          </ModalBody>
+        </ModalContent>
       </Modal>
 
       <DeleteConfirmation
@@ -545,7 +604,7 @@ const JefeProfile = ({ id }: { id: string }) => {
           if (deleteFamiliar.id) handleDelete(deleteFamiliar.id);
         }}
       />
-    </>
+    </div>
   );
 };
 

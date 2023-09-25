@@ -28,43 +28,38 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
   if (!data) return <div>Error</div>;
 
   return (
-    <div>
-      <Card className="mt-10">
+    <div className="container mx-auto">
+      <Card className="mt-4">
         <CardBody>
-          <h1 className="text-center text-lg font-medium uppercase">
+          <h1 className="text-center text-xl font-medium uppercase">
             Sistema Popular de Distribucion de Alimentos Comites Locales de
             Abastecimiento y Produccion Socialista
           </h1>
-          <h2 className="text-center text-lg uppercase">Estado Bolivar</h2>
+          <h2 className="text-center text-xl uppercase">Estado Bolivar</h2>
         </CardBody>
+        <CardFooter className=" flex justify-center gap-4">
+          <Link
+            href={`/consejo-comunal/${consejoId}/censo`}
+            className="inline-block cursor-pointer rounded-md   bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
+          >
+            Datos del censo
+          </Link>
+          <Link
+            href={"/familiares"}
+            className="inline-block cursor-pointer rounded-md   bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
+          >
+            Familiares
+          </Link>
+          <Link
+            href={"/casas"}
+            className="inline-block cursor-pointer rounded-md   bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
+          >
+            Casas
+          </Link>
+        </CardFooter>
       </Card>
 
-      <Card className="mt-10">
-        <CardBody>
-          <div className="mt-8 flex justify-center gap-4">
-            <Link
-              href={`/consejo-comunal/${consejoId}/censo`}
-              className="inline-block cursor-pointer rounded  border bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
-            >
-              Ver datos del censo
-            </Link>
-            <Link
-              href={"/familiares"}
-              className="inline-block cursor-pointer rounded  border bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
-            >
-              Ver familiares
-            </Link>
-            <Link
-              href={"/casas"}
-              className="inline-block cursor-pointer rounded  border bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
-            >
-              Ver casas
-            </Link>
-          </div>
-        </CardBody>
-      </Card>
-
-      <Card className="mt-10">
+      <Card className="mt-4">
         <CardHeader>
           <h1 className="mx-auto text-center text-2xl font-medium">
             Identificacion del CLAP
@@ -72,15 +67,15 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
         </CardHeader>
         <CardBody>
           <div className="grid  grid-cols-2 gap-1  lg:grid-cols-3  lg:text-base">
-            <div className="grid grid-cols-2 gap-3 border border-gray-500   px-3 py-2 lg:gap-0 lg:border-solid">
+            <div className="grid grid-cols-2 gap-3 rounded-lg border border-gray-500   px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Municipio:</div>
               <div className="text-right uppercase">{data.municipio}</div>
             </div>
-            <div className="grid  grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
+            <div className="grid  grid-cols-2 gap-3 rounded-lg border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Parroquia:</div>
               <div className="text-right uppercase">{data.parroquia}</div>
             </div>
-            <div className="grid grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
+            <div className="grid grid-cols-2 gap-3 rounded-lg border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Nombre CLAP:</div>
               <div className="text-right capitalize">{data.nombre_clap}</div>
             </div>
@@ -91,24 +86,24 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
               <div className="  font-semibold">Consejo Comunal:</div>
               <div className="text-right uppercase">{data.nombre_consejo}</div>
             </div>
-            <div className="grid  grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
+            <div className="grid  grid-cols-2 gap-3 rounded-lg border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">RIF:</div>
               <div className="text-right uppercase">{data.rif}</div>
             </div>
-            <div className="grid grid-cols-2 gap-3 border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
+            <div className="grid grid-cols-2 gap-3 rounded-lg border border-gray-500  px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Circuito:</div>
               <div className="text-right uppercase">{data.circuito}</div>
             </div>
           </div>
 
-          <div className="mt-1 grid gap-1 border  lg:grid-cols-2  lg:text-base">
-            <div className="grid grid-cols-2 gap-3 border border-gray-500 px-3 py-2 lg:gap-0 lg:border-solid">
+          <div className="mt-1 grid gap-1   lg:grid-cols-2  lg:text-base">
+            <div className="grid grid-cols-2 gap-3 rounded-lg border border-gray-500 px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Cantidad de familias:</div>
               <div className="text-right uppercase">
                 {data.cantidad_familias}
               </div>
             </div>
-            <div className="grid  grid-cols-2 gap-3 border border-gray-500 px-3 py-2 lg:gap-0 lg:border-solid">
+            <div className="grid  grid-cols-2 gap-3 rounded-lg border border-gray-500 px-3 py-2 lg:gap-0 lg:border-solid">
               <div className=" font-semibold">Cantidad de Combos:</div>
               <div className="text-right uppercase">{data.cantidad_combos}</div>
             </div>
@@ -119,12 +114,12 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
             href={`/consejo-comunal/${consejoId}/censo`}
             className="mx-auto h-fit w-fit rounded-md bg-blue-600 px-4 py-3 text-white transition-colors hover:bg-blue-700"
           >
-            Ver Censados
+            Censados
           </Link>
         </CardFooter>
       </Card>
 
-      <Card className="mb-10">
+      <Card className="my-4">
         <CardHeader className="relative">
           <h1 className="mx-auto flex-shrink text-center text-2xl font-medium">
             Ficha General del CLAP
@@ -186,7 +181,7 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
         </CardBody>
       </Card>
 
-      <Card className="mb-10">
+      <Card className="mb-4">
         <CardHeader className="relative">
           <h1 className="mx-auto flex-shrink text-center text-2xl font-medium">
             Lideres de calle

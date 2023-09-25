@@ -29,12 +29,24 @@ export const ConsejosList = () => {
     <>
       <Table>
         <TableHeader>
-          <TableColumn align="center">Consejo</TableColumn>
-          <TableColumn align="center">CLAP</TableColumn>
-          <TableColumn align="center">Circuito</TableColumn>
-          <TableColumn align="center">Comunidad</TableColumn>
-          <TableColumn align="center">Sector</TableColumn>
-          <TableColumn align="center">Acciones</TableColumn>
+          <TableColumn align="center" className="text-center">
+            Consejo
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            CLAP
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Circuito
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Comunidad
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Sector
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Acciones
+          </TableColumn>
         </TableHeader>
         <TableBody className="uppercase">
           {data.map(
@@ -47,21 +59,30 @@ export const ConsejosList = () => {
               id,
             }) => (
               <TableRow key={id}>
-                <TableCell className="text-center text-sm">
-                  <Link href={`/consejo-comunal/${id}`}>{nombre_consejo}</Link>
+                <TableCell className="text-center text-sm uppercase">
+                  {nombre_consejo}
                 </TableCell>
-                <TableCell className="text-center text-sm">
+                <TableCell className="text-center text-sm uppercase">
                   {nombre_clap}
                 </TableCell>
-                <TableCell className="text-center text-sm">
+                <TableCell className="text-center text-sm uppercase">
                   {circuito}
                 </TableCell>
-                <TableCell className="text-center text-sm">
+                <TableCell className="text-center text-sm uppercase">
                   {comunidad}
                 </TableCell>
-                <TableCell className="text-center text-sm">{sector}</TableCell>
+                <TableCell className="text-center text-sm uppercase">
+                  {sector}
+                </TableCell>
                 <TableCell className="text-center text-sm">
-                  <Button>Hacer</Button>
+                  <Button
+                    as={Link}
+                    color="primary"
+                    className="transition-colors hover:bg-blue-700"
+                    href={`/consejo-comunal/${id}`}
+                  >
+                    Ver informacion
+                  </Button>
                 </TableCell>
               </TableRow>
             )

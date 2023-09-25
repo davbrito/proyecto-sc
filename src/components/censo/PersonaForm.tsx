@@ -1,4 +1,4 @@
-import { Divider, Input } from "@nextui-org/react";
+import { Divider, Input, Select, SelectItem } from "@nextui-org/react";
 import React from "react";
 
 export const PersonaForm = ({ register, errors, getFieldState }: any) => {
@@ -32,7 +32,6 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           bordered
           type="text"
           {...register("datosBasicos.segundoNombre", {
-            required: { value: true, message: "Campo requerido" },
             pattern: {
               value:
                 /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
@@ -72,7 +71,6 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           bordered
           type="text"
           {...register("datosBasicos.segundoApellido", {
-            required: { value: true, message: "Campo requerido" },
             pattern: {
               value:
                 /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
@@ -83,8 +81,6 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           helperColor="error"
         />
       </div>
-
-      <Divider className="mt-4" />
 
       <div className="col-span-6">
         <Input
@@ -103,26 +99,26 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
       </div>
 
       <div className="col-span-6">
-        <div className="w-full">
-          <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
-            Genero:
-          </label>
-          <select
-            {...register("datosBasicos.genero", {
-              required: {
-                value: true,
-                message: "Este campo no puede estar vacio",
-              },
-            })}
-            className="select-form"
-          >
-            <option value="f">Femenino</option>
-            <option value="m">Masculino</option>
-          </select>
-        </div>
+        <Select
+          label="Genero:"
+          className="max-w-xs"
+          {...register("datosBasicos.genero", {
+            required: {
+              value: true,
+              message: "Este campo no puede estar vacio",
+            },
+          })}
+        >
+          <SelectItem key={"f"} value="f">
+            Femenino
+          </SelectItem>
+          <SelectItem key={"m"} value="m">
+            Masculino
+          </SelectItem>
+        </Select>
       </div>
 
-      <div className="col-span-6">
+      <div className="col-span-8">
         <Input
           fullWidth
           label="Email:"
@@ -140,7 +136,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           helperColor="error"
         />
       </div>
-      <div className="col-span-6">
+      <div className="col-span-4">
         <Input
           fullWidth
           label="Numero de contacto:"

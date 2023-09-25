@@ -16,7 +16,7 @@ export const CasaForm = ({
   watch: UseFormWatch<JefeProps>;
 }) => {
   return (
-    <div className="grid grid-cols-3">
+    <div className="grid grid-cols-3 gap-2">
       <Input
         autoFocus={false}
         fullWidth

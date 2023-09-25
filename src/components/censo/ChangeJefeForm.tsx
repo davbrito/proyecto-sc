@@ -1,4 +1,4 @@
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { api } from "~/utils/api";
 
@@ -57,57 +57,43 @@ export const ChangeJefeForm = ({ jefeId }: Props) => {
 
   return (
     <form onSubmit={onSubmit}>
-      <h1 className="mx-auto text-center text-2xl font-light">
-        Cambio de Jefe de familia
-      </h1>
-      <div>
-        <label className="mb-2 block text-sm font-medium ">
-          Escoje el nuevo jefe de la familia:
-        </label>
-
-        <select
-          className="select-form uppercase"
+      <div className="mb-2 grid grid-cols-1">
+        <Select
           {...register("familiarId", {
             required: { message: "Es requerido", value: true },
           })}
+          label="Escoje el nuevo jefe de la familia:"
+          placeholder="Seleccione una opcion"
+          items={data}
+          errorMessage={errors.familiarId?.message}
+          isInvalid={!!errors.familiarId}
         >
-          <option value="">Seleccione una opcion porfavor</option>
-          {data &&
-            data.map(({ apellidos, nombres, id }) => (
-              <option
-                key={id.toString()}
-                value={id.toString()}
-                className="uppercase"
-              >
-                {apellidos} - {nombres}
-              </option>
-            ))}
-        </select>
+          {({ apellidos, nombres, id }) => (
+            <SelectItem key={id.toString()} className="uppercase">
+              {apellidos + " " + nombres}
+            </SelectItem>
+          )}
+        </Select>
       </div>
 
-      <div className="grid grid-cols-12 gap-1">
+      <div className="my-2 grid grid-cols-12 gap-2">
         <div className="col-span-4">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
-              Tipo documento:
-            </label>
-            <select
-              {...register("tipoDocumento", {
-                required: {
-                  message: "Este campo no puede estar vacio",
-                  value: true,
-                },
-              })}
-              className="select-form"
-            >
-              <option value={""} disabled>
-                Seleccione una opcion
-              </option>
-              <option value={"v"}>Venezolano</option>
-              <option value={"e"}>Extranjero</option>
-              <option value={"f"}>Firma</option>
-            </select>
-          </div>
+          <Select
+            label="Tipo documento:"
+            placeholder="Seleccione una opcion"
+            {...register("tipoDocumento", {
+              required: {
+                message: "Este campo no puede estar vacio",
+                value: true,
+              },
+            })}
+            isInvalid={!!errors.tipoDocumento}
+            errorMessage={errors.tipoDocumento?.message}
+          >
+            <SelectItem key={"v"}>Venezolano</SelectItem>
+            <SelectItem key={"e"}>Extranjero</SelectItem>
+            <SelectItem key={"f"}>Firma</SelectItem>
+          </Select>
         </div>
         <div className="col-span-8">
           <Input
@@ -135,7 +121,7 @@ export const ChangeJefeForm = ({ jefeId }: Props) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-1">
+      <div className="my-2 grid grid-cols-12 gap-2">
         <div className="col-span-6">
           <Input
             fullWidth
@@ -173,12 +159,15 @@ export const ChangeJefeForm = ({ jefeId }: Props) => {
       </div>
 
       {errors?.root && (
-        <div className="capitalize text-red-700">{errors?.root?.message}</div>
+        <div className="my-1 capitalize text-red-700">
+          {errors?.root?.message}
+        </div>
       )}
       <Button
+        fullWidth
         disabled={isLoading}
         type="submit"
-        className="mx-auto mt-6 bg-orange-600 hover:bg-orange-700"
+        className="mx-auto mt-4 bg-orange-600 font-semibold text-white hover:bg-orange-700"
       >
         Cambiar jefe
       </Button>

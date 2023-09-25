@@ -1,26 +1,43 @@
+import { Card, CardBody, CardHeader, Image } from "@nextui-org/react";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { LayoutContent } from "~/components/Layout";
 import { verifySession } from "~/utils/verifySession";
+import NextImage from "next/image";
 
 const Home: NextPage = () => {
   const { data } = useSession();
 
   return (
     <LayoutContent className="flex flex-col items-center justify-center">
-      <div className="max-w-lg rounded-medium border border-solid border-content3-foreground bg-content3 p-10 text-content3-foreground shadow-medium">
-        <h1 className="text-4xl font-medium">Proyecto de Censo 2023</h1>
-        {data && (
-          <p className="text-lg">
-            Hola de nuevo,{" "}
-            <strong className="text-xl font-bold uppercase">
-              {data.user.name}
-            </strong>
-            .
-          </p>
-        )}
-      </div>
+      <Card className="p-5">
+        <CardHeader className="flex flex-col">
+          <div className="mx-auto ">
+            <Image
+              src="/img/clap.jpeg"
+              width={600}
+              alt="fondo"
+              isBlurred
+              height={200}
+              as={NextImage}
+            />
+          </div>
+          <h1 className="my-3 block text-3xl font-normal ">
+            Proyecto de Censo 2023
+          </h1>
+        </CardHeader>
+        <CardBody>
+          {data && (
+            <p className="text-center text-lg">
+              Hola de nuevo,{" "}
+              <span className="text-xl font-semibold uppercase">
+                {data.user.name}
+              </span>
+              .
+            </p>
+          )}
+        </CardBody>
+      </Card>
     </LayoutContent>
   );
 };

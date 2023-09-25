@@ -54,9 +54,13 @@ export const RegisterForm = () => {
   };
 
   return (
-    <Card as="form" onSubmit={handleSubmit(onSubmit)} className="shadow-lg">
+    <Card
+      as="form"
+      onSubmit={handleSubmit(onSubmit)}
+      className="container mx-auto max-w-lg shadow-lg"
+    >
       <CardHeader>
-        <h3>Register Form</h3>
+        <h3 className="text-2xl">Formulario de registro.</h3>
       </CardHeader>
       <Divider />
       <CardBody>
@@ -140,7 +144,7 @@ export const RegisterForm = () => {
         <Button
           size="lg"
           type="submit"
-          className="ml-auto"
+          className="ml-auto bg-blue-600 hover:bg-blue-800 disabled:bg-slate-700  "
           disabled={isSubmitting}
         >
           {isSubmitting && (

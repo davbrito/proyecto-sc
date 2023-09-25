@@ -1,4 +1,4 @@
-import { Input, Textarea } from "@nextui-org/react";
+import { Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import React from "react";
 import { type FieldErrors, type UseFormRegister } from "react-hook-form";
 import { type JefeProps } from "./GreatForm";
@@ -10,29 +10,29 @@ interface Props {
 
 export const DocumentosForm = ({ register, errors }: Props) => {
   return (
-    <div className="grid grid-cols-12 gap-1">
+    <div className="grid grid-cols-12 gap-2">
       <div className="col-span-4">
-        <div>
-          <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
-            Tipo documento:
-          </label>
-          <select
-            {...register("documentos.tipoDocumento", {
-              required: {
-                message: "Este campo no puede estar vacio",
-                value: true,
-              },
-            })}
-            className="select-form"
-          >
-            <option value={""} disabled>
-              Seleccione una opcion
-            </option>
-            <option value={"v"}>Venezolano</option>
-            <option value={"e"}>Extranjero</option>
-            <option value={"f"}>Firma</option>
-          </select>
-        </div>
+        <Select
+          label="Tipo documento:"
+          className="max-w-xs"
+          placeholder="Seleccione una opcion"
+          {...register("documentos.tipoDocumento", {
+            required: {
+              message: "Este campo no puede estar vacio",
+              value: true,
+            },
+          })}
+        >
+          <SelectItem value={"v"} key={"v"}>
+            Venezolano
+          </SelectItem>
+          <SelectItem value={"e"} key={"e"}>
+            Extranjero
+          </SelectItem>
+          <SelectItem value={"f"} key={"f"}>
+            Firma
+          </SelectItem>
+        </Select>
       </div>
       <div className="col-span-8">
         <Input

@@ -161,7 +161,9 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
     <>
       <Card as="form" onSubmit={handleSubmit(onSubmit)}>
         <CardHeader>
-          <h3 className="mx-auto">Datos personales del Jefe de Familia</h3>
+          <h3 className="mx-auto text-2xl">
+            Datos personales del Jefe de Familia
+          </h3>
         </CardHeader>
 
         <Divider />
@@ -192,6 +194,7 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
         <CardFooter className="flex justify-center gap-4">
           <Button
             color={"secondary"}
+            className="text-white hover:bg-purple-800  disabled:bg-purple-950"
             disabled={isDisabledBackButton()}
             onPress={() => handleSteps(-1)}
           >
@@ -199,19 +202,9 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
           </Button>
 
           <Button
-            disabled={isSubmitting}
-            type="submit"
-            style={{
-              display:
-                step.currentPos !== sections.length - 1 ? "none" : "block",
-            }}
-          >
-            Guardar datos
-          </Button>
-
-          <Button
             type="button"
             onPress={() => handleSteps(1)}
+            className="bg-blue-600 text-white  hover:bg-blue-800 disabled:bg-gray-600"
             style={{
               display:
                 step.currentPos !== sections.length - 1 ? "block" : "none",
@@ -221,6 +214,17 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
               <Spinner as="span" color={"secondary"} className="mx-4" />
             )}
             Continuar
+          </Button>
+          <Button
+            disabled={isSubmitting}
+            className="bg-blue-600 text-white  hover:bg-blue-800 disabled:bg-gray-600"
+            type="submit"
+            style={{
+              display:
+                step.currentPos !== sections.length - 1 ? "none" : "block",
+            }}
+          >
+            Guardar datos
           </Button>
         </CardFooter>
 

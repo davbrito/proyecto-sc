@@ -1,7 +1,7 @@
 function Footer() {
   return (
     <footer className="m-0 mx-auto  min-h-[40]  w-full py-4">
-      <div className="container">
+      <div className="container mx-auto">
         <p className="text-center text-xl tracking-wide">
           Censo 2023. Republica Bolivariana de Venezuela.
         </p>

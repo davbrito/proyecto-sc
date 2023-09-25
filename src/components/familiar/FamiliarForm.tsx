@@ -1,4 +1,12 @@
-import { Button, Divider, Input, Spinner, Textarea } from "@nextui-org/react";
+import {
+  Button,
+  Divider,
+  Input,
+  Select,
+  SelectItem,
+  Spinner,
+  Textarea,
+} from "@nextui-org/react";
 import { type Familiar } from "@prisma/client";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
@@ -70,6 +78,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
     reset,
     handleSubmit,
     setError,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FamiliarFormData>({
     defaultValues: !familia
@@ -205,7 +214,6 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
               placeholder="Ej: jose"
               type="text"
               {...register("datosBasicos.segundoNombre", {
-                required: { value: true, message: "Campo requerido" },
                 pattern: {
                   value:
                     /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
@@ -243,7 +251,6 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
               placeholder="Ej: jimenez"
               type="text"
               {...register("datosBasicos.segundoApellido", {
-                required: { value: true, message: "Campo requerido" },
                 pattern: {
                   value:
                     /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
@@ -254,8 +261,6 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
               isInvalid={!!errors?.datosBasicos?.segundoApellido}
             />
           </div>
-
-          <Divider className="mt-4" />
 
           <div className="col-span-6">
             <Input
@@ -273,50 +278,51 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
           </div>
 
           <div className="col-span-6">
-            <div className="w-full">
-              <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
-                Genero:
-              </label>
-              <select
-                {...register("datosBasicos.genero", {
-                  required: {
-                    value: true,
-                    message: "Este campo no puede estar vacio",
-                  },
-                })}
-                className="select-form"
-              >
-                <option value="f">Femenino</option>
-                <option value="m">Masculino</option>
-              </select>
-            </div>
+            <Select
+              label="Genero:"
+              className="max-w-xs"
+              {...register("datosBasicos.genero", {
+                required: {
+                  value: true,
+                  message: "Este campo no puede estar vacio",
+                },
+              })}
+              selectedKeys={familia?.genero}
+              errorMessage={errors?.datosBasicos?.genero?.message}
+              isInvalid={!!errors?.datosBasicos?.genero}
+            >
+              <SelectItem key={"f"} value="f">
+                Femenino
+              </SelectItem>
+              <SelectItem key={"m"} value="m">
+                Masculino
+              </SelectItem>
+            </Select>
           </div>
         </div>
-        <Divider className="mt-8" />
+        <Divider className="my-2" />
 
-        <div className="grid grid-cols-12 gap-1">
+        <div className="grid grid-cols-12 gap-2">
           <div className="col-span-4">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
-                Tipo documento:
-              </label>
-              <select
-                {...register("documentos.tipoDocumento", {
-                  required: {
-                    message: "Este campo no puede estar vacio",
-                    value: true,
-                  },
-                })}
-                className="select-form"
-              >
-                <option value={""} disabled>
-                  Seleccione una opcion
-                </option>
-                <option value={"v"}>Venezolano</option>
-                <option value={"e"}>Extranjero</option>
-                <option value={"f"}>Firma</option>
-              </select>
-            </div>
+            <Select
+              label="Tipo documento:"
+              className="max-w-xs"
+              placeholder="Seleccione una opcion"
+              {...register("documentos.tipoDocumento")}
+              selectedKeys={familia?.tipoDocumento}
+              errorMessage={errors?.documentos?.tipoDocumento?.message}
+              isInvalid={!!errors?.documentos?.tipoDocumento}
+            >
+              <SelectItem value={"v"} key={"v"}>
+                Venezolano
+              </SelectItem>
+              <SelectItem value={"e"} key={"e"}>
+                Extranjero
+              </SelectItem>
+              <SelectItem value={"f"} key={"f"}>
+                Firma
+              </SelectItem>
+            </Select>
           </div>
           <div className="col-span-8">
             <Input
@@ -359,7 +365,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
             />
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-12">
             <Textarea
               fullWidth
               label="Observacion:"
@@ -371,7 +377,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
           </div>
         </div>
 
-        <Divider className="mt-8" />
+        <Divider className="my-2" />
         <div className="grid grid-cols-12 gap-2">
           <div className="col-span-4">
             <Input
@@ -390,57 +396,37 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
             />
           </div>
           <div className="col-span-8">
-            <label className="mb-2 block text-sm font-medium ">
-              Jefe de Familia:
-            </label>
-
-            <select
+            <Select
+              fullWidth
+              label="Jefe de Familia:"
               {...register("jefeId", {
                 required: {
                   value: true,
                   message: "El jefe de familia es requerido",
                 },
               })}
-              className="select-form"
+              items={data}
+              errorMessage={errors?.jefeId?.message}
+              isInvalid={!!errors?.jefeId}
+              selectedKeys={jefeId?.toString()}
             >
-              <option value="">Seleccione una opcion porfavor</option>
-              {!jefeId
-                ? data.map(
-                    ({
-                      id,
-                      nombres,
-                      apellidos,
-                      tipoDocumento,
-                      numeroDocumento,
-                    }) => (
-                      <option value={id.toString()} key={id.toString()}>
-                        {apellidos.toUpperCase()}, {nombres.toUpperCase()}.{" "}
-                        {tipoDocumento.toUpperCase()}-{numeroDocumento}
-                      </option>
-                    )
-                  )
-                : data
-                    .filter((jefe) => jefe.id === jefeId)
-                    .map(
-                      ({
-                        id,
-                        nombres,
-                        apellidos,
-                        tipoDocumento,
-                        numeroDocumento,
-                      }) => (
-                        <option value={id.toString()} key={id.toString()}>
-                          {apellidos.toUpperCase()}, {nombres.toUpperCase()}.{" "}
-                          {tipoDocumento.toUpperCase()}-{numeroDocumento}
-                        </option>
-                      )
-                    )}
-            </select>
+              {({ id, nombres, apellidos, tipoDocumento, numeroDocumento }) => (
+                <SelectItem key={id.toString()}>
+                  {apellidos.toUpperCase() +
+                    ", " +
+                    nombres.toUpperCase() +
+                    " " +
+                    tipoDocumento.toUpperCase() +
+                    "-" +
+                    numeroDocumento}
+                </SelectItem>
+              )}
+            </Select>
           </div>
         </div>
       </div>
 
-      <div>
+      <div className="mx-auto mt-2 w-fit">
         {errors?.root && (
           <h4 className="inline-block capitalize text-red-600">
             {errors?.root?.message}.
@@ -449,13 +435,13 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
         <Button
           disabled={isSubmitting}
           type="submit"
-          className="mx-auto mt-2"
+          className=" mt-2 bg-blue-600 text-white hover:bg-blue-800 disabled:bg-gray-600"
           size={"lg"}
         >
           {isSubmitting && (
             <Spinner as="span" color={"secondary"} className="mx-4" />
           )}
-          {!familia ? "Agregar familiar." : "Actualizar familiar."}
+          {!familia ? "Agregar familiar" : "Actualizar familiar"}
         </Button>
       </div>
     </form>

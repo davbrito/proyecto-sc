@@ -47,6 +47,7 @@ const EditCajaForm = ({ censoId, closeModal }: Props) => {
           type="number"
           {...register("cajas", {
             required: { value: true, message: "Campo requerido" },
+            min: { value: 0, message: "El numero debe ser natural" },
           })}
           isInvalid={!!errors?.cajas}
           errorMessage={errors?.cajas?.message}
@@ -60,9 +61,10 @@ const EditCajaForm = ({ censoId, closeModal }: Props) => {
       )}
 
       <Button
+        fullWidth
         type="submit"
         disabled={isLoading}
-        className="mx-auto mt-4 hover:bg-blue-700"
+        className="mx-auto mt-4 bg-blue-600 text-white hover:bg-blue-700"
       >
         Guardar
         {isSubmitting && <Spinner className="mx-4" color={"secondary"} />}

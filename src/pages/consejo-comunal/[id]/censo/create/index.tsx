@@ -7,7 +7,7 @@ const CreateCenso = () => {
   const consejoComunalId = router.query.id ? router.query.id.toString() : "";
   return (
     <LayoutContent>
-      <div className="container max-w-2xl p-8">
+      <div className="container mx-auto max-w-2xl p-8">
         <GreatForm consejoComunalId={consejoComunalId} />
       </div>
     </LayoutContent>

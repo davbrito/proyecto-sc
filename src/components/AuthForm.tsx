@@ -63,7 +63,7 @@ export const LoginForm = () => {
       className="container mx-auto max-w-md shadow-lg"
     >
       <CardHeader>
-        <h2 className="text-xl font-bold">CENSO {new Date().getFullYear()}</h2>
+        <h2 className="text-2xl ">Censo {new Date().getFullYear()}</h2>
       </CardHeader>
       <Divider />
       <CardBody>
@@ -83,6 +83,7 @@ export const LoginForm = () => {
         <Spacer y={4} />
         <Input
           type="password"
+          isClearable
           label="Contraseña:"
           placeholder="Escriba su contraseña..."
           {...register("password", {
@@ -114,7 +115,7 @@ export const LoginForm = () => {
           spinner={<Spinner color="current" size="sm" />}
           isLoading={isSubmitting}
         >
-          {isSubmitting ? " Cargando..." : "Iniciar sesion."}
+          {isSubmitting ? " Cargando..." : "Iniciar sesion"}
         </Button>
       </CardFooter>
     </Card>

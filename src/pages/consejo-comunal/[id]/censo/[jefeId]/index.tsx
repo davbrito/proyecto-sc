@@ -25,10 +25,11 @@ export async function getServerSideProps(
 
   return {
     props: {
+      title: "Consejo Comunal",
+      content: "Informacion del consejo comunal",
       trpcState: ssg.dehydrate(),
       id,
     },
-    revalidate: 1,
   };
 }
 

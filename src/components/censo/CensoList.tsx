@@ -8,6 +8,9 @@ import {
   TableRow,
   TableCell,
   ModalBody,
+  useDisclosure,
+  ModalContent,
+  ModalHeader,
 } from "@nextui-org/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
@@ -35,9 +38,12 @@ export const CensoList = ({
     },
     { retry: false }
   );
+
   const [openModal, setOpenModal] = useState<stateFamiliarModal>({
     isOpen: false,
   });
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const closeHandler = () => setOpenModal({ isOpen: false });
 
@@ -75,7 +81,7 @@ export const CensoList = ({
         </TableHeader>
         <TableBody>
           {data.map(({ jefeFamilia, id, tipoFamilia }) => (
-            <TableRow key={id}>
+            <TableRow key={id} className="border-b-2">
               <TableCell className="text-center text-sm">
                 <Link
                   href={
@@ -85,7 +91,7 @@ export const CensoList = ({
                           jefeFamilia.id
                         )}`
                   }
-                  className="transition-all hover:text-blue-800"
+                  className="font-semibold text-blue-600 transition-all hover:text-gray-600 "
                 >
                   {id.padStart(8, "0")}
                 </Link>
@@ -122,15 +128,16 @@ export const CensoList = ({
               </TableCell>
               <TableCell>
                 <Button
-                  className="mx-auto bg-blue-700 transition-all hover:bg-blue-900"
+                  className="mx-auto bg-blue-700 text-white transition-all hover:bg-blue-900"
                   size="sm"
                   onPress={() => {
                     const id = jefeFamilia?.id;
                     if (!id) return;
                     setOpenModal({ isOpen: true, id });
+                    onOpen();
                   }}
                 >
-                  Agregar pariente.
+                  Agregar pariente
                 </Button>
               </TableCell>
             </TableRow>
@@ -138,21 +145,34 @@ export const CensoList = ({
         </TableBody>
       </Table>
       <Modal
-        closeButton
-        aria-labelledby="modal-title2"
-        size="3xl"
-        isOpen={openModal.isOpen}
-        onClose={closeHandler}
+        aria-labelledby="Formulario-Familia"
+        size="2xl"
+        isOpen={isOpen}
+        scrollBehavior="inside"
+        onOpenChange={() => {
+          closeHandler();
+          onOpenChange();
+        }}
       >
-        {!!openModal.id && (
-          <ModalBody>
-            <FamiliarForm
-              consejoId={consejoId}
-              jefeId={openModal.id}
-              closeModal={closeHandler}
-            />
-          </ModalBody>
-        )}
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>
+                <h2 className="mx-auto text-center text-2xl font-normal">
+                  Formulario de familiar
+                </h2>
+              </ModalHeader>
+
+              <ModalBody>
+                <FamiliarForm
+                  consejoId={consejoId}
+                  jefeId={openModal.id}
+                  closeModal={closeHandler}
+                />
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
       </Modal>
     </>
   );

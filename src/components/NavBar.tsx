@@ -1,10 +1,8 @@
 import {
   Avatar,
-  Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
-  DropdownSection,
   DropdownTrigger,
   Link,
   Navbar,
@@ -24,18 +22,6 @@ import routesHref from "~/utils/routesNavBar";
 export const NavBar = () => {
   const { data, status } = useSession();
   const router = useRouter();
-
-  const collapseItems = [
-    "Features",
-    "Customers",
-    "Pricing",
-    "Company",
-    "Legal",
-    "Team",
-    "Help & Feedback",
-    "Login",
-    "Sign Up",
-  ];
 
   return (
     <Navbar className="mx-auto bg-content2 shadow-medium" shouldHideOnScroll>
@@ -132,13 +118,16 @@ export const NavBar = () => {
         )}
       </NavbarContent>
       <NavbarMenu>
-        {collapseItems.map((item, index) => (
-          <NavbarMenuItem key={item}>
-            <Link as={NextLink} href="#" color="foreground">
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
+        <NavbarMenuItem>
+          <Link as={NextLink} href="/" color="foreground">
+            Home
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem>
+          <Link as={NextLink} href="/consejo-comunal" color="foreground">
+            Consejos comunales
+          </Link>
+        </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
   );
