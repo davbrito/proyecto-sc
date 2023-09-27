@@ -16,6 +16,14 @@ export const encargadosRouter = createTRPCRouter({
       });
       return encargados;
     }),
+  getByConsejoId: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const encargados = await ctx.prisma.encargadoClap.findMany({
+        where: { consejoComunalId: input.id },
+      });
+      return encargados;
+    }),
   create: publicProcedure
     .input(
       z.object({
@@ -44,4 +52,28 @@ export const encargadosRouter = createTRPCRouter({
         where: { id: input.id },
       });
     }),
+
+  update: publicProcedure.input(
+    z.object({
+      id: z.number(),
+      newInfo: z.object({
+        cargo: z.string(),
+        nombres: z.string(),
+        apellidos: z.string(),
+        cedula: z.string(),
+        telefono: z.string(),
+        profesion: z.string(),
+        email: z.string(),
+      }),
+    })
+  ).mutation(async({ctx, input})=>{
+        const {id,newInfo} = input
+
+        return await ctx.prisma.encargadoClap.update({
+          where:{id},
+          data:{
+            ...newInfo
+          }
+        })
+  }),
 });
