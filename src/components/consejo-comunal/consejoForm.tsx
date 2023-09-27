@@ -118,7 +118,7 @@ export const ConsejoForm = () => {
               isInvalid={!!errors?.circuito}
             />
           </div>
-          <Divider className="my-6" />
+
           <div className="col-span-6">
             <Input
               {...register("sector", {
@@ -174,7 +174,6 @@ export const ConsejoForm = () => {
               isInvalid={!!errors?.nombre_consejo}
             />
           </div>
-          <Divider className="my-6" />
 
           <div className="col-span-4">
             <div className="w-full">
@@ -253,7 +252,12 @@ export const ConsejoForm = () => {
       <Divider />
 
       <CardFooter className="py-6">
-        <Button className="mx-auto" type="submit" disabled={isLoading}>
+        <Button
+          fullWidth
+          className="mx-auto bg-blue-600 text-white hover:bg-blue-800 disabled:bg-slate-600"
+          type="submit"
+          disabled={isLoading}
+        >
           Crear
         </Button>
       </CardFooter>

@@ -28,9 +28,12 @@ interface Props {
   consejoId: string;
 }
 export const ConsejoInfor = ({ consejoId }: Props) => {
-  const { data, error, isLoading, refetch } = api.consejo.getById.useQuery({
-    id: parseInt(consejoId),
-  });
+  const { data, error, isLoading, refetch } = api.consejo.getById.useQuery(
+    {
+      id: parseInt(consejoId),
+    },
+    { cacheTime: 30 * 60 * 1000 }
+  );
   const [isCreateEncargadoModal, setIsCreateEncargadoModal] = useState(false);
 
   if (isLoading) return <CustomLoading className="place-content-center" />;
@@ -54,7 +57,9 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
               Sistema Popular de Distribucion de Alimentos Comites Locales de
               Abastecimiento y Produccion Socialista
             </h1>
-            <h2 className="text-center text-xl uppercase">Estado Bolivar</h2>
+            <h2 className="text-center text-xl uppercase">
+              Estado {data.estado}
+            </h2>
           </CardBody>
           <CardFooter className=" flex justify-center gap-4">
             <Link
@@ -85,7 +90,7 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
             </h1>
           </CardHeader>
           <CardBody>
-            <div className="grid  grid-cols-2 gap-1  lg:grid-cols-3  lg:text-base">
+            <div className="grid  grid-cols-1 gap-1  lg:grid-cols-3  lg:text-base">
               <div className="grid grid-cols-2 gap-3 rounded-lg border border-gray-500   px-3 py-2 lg:gap-0 lg:border-solid">
                 <div className=" font-semibold">Municipio:</div>
                 <div className="text-right uppercase">{data.municipio}</div>
@@ -100,7 +105,7 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
               </div>
             </div>
 
-            <div className="mt-1 grid  grid-cols-2 gap-1  lg:grid-cols-3  lg:text-base">
+            <div className="mt-1 grid  grid-cols-1 gap-1  lg:grid-cols-3  lg:text-base">
               <div className="grid grid-cols-2 gap-3 rounded-lg  border border-gray-500   px-3 py-2 lg:gap-0 lg:border-solid">
                 <div className="  font-semibold">Consejo Comunal:</div>
                 <div className="text-right uppercase">
@@ -220,6 +225,7 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
         scrollBehavior="inside"
         onClose={() => {
           setIsCreateEncargadoModal(false);
+          refetch();
         }}
       >
         <ModalContent>
