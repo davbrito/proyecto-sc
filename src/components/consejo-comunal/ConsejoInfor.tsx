@@ -1,14 +1,9 @@
 import {
-  Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
   Link,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
   Table,
   TableBody,
   TableCell,
@@ -16,13 +11,11 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import React, { useState } from "react";
+import React from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import { ErrorMessage } from "../ErrorMessage";
-import { EncargadoForm } from "../encargado-clap/EncargadoForm";
 import { LayoutContent } from "../Layout";
-import { EncargadoList } from "../encargado-clap/EncargadoList";
 
 interface Props {
   consejoId: string;
@@ -34,7 +27,6 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
     },
     { cacheTime: 30 * 60 * 1000 }
   );
-  const [isCreateEncargadoModal, setIsCreateEncargadoModal] = useState(false);
 
   if (isLoading) return <CustomLoading className="place-content-center" />;
 
@@ -151,23 +143,6 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
         <Card className="my-4">
           <CardHeader className="relative">
             <h1 className="mx-auto flex-shrink text-center text-2xl font-medium">
-              Ficha General del CLAP
-            </h1>
-            <button
-              className=" h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600"
-              onClick={() => setIsCreateEncargadoModal(true)}
-            >
-              Añadir
-            </button>
-          </CardHeader>
-          <CardBody>
-            <EncargadoList consejoId={parseInt(consejoId)} />
-          </CardBody>
-        </Card>
-
-        <Card className="mb-4">
-          <CardHeader className="relative">
-            <h1 className="mx-auto flex-shrink text-center text-2xl font-medium">
               Lideres de calle
             </h1>
             <button className="h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600">
@@ -218,35 +193,6 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
           </CardBody>
         </Card>
       </div>
-      <Modal
-        aria-label="create-encargado-form"
-        isOpen={isCreateEncargadoModal}
-        size="2xl"
-        scrollBehavior="inside"
-        onClose={() => {
-          setIsCreateEncargadoModal(false);
-          refetch();
-        }}
-      >
-        <ModalContent>
-          {(close) => (
-            <>
-              <ModalHeader>
-                <h2 className="mx-auto text-2xl">Formulario de Encargado</h2>
-              </ModalHeader>
-              <ModalBody>
-                <EncargadoForm
-                  consejoId={parseInt(consejoId)}
-                  closeModal={() => {
-                    refetch();
-                    close();
-                  }}
-                />
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </>
   );
 };

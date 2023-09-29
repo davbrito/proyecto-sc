@@ -4,6 +4,7 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -17,9 +18,24 @@ import { CustomLoading } from "../Loading";
 import { ErrorMessage } from "../ErrorMessage";
 import { EncargadoForm } from "./EncargadoForm";
 import DeleteConfirmation from "../DeleteConfirmation";
+import { type GetResult } from "@prisma/client/runtime";
 
 interface Props {
   consejoId: number;
+  data: {
+    id: number;
+    cargo: string;
+    nombres: string;
+    apellidos: string;
+    cedula: string;
+    telefono: string;
+    profesion: string;
+    email: string;
+    fechaRegistro: Date;
+    consejoComunalId: number;
+  }[];
+  refreshData: () => void;
+  isLoading: boolean;
 }
 
 interface EditEncargado {
@@ -37,41 +53,23 @@ interface EditEncargado {
 }
 
 interface DeleteEncargado {
-  isOpen: boolean;
   encargadoId?: number;
 }
-export const EncargadoList = ({ consejoId }: Props) => {
-  const { data, isLoading, refetch } = api.encargados.getByConsejoId.useQuery({
-    id: consejoId,
-  });
-
+export const EncargadoList = ({
+  consejoId,
+  data,
+  refreshData,
+  isLoading,
+}: Props) => {
   const deleteEncargado = api.encargados.delete.useMutation();
 
   const [editEncargado, setEditEncargado] = useState<EditEncargado>({
     isOpen: false,
   });
-  const [deleteEncargadoModal, setDeleteEncargadoModal] =
-    useState<DeleteEncargado>({
-      isOpen: false,
-    });
 
-  if (isLoading)
-    return <CustomLoading className="min-h-[30vh] place-content-center" />;
-  if (!data)
-    return (
-      <div className="flex min-h-[40vh] place-content-center">
-        <ErrorMessage
-          title="Error al recuperar la informacion del consejo comunal."
-          body="Revise su conexion de internet, e intente nuevamente."
-        />
-      </div>
-    );
-  if (data.length === 0)
-    return (
-      <div className=" flex h-[20vh] items-center justify-center rounded-md border">
-        <h2 className="text-2xl">No tiene personal registrado.</h2>
-      </div>
-    );
+  const [deleteEncargadoModal, setDeleteEncargadoModal] =
+    useState<DeleteEncargado>();
+
   return (
     <>
       <Table>
@@ -85,7 +83,10 @@ export const EncargadoList = ({ consejoId }: Props) => {
           <TableColumn>Direccion</TableColumn>
           <TableColumn>Acciones</TableColumn>
         </TableHeader>
-        <TableBody>
+        <TableBody
+          loadingContent={<Spinner />}
+          loadingState={isLoading ? "loading" : "idle"}
+        >
           {data.map(
             ({
               apellidos,
@@ -130,7 +131,6 @@ export const EncargadoList = ({ consejoId }: Props) => {
                     className="bg-red-600 text-white hover:bg-red-800"
                     onPress={() => {
                       setDeleteEncargadoModal({
-                        isOpen: true,
                         encargadoId: id,
                       });
                     }}
@@ -143,6 +143,7 @@ export const EncargadoList = ({ consejoId }: Props) => {
           )}
         </TableBody>
       </Table>
+
       <Modal
         aria-label="edit-encargado-form"
         isOpen={editEncargado.isOpen}
@@ -152,7 +153,9 @@ export const EncargadoList = ({ consejoId }: Props) => {
           setEditEncargado({
             isOpen: false,
           });
+          refreshData();
         }}
+        placement="center"
       >
         <ModalContent>
           {(close) => (
@@ -167,7 +170,7 @@ export const EncargadoList = ({ consejoId }: Props) => {
                   consejoId={consejoId}
                   oldData={editEncargado.encargado}
                   closeModal={() => {
-                    refetch();
+                    refreshData();
                     close();
                   }}
                 />
@@ -178,12 +181,22 @@ export const EncargadoList = ({ consejoId }: Props) => {
       </Modal>
 
       <DeleteConfirmation
-        onClose={() => setDeleteEncargadoModal({ isOpen: false })}
-        open={deleteEncargadoModal.isOpen}
+        onClose={() => {
+          setDeleteEncargadoModal({});
+          refreshData();
+          console.log("eliminar refrehs");
+        }}
+        open={!!deleteEncargadoModal?.encargadoId}
         onDelete={() => {
           deleteEncargadoModal?.encargadoId &&
-            deleteEncargado.mutate({ id: deleteEncargadoModal.encargadoId });
-          refetch();
+            deleteEncargado.mutate(
+              { id: deleteEncargadoModal.encargadoId },
+              {
+                onSuccess(data, variables, context) {
+                  refreshData();
+                },
+              }
+            );
         }}
       />
     </>

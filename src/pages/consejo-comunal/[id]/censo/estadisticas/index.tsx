@@ -1,11 +1,12 @@
+import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
 } from "next";
 import { LayoutContent } from "~/components/Layout";
-import { ConsejoInfor } from "~/components/consejo-comunal/ConsejoInfor";
-import { EncargadosInfor } from "~/components/encargado-clap/EncargadosInfor";
+import { EstadisticaTable } from "~/components/estadisticas/EstadisticaTable";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { api } from "~/utils/api";
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext<{ id: string }>
@@ -30,10 +31,22 @@ export async function getServerSideProps(
 const Index = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
+  const { data } = api.consejo.getById.useQuery({ id: parseInt(props.id) });
+
   return (
     <LayoutContent className="flex-col  ">
-      <ConsejoInfor consejoId={props.id} />
-      <EncargadosInfor consejoId={parseInt(props.id)} />
+      <div className="container mx-auto">
+        <Card className="my-4">
+          <CardHeader>
+            <h1 className="mx-auto text-3xl">
+              Estadisticas de cajas Clap {data?.nombre_clap.toUpperCase()}
+            </h1>
+          </CardHeader>
+          <CardBody>
+            <EstadisticaTable consejoId={parseInt(props.id)} />
+          </CardBody>
+        </Card>
+      </div>
     </LayoutContent>
   );
 };

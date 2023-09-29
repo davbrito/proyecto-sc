@@ -29,7 +29,7 @@ const CensoIndex = () => {
             </Link>
 
             <Link
-              href={`/estadisticas`}
+              href={`/consejo-comunal/${consejoComunalId}/censo/estadisticas`}
               className="h-fit  w-fit rounded-md bg-orange-600 px-4 py-3 font-medium  text-white"
             >
               Estadisticas

@@ -92,7 +92,7 @@ export const EncargadoForm = ({ consejoId, oldData, closeModal }: Props) => {
   const { mutate, isLoading } = api.encargados.create.useMutation();
   const editEncargado = api.encargados.update.useMutation();
 
-  const onSubmit = handleSubmit((data, event) => {
+  const onSubmit = handleSubmit(async (data, event) => {
     event?.preventDefault();
     if (!oldData) {
       mutate(
@@ -120,8 +120,8 @@ export const EncargadoForm = ({ consejoId, oldData, closeModal }: Props) => {
         }
       );
     } else {
-      editEncargado.mutate(
-        {
+      try {
+        await editEncargado.mutateAsync({
           id: oldData.id,
           newInfo: {
             apellidos: data.primerApellido + " " + data.segundoApellido,
@@ -132,20 +132,15 @@ export const EncargadoForm = ({ consejoId, oldData, closeModal }: Props) => {
             profesion: data.profesion,
             telefono: data.codigoTelefono + data.telefono,
           },
-        },
-        {
-          onSuccess(data, variables, context) {
-            closeModal && closeModal();
-          },
-          onError(error, variables, context) {
-            if (typeof error === "string") {
-              setError("root", { message: error });
-            } else if (error instanceof Error) {
-              setError("root", { message: error.message });
-            }
-          },
+        });
+        closeModal && closeModal();
+      } catch (error) {
+        if (typeof error === "string") {
+          setError("root", { message: error });
+        } else if (error instanceof Error) {
+          setError("root", { message: error.message });
         }
-      );
+      }
     }
   });
 
@@ -269,12 +264,9 @@ export const EncargadoForm = ({ consejoId, oldData, closeModal }: Props) => {
             items={item}
             isInvalid={!!errors.codigoTelefono}
             errorMessage={errors.codigoTelefono?.message}
+            selectedKeys={[watch("codigoTelefono")]}
           >
-            {(item) => (
-              <SelectItem key={item.key} className="capitalize">
-                {item.key}
-              </SelectItem>
-            )}
+            {(item) => <SelectItem key={item.key}>{item.key}</SelectItem>}
           </Select>
         </div>
         <div className="col-span-4">

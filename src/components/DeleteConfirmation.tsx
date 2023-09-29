@@ -25,6 +25,7 @@ const DeleteConfirmation = ({ onDelete, onClose, open }: Props) => {
       size="md"
       isOpen={open}
       onClose={onClose}
+      placement="center"
     >
       <ModalContent>
         <ModalHeader>
