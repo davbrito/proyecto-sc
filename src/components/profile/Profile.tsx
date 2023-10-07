@@ -1,11 +1,28 @@
-import { Avatar, Button, Card } from "@nextui-org/react";
-import React from "react";
+import {
+  Avatar,
+  Button,
+  Card,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  focusVisibleClasses,
+} from "@nextui-org/react";
+import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import NextLink from "next/link";
+import { UploadButton } from "~/utils/uploadthing";
+import { utapi } from "~/server/uploadthing";
 
 export const ProfileData = () => {
-  const { data, isLoading } = api.user.getById.useQuery();
+  const { data, isLoading, refetch } = api.user.getById.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+  const update = api.user.updateAvatarById.useMutation();
+  const [updateAvatar, setUpdateAvatar] = useState(false);
+  const [isUploadImage, setIsUploadImage] = useState(false);
 
   if (isLoading) return <CustomLoading />;
   if (!data) return null;
@@ -21,7 +38,11 @@ export const ProfileData = () => {
             isBordered
             size="lg"
           />
-          <Button type="button" color="secondary">
+          <Button
+            type="button"
+            color="secondary"
+            onPress={() => setUpdateAvatar(true)}
+          >
             Cambiar
           </Button>
         </div>
@@ -53,6 +74,63 @@ export const ProfileData = () => {
           Actualizar
         </Button>
       </div>
+      <Modal
+        isOpen={updateAvatar}
+        aria-labelledby="modal-edit-avatar"
+        size="lg"
+        scrollBehavior="inside"
+        onClose={() => {
+          setUpdateAvatar(false);
+          refetch();
+        }}
+      >
+        <ModalContent>
+          {(close) => (
+            <>
+              <ModalHeader>
+                <h2 className="mx-auto text-2xl">Actualizacion de avatar</h2>
+              </ModalHeader>
+              <ModalBody className="py-4">
+                <UploadButton
+                  appearance={{
+                    button: { padding: "8px" },
+                  }}
+                  endpoint="imageUploader"
+                  onClientUploadComplete={async (res) => {
+                    setIsUploadImage(false);
+
+                    if (res && res[0]?.url) {
+                      update.mutate(
+                        {
+                          user_id: data.id,
+                          img_url: res[0].url,
+                          old_url: data?.image || "",
+                        },
+                        {
+                          onSuccess(data, variables, context) {
+                            close();
+                          },
+                        }
+                      );
+                    }
+                  }}
+                  onUploadError={(error: Error) => {
+                    setIsUploadImage(false);
+                  }}
+                  onUploadBegin={() => {
+                    setIsUploadImage(true);
+                  }}
+                  content={{
+                    allowedContent: "Max. 1MB",
+                    button: "Subir archivo",
+                  }}
+                />
+                {(update.isLoading || isUploadImage) && <CustomLoading />}
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

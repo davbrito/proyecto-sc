@@ -7,16 +7,26 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { utapi } from "~/server/uploadthing";
 import { hashPassword } from "~/utils/hashPassword";
 
 //utils
 
-const formatUserData = ({ image, name, username, lastName }: User) => {
+const formatUserData = ({
+  image,
+  name,
+  username,
+  lastName,
+  id,
+  role_user,
+}: User) => {
   return {
     image,
     name,
     username,
     lastName,
+    id,
+    role_user,
   };
 };
 
@@ -125,9 +135,17 @@ export const userRouter = createTRPCRouter({
 
   getUsers: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findMany({
-      take: 100,
+      take: 20,
+      select: {
+        image: true,
+        id: true,
+        name: true,
+        role_user: true,
+        username: true,
+        lastName: true,
+      },
     });
-    return user.map(formatUserData);
+    return user;
   }),
 
   getById: protectedProcedure.query(async ({ ctx }) => {
@@ -139,4 +157,39 @@ export const userRouter = createTRPCRouter({
 
     return user;
   }),
+
+  updateAvatarById: protectedProcedure
+    .input(
+      z.object({
+        img_url: z.string(),
+        user_id: z.string(),
+        old_url: z.string().default(""),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { img_url, old_url, user_id } = input;
+
+      if (old_url) {
+        console.log(
+          old_url,
+          old_url.slice(old_url.lastIndexOf("/") + 1, old_url.length)
+        );
+        const res = await utapi.deleteFiles(
+          old_url.slice(old_url.lastIndexOf("/") + 1, old_url.length)
+        );
+
+        console.log(res, old_url, "SDADASDDSDADS");
+      }
+
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: user_id,
+        },
+        data: {
+          image: img_url,
+        },
+      });
+
+      return user;
+    }),
 });
