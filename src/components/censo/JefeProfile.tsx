@@ -15,7 +15,7 @@ import {
   TableRow,
   useDisclosure,
 } from "@nextui-org/react";
-import { type Familiar, type JefeFamilia } from "@prisma/client";
+import { type ROLE, type Familiar, type JefeFamilia } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { api } from "~/utils/api";
@@ -38,7 +38,7 @@ interface Delete {
   isOpen: boolean;
 }
 
-const JefeProfile = ({ id }: { id: string }) => {
+const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
   const router = useRouter();
   const consejoId = router.query?.id ? router.query.id.toString() : "";
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
@@ -146,29 +146,30 @@ const JefeProfile = ({ id }: { id: string }) => {
           </span>
         </h1>
 
-        <div className="container flex items-center justify-center gap-4">
-          <Button
-            disabled
-            onPress={() => handleDeleteJefe()}
-            className="bg-red-600 text-white  hover:bg-red-700 disabled:bg-red-950"
-          >
-            Eliminar este censo
-          </Button>
+        {role !== "LIDER_CALLE" && (
+          <div className="container flex items-center justify-center gap-4">
+            <Button
+              onPress={() => handleDeleteJefe()}
+              className="bg-red-600 text-white  hover:bg-red-700 disabled:bg-red-300"
+            >
+              Eliminar este censo
+            </Button>
 
-          <Button
-            onPress={() => setEditJefe({ isOpen: true })}
-            className="bg-orange-600 text-white transition-colors hover:bg-orange-700  "
-          >
-            Editar jefe de familia
-          </Button>
+            <Button
+              onPress={() => setEditJefe({ isOpen: true })}
+              className="bg-orange-600 text-white transition-colors hover:bg-orange-700  disabled:bg-orange-300"
+            >
+              Editar jefe de familia
+            </Button>
 
-          <Button
-            className="bg-violet-600 text-center text-white hover:bg-violet-800"
-            onPress={() => setChangeJefe(true)}
-          >
-            Cambiar jefe
-          </Button>
-        </div>
+            <Button
+              className="bg-violet-600 text-center text-white hover:bg-violet-800 disabled:bg-violet-300"
+              onPress={() => setChangeJefe(true)}
+            >
+              Cambiar jefe
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Informacion JEFE FAMILIA */}
@@ -319,15 +320,17 @@ const JefeProfile = ({ id }: { id: string }) => {
                     Caja CLAP
                   </h2>
                 </div>
-                <button
-                  onClick={() => {
-                    setEditCaja(true);
-                    onOpen();
-                  }}
-                  className="rounded-lg border-solid border-orange-800 bg-orange-600 p-2 text-sm text-white transition-all hover:bg-orange-800"
-                >
-                  Editar
-                </button>
+                {role !== "LIDER_CALLE" && (
+                  <button
+                    onClick={() => {
+                      setEditCaja(true);
+                      onOpen();
+                    }}
+                    className="rounded-lg border-solid border-orange-800 bg-orange-600 p-2 text-sm text-white transition-all hover:bg-orange-800 disabled:bg-orange-800"
+                  >
+                    Editar
+                  </button>
+                )}
               </CardHeader>
               <CardBody>
                 <div className="grid  gap-2 text-sm md:grid-cols-2">
@@ -446,25 +449,30 @@ const JefeProfile = ({ id }: { id: string }) => {
                             {observacion || "Ninguna"}
                           </TableCell>
                           <TableCell className="flex flex-col items-center gap-y-4 text-center">
-                            <Button
-                              size={"sm"}
-                              className="bg-red-600 text-white transition-all hover:bg-red-800"
-                              onPress={() =>
-                                setDeleteFamiliar({ isOpen: true, id })
-                              }
-                            >
-                              {" "}
-                              Eliminar
-                            </Button>
-                            <Button
-                              size={"sm"}
-                              className="bg-orange-600 text-white transition-all hover:bg-orange-800"
-                              onPress={() => {
-                                handleEditFamiliar(id.toString());
-                              }}
-                            >
-                              Actualizar
-                            </Button>
+                            {role === "LIDER_CALLE" ? (
+                              <div></div>
+                            ) : (
+                              <>
+                                <Button
+                                  size={"sm"}
+                                  className="bg-red-600 text-white transition-all hover:bg-red-800 disabled:bg-red-800"
+                                  onPress={() =>
+                                    setDeleteFamiliar({ isOpen: true, id })
+                                  }
+                                >
+                                  Eliminar
+                                </Button>
+                                <Button
+                                  size={"sm"}
+                                  className="bg-orange-600 text-white transition-all hover:bg-orange-800"
+                                  onPress={() => {
+                                    handleEditFamiliar(id.toString());
+                                  }}
+                                >
+                                  Actualizar
+                                </Button>
+                              </>
+                            )}
                           </TableCell>
                         </TableRow>
                       )

@@ -38,7 +38,7 @@ const IndexJefeCenso = (
 ) => {
   const [visible, setVisible] = React.useState(false);
   const handler = () => setVisible(true);
-  const { status } = useSession();
+  const { data, status } = useSession();
 
   const closeHandler = () => {
     setVisible(false);
@@ -66,7 +66,7 @@ const IndexJefeCenso = (
 
   return (
     <LayoutContent>
-      <JefeProfile id={props.id} />
+      <JefeProfile id={props.id} role={data?.user?.role_user} />
     </LayoutContent>
   );
 };

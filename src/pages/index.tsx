@@ -8,6 +8,9 @@ import NextImage from "next/image";
 const Home: NextPage = () => {
   const { data } = useSession();
 
+  if (data?.user.role_user === "LIDER_CALLE") {
+  }
+
   return (
     <LayoutContent className="flex flex-col items-center justify-center">
       <Card className="p-5">
@@ -35,6 +38,23 @@ const Home: NextPage = () => {
               </span>
               .
             </p>
+          )}
+          {data?.user.role_user === "LIDER_CALLE" && (
+            <div>
+              <h3>Eres Lider de calle</h3>
+            </div>
+          )}
+
+          {data?.user.role_user === "ADMIN" && (
+            <div>
+              <h3>Eres admin</h3>
+            </div>
+          )}
+
+          {data?.user.role_user === "LIDER_COMUNIDAD" && (
+            <div>
+              <h3>Eres Lider de comunidad</h3>
+            </div>
           )}
         </CardBody>
       </Card>

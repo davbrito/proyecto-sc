@@ -2,6 +2,7 @@ import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
 } from "next";
+import { useSession } from "next-auth/react";
 import { LayoutContent } from "~/components/Layout";
 import { ConsejoInfor } from "~/components/consejo-comunal/ConsejoInfor";
 import { EncargadosInfor } from "~/components/encargado-clap/EncargadosInfor";
@@ -30,10 +31,14 @@ export async function getServerSideProps(
 const Index = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
+  const { data } = useSession();
   return (
     <LayoutContent className="flex-col  ">
-      <ConsejoInfor consejoId={props.id} />
-      <EncargadosInfor consejoId={parseInt(props.id)} />
+      <ConsejoInfor consejoId={props.id} role={data?.user.role_user} />
+      <EncargadosInfor
+        consejoId={parseInt(props.id)}
+        role={data?.user.role_user}
+      />
     </LayoutContent>
   );
 };

@@ -35,13 +35,21 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum ROLE {
+    ADMIN
+    LIDER_COMUNIDAD
+    LIDER_CALLE
+}
+
 model User {
     id       String  @id @default(cuid())
     name     String
     username String  @unique
-    image    String?
+    image    String? @default("")
     lastName String
     password String
+
+    role_user ROLE @default(LIDER_CALLE)
 
     accounts Account[]
     sessions Session[]

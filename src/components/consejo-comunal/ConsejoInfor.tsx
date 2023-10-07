@@ -16,11 +16,13 @@ import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import { ErrorMessage } from "../ErrorMessage";
 import { LayoutContent } from "../Layout";
+import { type ROLE } from "@prisma/client";
 
 interface Props {
   consejoId: string;
+  role?: ROLE;
 }
-export const ConsejoInfor = ({ consejoId }: Props) => {
+export const ConsejoInfor = ({ consejoId, role }: Props) => {
   const { data, error, isLoading, refetch } = api.consejo.getById.useQuery(
     {
       id: parseInt(consejoId),
@@ -145,9 +147,11 @@ export const ConsejoInfor = ({ consejoId }: Props) => {
             <h1 className="mx-auto flex-shrink text-center text-2xl font-medium">
               Lideres de calle
             </h1>
-            <button className="h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600">
-              Añadir
-            </button>
+            {role === "ADMIN" && (
+              <button className="h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600">
+                Añadir
+              </button>
+            )}
           </CardHeader>
           <CardBody>
             <Table>

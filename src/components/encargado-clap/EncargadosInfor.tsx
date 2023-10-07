@@ -13,8 +13,15 @@ import { EncargadoForm } from "./EncargadoForm";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import { ErrorMessage } from "../ErrorMessage";
+import { type ROLE } from "@prisma/client";
 
-export const EncargadosInfor = ({ consejoId }: { consejoId: number }) => {
+export const EncargadosInfor = ({
+  consejoId,
+  role,
+}: {
+  consejoId: number;
+  role?: ROLE;
+}) => {
   const { data, isLoading, refetch, error, isFetching } =
     api.encargados.getByConsejoId.useQuery({
       id: consejoId,
@@ -30,12 +37,14 @@ export const EncargadosInfor = ({ consejoId }: { consejoId: number }) => {
             <h1 className="mx-auto flex-shrink text-center text-2xl font-medium">
               Ficha General del CLAP
             </h1>
-            <button
-              className=" h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600"
-              onClick={() => setIsCreateEncargadoModal(true)}
-            >
-              Añadir
-            </button>
+            {role === "ADMIN" && (
+              <button
+                className=" h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600"
+                onClick={() => setIsCreateEncargadoModal(true)}
+              >
+                Añadir
+              </button>
+            )}
           </CardHeader>
           <CardBody>
             {isLoading && (
