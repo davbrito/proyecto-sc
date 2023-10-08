@@ -42,14 +42,18 @@ enum ROLE {
 }
 
 model User {
-    id       String  @id @default(cuid())
-    name     String
-    username String  @unique
-    image    String? @default("")
-    lastName String
-    password String
+    id        String  @id @default(cuid())
+    name      String
+    username  String  @unique
+    image     String? @default("")
+    lastName  String
+    password  String
+    role_user ROLE    @default(LIDER_CALLE)
 
-    role_user ROLE @default(LIDER_CALLE)
+    created_at DateTime @default(now())
+
+    consejo          ConsejoComunal? @relation(fields: [consejoComunalId], references: [id])
+    consejoComunalId Int?
 
     accounts Account[]
     sessions Session[]
@@ -84,6 +88,7 @@ model ConsejoComunal {
     //FOREIGN KEY
     censos     Censo[]
     encargados EncargadoClap[]
+    User       User[]
 }
 
 // CENSO 

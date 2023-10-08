@@ -107,6 +107,17 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { id, lastName, name, username } = input;
 
+      const isUsernameUsed = await ctx.prisma.user.findFirst({
+        where: { username },
+      });
+
+      if (isUsernameUsed)
+        throw new TRPCError({
+          code: "CONFLICT",
+          cause: "Username already used",
+          message: "El nombre de usuario no esta disponible",
+        });
+
       const oldUser = await ctx.prisma.user.findFirst({
         where: {
           id,
@@ -133,6 +144,23 @@ export const userRouter = createTRPCRouter({
     .input(z.object({ image: z.string() }))
     .mutation(({ ctx, input }) => {}),
 
+  updatePassword: protectedProcedure
+    .input(z.object({ newPassword: z.string(), id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const hashed = await hashPassword(input.newPassword);
+
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          password: hashed,
+        },
+      });
+
+      return user;
+    }),
+
   getUsers: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findMany({
       take: 20,
@@ -143,6 +171,12 @@ export const userRouter = createTRPCRouter({
         role_user: true,
         username: true,
         lastName: true,
+        consejo: {
+          select: {
+            id: true,
+            nombre_clap: true,
+          },
+        },
       },
     });
     return user;
@@ -157,6 +191,16 @@ export const userRouter = createTRPCRouter({
 
     return user;
   }),
+
+  getByUsername: protectedProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: { username: input.username },
+      });
+
+      return user;
+    }),
 
   updateAvatarById: protectedProcedure
     .input(
@@ -190,6 +234,22 @@ export const userRouter = createTRPCRouter({
         },
       });
 
+      return user;
+    }),
+  updateConsejo: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        consejoId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.update({
+        where: { id: input.id },
+        data: {
+          consejoComunalId: input.consejoId,
+        },
+      });
       return user;
     }),
 });

@@ -1,19 +1,16 @@
 import {
   Avatar,
   Button,
-  Card,
   Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
-  focusVisibleClasses,
 } from "@nextui-org/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import NextLink from "next/link";
 import { UploadButton } from "~/utils/uploadthing";
-import { utapi } from "~/server/uploadthing";
 
 export const ProfileData = () => {
   const { data, isLoading, refetch } = api.user.getById.useQuery(undefined, {

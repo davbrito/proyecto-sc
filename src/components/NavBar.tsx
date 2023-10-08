@@ -25,7 +25,7 @@ export const NavBar = () => {
   const user = api.user.getById.useQuery();
 
   const router = useRouter();
-
+  console.log(data);
   return (
     <Navbar className="mx-auto bg-content2 shadow-medium" shouldHideOnScroll>
       <NavbarContent>
@@ -95,7 +95,7 @@ export const NavBar = () => {
                 className="transition-transform"
                 color="secondary"
                 size="sm"
-                src={user?.data?.image || "/profile.png"}
+                src={user?.data?.image || ""}
               />
             </DropdownTrigger>
             <DropdownMenu variant="flat">

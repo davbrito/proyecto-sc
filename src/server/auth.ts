@@ -15,6 +15,8 @@ declare module "next-auth/jwt" {
   interface Token extends JWT {
     username: string;
     role_user: ROLE;
+    consejoComunalId: number | null;
+    // consejoComunalId: number;
   }
 }
 
@@ -31,12 +33,16 @@ declare module "next-auth" {
       name: string;
       username: string;
       role_user: ROLE;
+      consejoComunalId: number | null;
+      // consejoComunalId: number;
     };
   }
   interface User {
     name: string;
     username: string;
     role_user: ROLE;
+    consejoComunalId: number | null;
+    // consejoComunalId: number;
   }
 }
 
@@ -50,14 +56,16 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name;
         token.username = user.username;
         token.role_user = user.role_user;
+
+        token.consejoComunalId = user.consejoComunalId;
       }
       return token;
     },
     session({ session, token }) {
       if (session?.user) {
         session.user.username = token.username as string;
-
         session.user.role_user = token.role_user as ROLE;
+        session.user.consejoComunalId = token.consejoComunalId as number;
       }
       return session;
     },
