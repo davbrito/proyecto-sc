@@ -17,15 +17,12 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { api } from "~/utils/api";
 import routesHref from "~/utils/routesNavBar";
 
 export const NavBar = () => {
   const { data, status } = useSession();
-  const user = api.user.getById.useQuery();
-
   const router = useRouter();
-  console.log(data);
+
   return (
     <Navbar className="mx-auto bg-content2 shadow-medium" shouldHideOnScroll>
       <NavbarContent>
@@ -95,7 +92,7 @@ export const NavBar = () => {
                 className="transition-transform"
                 color="secondary"
                 size="sm"
-                src={user?.data?.image || ""}
+                src={data.user.image || ""}
               />
             </DropdownTrigger>
             <DropdownMenu variant="flat">

@@ -1,4 +1,4 @@
-import { type User } from "@prisma/client";
+import { ROLE, type User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -161,26 +161,56 @@ export const userRouter = createTRPCRouter({
       return user;
     }),
 
-  getUsers: protectedProcedure.query(async ({ ctx }) => {
-    const user = await ctx.prisma.user.findMany({
-      take: 20,
-      select: {
-        image: true,
-        id: true,
-        name: true,
-        role_user: true,
-        username: true,
-        lastName: true,
-        consejo: {
-          select: {
-            id: true,
-            nombre_clap: true,
+  getUsers: protectedProcedure
+    .input(
+      z.object({
+        cursor: z.string().nullish(),
+        limits: z.number().min(1).max(100).default(20),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { cursor, limits } = input;
+      const total = await ctx.prisma.user.count();
+
+      const user = await ctx.prisma.user.findMany({
+        take: limits + 1,
+        orderBy: {
+          created_at: "asc",
+        },
+        cursor: cursor
+          ? {
+              id: cursor,
+            }
+          : undefined,
+        select: {
+          image: true,
+          id: true,
+          name: true,
+          role_user: true,
+          username: true,
+          lastName: true,
+          consejo: {
+            select: {
+              id: true,
+              nombre_clap: true,
+            },
           },
         },
-      },
-    });
-    return user;
-  }),
+      });
+
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (user.length > limits) {
+        const nextItem = user.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        items: user,
+        nextCursor,
+        total: Math.ceil(total / limits),
+      };
+    }),
 
   getById: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findFirst({
@@ -250,6 +280,24 @@ export const userRouter = createTRPCRouter({
           consejoComunalId: input.consejoId,
         },
       });
+      return user;
+    }),
+
+  updateUserRole: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        role: z.nativeEnum(ROLE),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.update({
+        where: { id: input.id },
+        data: {
+          role_user: input.role,
+        },
+      });
+
       return user;
     }),
 });

@@ -25,7 +25,7 @@ const isLiderComunidadRoutes = (url: string) => {
 export default withAuth(
   async function middleware(req) {
     const token = req.nextauth.token;
-
+    console.log(token);
     if (!token) return null;
 
     if (token.role_user === ("LIDER_CALLE" as ROLE)) {
@@ -36,7 +36,14 @@ export default withAuth(
       );
 
       if (!isLiderCalleRoutes(req.nextUrl.pathname)) {
-        const url = new URL(`/consejo-comunal/1/censo`, req.url);
+        if (token.consejoComunalId) {
+          const url = new URL(
+            `/consejo-comunal/${token.consejoComunalId as string}/censo`,
+            req.url
+          );
+          return NextResponse.redirect(url);
+        }
+        const url = new URL(`/`, req.url);
         return NextResponse.redirect(url);
       }
     }
@@ -46,7 +53,14 @@ export default withAuth(
         !isLiderCalleRoutes(req.nextUrl.pathname) &&
         !isLiderComunidadRoutes(req.nextUrl.pathname)
       ) {
-        const url = new URL(`/consejo-comunal/1`, req.url);
+        if (token.consejoComunalId) {
+          const url = new URL(
+            `/consejo-comunal/${token.consejoComunalId as string}`,
+            req.url
+          );
+          return NextResponse.redirect(url);
+        }
+        const url = new URL(`/`, req.url);
         return NextResponse.redirect(url);
       }
     }
