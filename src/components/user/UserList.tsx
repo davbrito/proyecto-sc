@@ -19,7 +19,6 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import { type ROLE } from "@prisma/client";
-import { EyeIcon } from "../icons/EjeIcon";
 import { EditIcon } from "../icons/EditIcon";
 import { DeleteIcon } from "../icons/DeleteIcon";
 import { EditForm } from "../profile/editForm";
