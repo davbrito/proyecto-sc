@@ -36,7 +36,7 @@ const Index = (
     <LayoutContent className="flex-col  ">
       <ConsejoInfor consejoId={props.id} role={data?.user.role_user} />
       <EncargadosInfor
-        consejoId={parseInt(props.id as string)}
+        consejoId={parseInt(props.id)}
         role={data?.user.role_user}
       />
     </LayoutContent>
