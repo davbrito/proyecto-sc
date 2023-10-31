@@ -81,6 +81,7 @@ model ConsejoComunal {
     parroquia      String
     rif            String
 
+    logo_clap         String?
     cantidad_combos   Int      @default(0)
     cantidad_familias Int      @default(0)
     fecha_registro    DateTime @default(now())
@@ -94,11 +95,12 @@ model ConsejoComunal {
 // CENSO 
 
 model Censo {
-    id                   String   @id()
-    cargaFamiliar        Int      @default(1)
-    tipoFamilia          String   @default("unifamiliar")
-    cajasClapsPorRecibir Int      @default(0)
-    fecha                DateTime @default(now())
+    id                   String             @id()
+    cargaFamiliar        Int                @default(1)
+    tipoFamilia          String             @default("unifamiliar")
+    cajasClapsPorRecibir Int                @default(0)
+    fecha                DateTime           @default(now())
+    condicion_vivienda   CONDICION_VIVIENDA
 
     //FOREIGN KEY
     jefeFamilia      JefeFamilia?
@@ -116,6 +118,26 @@ model Casa {
     liderCalle  LiderCalle?
 }
 
+enum CONDICION_VIVIENDA {
+    PROPIA
+    ALQUILADA
+    ARRIMADO
+    OTRO
+}
+
+enum ESTADO_CIVIL {
+    Soltero
+    Casado
+    Divorciado
+    Viudo
+}
+
+enum ESTADO_TRABAJO {
+    PUBLICA
+    PRIVADO
+    NO_TRABAJA
+}
+
 model JefeFamilia {
     id              BigInt   @id() @default(autoincrement())
     nombres         String
@@ -125,13 +147,29 @@ model JefeFamilia {
     telefono        String
     email           String
 
+    // NUEVOS DATOS
+    estado_civil        ESTADO_CIVIL
+    telefono_habitacion String
+    // tiempo_viviendo_casa Int
+    estudiando          String
+    profesion           String
+    ocupacion           String
+    deporte             String
+    nivel_educativo     String
+    trabaja             ESTADO_TRABAJO @default(NO_TRABAJA)
+    carnet_conapdis     Boolean        @default(false)
+    enfermedad_cronica  String
+    recibe_pension      Boolean        @default(false)
+    vacuna_covid        Boolean        @default(false)
+
     tipoDocumento      String
     numeroDocumento    String
     serialCarnetPatria String
     codCarnetPatria    String
     observacion        String
-    condicionEspecial  String
-    fechaRegistro      DateTime @default(now())
+    discapacidad       String
+
+    fechaRegistro DateTime @default(now())
 
     //FOREIGN KEY
     censo    Censo      @relation(fields: [censoId], references: [id])
@@ -142,7 +180,7 @@ model JefeFamilia {
 }
 
 model Familiar {
-    id                 BigInt      @id() @default(autoincrement())
+    id                 BigInt   @id() @default(autoincrement())
     nombres            String
     apellidos          String
     numeroDocumento    String
@@ -153,11 +191,27 @@ model Familiar {
     codCarnetPatria    String
     observacion        String
     parentesco         String
-    condicionEspecial  String
-    fechaRegistro      DateTime    @default(now())
+    discapacidad       String
+    fechaRegistro      DateTime @default(now())
+
+    // Nuevos DATOS
+
+    estado_civil       ESTADO_CIVIL
+    telefono           String
+    email              String
+    profesion          String
+    ocupacion          String
+    trabaja            Boolean
+    nivel_educativo    String
+    estudiando         String
+    deporte            String
+    enfermedad_cronica String
+    recibe_pension     Boolean      @default(false)
+    vacuna_covid       Boolean      @default(false)
+
     //FOREIGN KEY
-    jefeFamilia        JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
-    jefeFamiliaId      BigInt
+    jefeFamilia   JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
+    jefeFamiliaId BigInt
 }
 
 // Nuevos Modelos

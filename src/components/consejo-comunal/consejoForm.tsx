@@ -6,6 +6,8 @@ import {
   CardHeader,
   Divider,
   Input,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -32,6 +34,7 @@ export const ConsejoForm = () => {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<FormState>();
   const router = useRouter();
 
@@ -46,6 +49,9 @@ export const ConsejoForm = () => {
     mutate({ ...data, circuito: parseInt(data.circuito.toString()) });
     return router.push("/consejo-comunal");
   });
+
+  console.log(watch("estado"));
+  console.log(watch("municipio"));
 
   return (
     <Card as="form" onSubmit={onSubmit}>
@@ -176,7 +182,26 @@ export const ConsejoForm = () => {
           </div>
 
           <div className="col-span-4">
-            <div className="w-full">
+            <Select
+              label="Estado: "
+              items={estados}
+              {...register("estado", {
+                required: { value: true, message: "El Estado es requerido" },
+              })}
+              onChange={(event) => {
+                onChangeEstado(event);
+                setValue("estado", event.target.value);
+              }}
+              placeholder="Seleccione una opcion"
+              errorMessage={errors.estado && errors.estado.message}
+            >
+              {(items) => (
+                <SelectItem key={items.estado} value={items.estado}>
+                  {items.estado}
+                </SelectItem>
+              )}
+            </Select>
+            {/* <div className="w-full">
               <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
                 Estado:
               </label>
@@ -194,11 +219,34 @@ export const ConsejoForm = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
           </div>
 
           <div className="col-span-4">
-            <div className="w-full">
+            <Select
+              label="Municipio: "
+              items={municipios}
+              placeholder="Seleccione una opcion"
+              {...register("municipio", {
+                required: {
+                  value: true,
+                  message: "El municipio es requerido",
+                },
+              })}
+              errorMessage={errors.municipio && errors.municipio.message}
+              onChange={(event) => {
+                onMunicipioChange(event);
+                setValue("municipio", event.target.value);
+              }}
+            >
+              {(items) => (
+                <SelectItem key={items.municipio} value={items.municipio}>
+                  {items.municipio}
+                </SelectItem>
+              )}
+            </Select>
+
+            {/* <div className="w-full">
               <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
                 Municipio:
               </label>
@@ -220,11 +268,35 @@ export const ConsejoForm = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
           </div>
 
           <div className="col-span-4">
-            <div className="w-full">
+            <Select
+              label="Parroquia: "
+              items={parroquias}
+              placeholder="Seleccione una opcion"
+              {...register("parroquia", {
+                required: {
+                  value: true,
+                  message: "La parroquia es requerido",
+                },
+              })}
+              errorMessage={errors.parroquia && errors.parroquia.message}
+            >
+              {(item) => {
+                return (
+                  <SelectItem key={item.nombre} value={item.nombre}>
+                    {item.nombre}
+                  </SelectItem>
+                );
+              }}
+            </Select>
+            {errors.parroquia && errors.parroquia.message}
+            {errors.municipio && errors.municipio.message}
+            {errors.estado && errors.estado.message}
+
+            {/* <div className="w-full">
               <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
                 Parroquia:
               </label>
@@ -245,7 +317,7 @@ export const ConsejoForm = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
           </div>
         </div>
       </CardBody>

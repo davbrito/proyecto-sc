@@ -97,9 +97,9 @@ export const DocumentosForm = ({ register, errors }: Props) => {
           fullWidth
           label="Condicion:"
           placeholder="Escriba si tiene alguna condicion especial"
-          {...register("documentos.condicionEspecial")}
-          isInvalid={!!errors?.documentos?.condicionEspecial}
-          errorMessage={errors?.documentos?.condicionEspecial?.message}
+          {...register("documentos.discapacidad")}
+          isInvalid={!!errors?.documentos?.discapacidad}
+          errorMessage={errors?.documentos?.discapacidad?.message}
         />
       </div>
     </div>
