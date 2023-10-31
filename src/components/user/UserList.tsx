@@ -37,11 +37,13 @@ const statusColorMap: Record<ROLE, ChipProps["color"]> = {
   LIDER_CALLE: "success",
 };
 
+const LIMITS = 5;
+
 export const UserList = () => {
   const { isLoading, data, refetch, fetchNextPage, isFetching, hasNextPage } =
     api.user.getUsers.useInfiniteQuery(
       {
-        limits: 5,
+        limits: LIMITS,
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -66,7 +68,7 @@ export const UserList = () => {
   if (isLoading) return <CustomLoading />;
 
   if (!data) return null;
-
+  console.log(data);
   return (
     <>
       <Table
@@ -78,7 +80,7 @@ export const UserList = () => {
               showShadow
               color="primary"
               page={0}
-              total={data.pages[0]?.total || 1}
+              total={data?.pages[0]?.total || 1}
               onChange={(newPage) => {
                 if (newPage - 1 > page) fetchNextPage();
 

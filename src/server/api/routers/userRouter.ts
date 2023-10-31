@@ -175,7 +175,7 @@ export const userRouter = createTRPCRouter({
       const user = await ctx.prisma.user.findMany({
         take: limits + 1,
         orderBy: {
-          created_at: "asc",
+          username: "asc",
         },
         cursor: cursor
           ? {
@@ -197,6 +197,7 @@ export const userRouter = createTRPCRouter({
           },
         },
       });
+      console.log(user);
 
       let nextCursor: typeof cursor | undefined = undefined;
 
