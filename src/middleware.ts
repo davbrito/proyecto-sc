@@ -42,35 +42,16 @@ export default withAuth(
     const { role_user, consejoComunalId } = token;
     const { pathname } = req.nextUrl;
 
-    if (role_user === "LIDER_CALLE") {
-      console.log(isLiderCalleRoutes(pathname), "LIDERCALLE", pathname);
-      if (isLiderCalleRoutes(pathname)) return;
-
-      if (!consejoComunalId)
+    if (isLiderCalleRoutes(pathname)) {
+      if (role_user !== "LIDER_CALLE") {
         return NextResponse.redirect(new URL(`/`, req.url));
-
-      return NextResponse.redirect(
-        new URL(
-          `/consejo-comunal/${encodeURIComponent(consejoComunalId)}/censo`,
-          req.url,
-        ),
-      );
+      }
     }
 
-    if (role_user === "LIDER_COMUNIDAD") {
-      if (isLiderCalleRoutes(pathname) || isLiderComunidadRoutes(pathname)) {
-        return;
-      }
-
-      if (!consejoComunalId)
+    if (isLiderComunidadRoutes(pathname)) {
+      if (role_user !== "LIDER_COMUNIDAD") {
         return NextResponse.redirect(new URL(`/`, req.url));
-
-      return NextResponse.redirect(
-        new URL(
-          `/consejo-comunal/${encodeURIComponent(consejoComunalId)}`,
-          req.url,
-        ),
-      );
+      }
     }
   },
   {
@@ -95,5 +76,4 @@ export const config = {
     // "/consejo-comunal/:id/censo/:jefeId",
     // "/profile/:path*",
   ],
-  
 };
