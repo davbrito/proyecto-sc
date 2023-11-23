@@ -69,6 +69,7 @@ export const LoginForm = () => {
       <CardBody>
         <Input
           type="text"
+          autoComplete="username"
           label="Nombre de usuario:"
           placeholder="Escriba su nombre de usuario..."
           {...register("username", {

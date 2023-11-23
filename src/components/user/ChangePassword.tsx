@@ -52,6 +52,7 @@ export const ChangePassword = ({
             <Input
               label="Nueva contraseña:"
               type="password"
+              autoComplete="new-password"
               placeholder="Ingrese la nueva contraseña"
               {...field}
               errorMessage={fieldState.error?.message}

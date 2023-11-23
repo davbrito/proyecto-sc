@@ -37,7 +37,7 @@ export const RegisterForm = () => {
       console.log(user);
       reset(
         { password: "", username: "", lastName: "", name: "" },
-        { keepErrors: true }
+        { keepErrors: true },
       );
 
       await signIn("credentials", {
@@ -114,6 +114,7 @@ export const RegisterForm = () => {
             <Input
               fullWidth
               type="password"
+              autoComplete="new-password"
               label="Contraseña:"
               placeholder="Escriba su contraseña..."
               {...register("password", {
