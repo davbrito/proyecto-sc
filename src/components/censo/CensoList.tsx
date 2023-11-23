@@ -76,16 +76,36 @@ export const CensoList = ({
     <>
       <Table>
         <TableHeader>
-          <TableColumn align="center" className="text-center">Codigo</TableColumn>
-          <TableColumn align="center" className="text-center">Manzana</TableColumn>
-          <TableColumn align="center" className="text-center">Casa</TableColumn>
-          <TableColumn align="center" className="text-center">Nombres</TableColumn>
-          <TableColumn align="center" className="text-center">Documento</TableColumn>
-          <TableColumn align="center" className="text-center">Fecha Nacimiento</TableColumn>
-          <TableColumn align="center" className="text-center">Edad</TableColumn>
-          <TableColumn align="center" className="text-center">Familia</TableColumn>
-          <TableColumn align="center" className="text-center">Genero</TableColumn>
-          <TableColumn align="center" className="text-center">Acciones</TableColumn>
+          <TableColumn align="center" className="text-center">
+            Codigo
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Manzana
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Casa
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Nombres
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Documento
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Fecha Nacimiento
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Edad
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Familia
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Genero
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
+            Acciones
+          </TableColumn>
         </TableHeader>
         <TableBody>
           {data.map(({ jefeFamilia, id, tipoFamilia }) => (

@@ -53,27 +53,29 @@ export const encargadosRouter = createTRPCRouter({
       });
     }),
 
-  update: publicProcedure.input(
-    z.object({
-      id: z.number(),
-      newInfo: z.object({
-        cargo: z.string(),
-        nombres: z.string(),
-        apellidos: z.string(),
-        cedula: z.string(),
-        telefono: z.string(),
-        profesion: z.string(),
-        email: z.string(),
-      }),
-    })
-  ).mutation(async({ctx, input})=>{
-        const {id,newInfo} = input
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        newInfo: z.object({
+          cargo: z.string(),
+          nombres: z.string(),
+          apellidos: z.string(),
+          cedula: z.string(),
+          telefono: z.string(),
+          profesion: z.string(),
+          email: z.string(),
+        }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, newInfo } = input;
 
-        return await ctx.prisma.encargadoClap.update({
-          where:{id},
-          data:{
-            ...newInfo
-          }
-        })
-  }),
+      return await ctx.prisma.encargadoClap.update({
+        where: { id },
+        data: {
+          ...newInfo,
+        },
+      });
+    }),
 });

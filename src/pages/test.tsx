@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import { api } from "~/utils/api";
 
 const TestPage: NextPage = () => {
-
   return (
     <div>
       <h1>Pagina de prueba</h1>

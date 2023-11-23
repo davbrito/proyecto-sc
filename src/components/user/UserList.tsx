@@ -128,8 +128,8 @@ export const UserList = () => {
                   {item.role_user === "ADMIN"
                     ? "Administrador"
                     : item.role_user === "LIDER_CALLE"
-                    ? "Lider de calle"
-                    : "Lider de comunidad"}
+                      ? "Lider de calle"
+                      : "Lider de comunidad"}
                 </Chip>
               </TableCell>
               <TableCell className="border-b-2 text-center capitalize">

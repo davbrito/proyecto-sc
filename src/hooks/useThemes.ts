@@ -27,10 +27,10 @@ import { useEffect, useState } from "react";
 const initialTheme = globalThis.localStorage?.getItem("theme")?.includes("dark")
   ? "dark"
   : globalThis.localStorage?.getItem("theme")?.includes("light")
-  ? "light"
-  : globalThis.window?.matchMedia("(prefers-color-scheme: dark)").matches
-  ? "dark"
-  : "light";
+    ? "light"
+    : globalThis.window?.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
 
 export const useThemes = () => {
   const [theme, setTheme] = useState(initialTheme);
