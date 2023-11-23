@@ -13,7 +13,7 @@ import NextLink from "next/link";
 import { UploadButton } from "~/utils/uploadthing";
 
 export const ProfileData = () => {
-  const { data, isLoading, refetch } = api.user.getById.useQuery(undefined, {
+  const { data, isLoading, refetch } = api.user.myUser.useQuery(undefined, {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
@@ -107,7 +107,7 @@ export const ProfileData = () => {
                           onSuccess(data, variables, context) {
                             close();
                           },
-                        }
+                        },
                       );
                     }
                   }}

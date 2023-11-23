@@ -1,5 +1,6 @@
 import { ROLE, type User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { omit } from "lodash";
 import { z } from "zod";
 
 import {
@@ -12,23 +13,9 @@ import { hashPassword } from "~/utils/hashPassword";
 
 //utils
 
-const formatUserData = ({
-  image,
-  name,
-  username,
-  lastName,
-  id,
-  role_user,
-}: User) => {
-  return {
-    image,
-    name,
-    username,
-    lastName,
-    id,
-    role_user,
-  };
-};
+function safeUser(user: User) {
+  return omit(user, ["password"]);
+}
 
 export const userRouter = createTRPCRouter({
   create: publicProcedure
@@ -38,7 +25,7 @@ export const userRouter = createTRPCRouter({
         username: z.string(),
         lastName: z.string(),
         password: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
@@ -64,7 +51,7 @@ export const userRouter = createTRPCRouter({
             username,
           },
         });
-        return newUser;
+        return safeUser(newUser);
       } catch (error) {
         if (error instanceof TRPCError) {
           throw error;
@@ -81,7 +68,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       const { id } = input;
@@ -102,7 +89,7 @@ export const userRouter = createTRPCRouter({
         name: z.string(),
         username: z.string(),
         lastName: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       const { id, lastName, name, username } = input;
@@ -118,11 +105,7 @@ export const userRouter = createTRPCRouter({
           message: "El nombre de usuario no esta disponible",
         });
 
-      const oldUser = await ctx.prisma.user.findFirst({
-        where: {
-          id,
-        },
-      });
+      const oldUser = await ctx.prisma.user.findFirst({ where: { id } });
 
       const newData = {
         lastName: lastName || oldUser?.lastName,
@@ -137,7 +120,7 @@ export const userRouter = createTRPCRouter({
         data: newData,
       });
 
-      return userUpdated;
+      return safeUser(userUpdated);
     }),
 
   updateImage: protectedProcedure
@@ -158,7 +141,7 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      return user;
+      return safeUser(user);
     }),
 
   getUsers: protectedProcedure
@@ -166,13 +149,13 @@ export const userRouter = createTRPCRouter({
       z.object({
         cursor: z.string().nullish(),
         limits: z.number().min(1).max(100).default(20),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const { cursor, limits } = input;
       const total = await ctx.prisma.user.count();
 
-      const user = await ctx.prisma.user.findMany({
+      const users = await ctx.prisma.user.findMany({
         take: limits + 1,
         orderBy: {
           created_at: "asc",
@@ -200,26 +183,26 @@ export const userRouter = createTRPCRouter({
 
       let nextCursor: typeof cursor | undefined = undefined;
 
-      if (user.length > limits) {
-        const nextItem = user.pop();
+      if (users.length > limits) {
+        const nextItem = users.pop();
         nextCursor = nextItem?.id;
       }
 
       return {
-        items: user,
+        items: users,
         nextCursor,
         total: Math.ceil(total / limits),
       };
     }),
 
-  getById: protectedProcedure.query(async ({ ctx }) => {
+  myUser: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findFirst({
       where: {
         username: ctx.session.user.username,
       },
     });
 
-    return user;
+    return user && safeUser(user);
   }),
 
   getByUsername: protectedProcedure
@@ -229,7 +212,7 @@ export const userRouter = createTRPCRouter({
         where: { username: input.username },
       });
 
-      return user;
+      return user && safeUser(user);
     }),
 
   updateAvatarById: protectedProcedure
@@ -238,7 +221,7 @@ export const userRouter = createTRPCRouter({
         img_url: z.string(),
         user_id: z.string(),
         old_url: z.string().default(""),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { img_url, old_url, user_id } = input;
@@ -246,10 +229,10 @@ export const userRouter = createTRPCRouter({
       if (old_url) {
         console.log(
           old_url,
-          old_url.slice(old_url.lastIndexOf("/") + 1, old_url.length)
+          old_url.slice(old_url.lastIndexOf("/") + 1, old_url.length),
         );
         const res = await utapi.deleteFiles(
-          old_url.slice(old_url.lastIndexOf("/") + 1, old_url.length)
+          old_url.slice(old_url.lastIndexOf("/") + 1, old_url.length),
         );
 
         console.log(res, old_url, "SDADASDDSDADS");
@@ -264,14 +247,14 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      return user;
+      return safeUser(user);
     }),
   updateConsejo: protectedProcedure
     .input(
       z.object({
         id: z.string(),
         consejoId: z.number(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.update({
@@ -280,7 +263,7 @@ export const userRouter = createTRPCRouter({
           consejoComunalId: input.consejoId,
         },
       });
-      return user;
+      return safeUser(user);
     }),
 
   updateUserRole: protectedProcedure
@@ -288,7 +271,7 @@ export const userRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         role: z.nativeEnum(ROLE),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.update({
@@ -298,6 +281,6 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      return user;
+      return safeUser(user);
     }),
 });

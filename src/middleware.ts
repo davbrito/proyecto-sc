@@ -1,23 +1,33 @@
 import { withAuth } from "next-auth/middleware";
 import { type ROLE } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { match } from "path-to-regexp";
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    role_user?: ROLE;
+    consejoComunalId?: string;
+  }
+}
+
+const profileMatch = match("/profile/:path*");
+const consejoComunalMatch = match("/consejo-comunal/:id?");
+const censoMatch = match(
+  "/consejo-comunal/:id/censo/:tab(create|estadisticas)?",
+);
+const censoJefeMatch = match("/consejo-comunal/:id/censo/:jefeId");
 
 const isLiderCalleRoutes = (url: string) => {
-  if (
-    (url.startsWith("/consejo-comunal") &&
-      (url.endsWith("/censo") ||
-        url.endsWith("/censo/create") ||
-        url.endsWith("/censo/estadisticas") ||
-        url.match(/^\/consejo-comunal\/([^\/]+)\/censo\/([^\/]+)$/))) ||
-    url.startsWith("/profile")
-  )
-    return true;
+  if (profileMatch(url)) return true;
+  if (consejoComunalMatch(url)) return true;
+  if (censoMatch(url)) return true;
+  if (censoJefeMatch(url)) return true;
 
   return false;
 };
 
 const isLiderComunidadRoutes = (url: string) => {
-  if (url.match(/^\/consejo-comunal\/[^\/]+$/)) return true;
+  if (consejoComunalMatch(url)) return true;
 
   return false;
 };
@@ -25,44 +35,41 @@ const isLiderComunidadRoutes = (url: string) => {
 export default withAuth(
   async function middleware(req) {
     const token = req.nextauth.token;
-    console.log(token);
+    console.log("token", token);
     if (!token) return null;
 
-    if (token.role_user === ("LIDER_CALLE" as ROLE)) {
-      console.log(
-        isLiderCalleRoutes(req.nextUrl.pathname),
-        "LIDERCALLE",
-        req.nextUrl.pathname
-      );
+    const { role_user, consejoComunalId } = token;
+    const { pathname } = req.nextUrl;
 
-      if (!isLiderCalleRoutes(req.nextUrl.pathname)) {
-        if (token.consejoComunalId) {
-          const url = new URL(
-            `/consejo-comunal/${token.consejoComunalId as string}/censo`,
-            req.url
-          );
-          return NextResponse.redirect(url);
-        }
-        const url = new URL(`/`, req.url);
-        return NextResponse.redirect(url);
-      }
+    if (role_user === "LIDER_CALLE") {
+      console.log(isLiderCalleRoutes(pathname), "LIDERCALLE", pathname);
+      if (isLiderCalleRoutes(pathname)) return;
+
+      if (!consejoComunalId)
+        return NextResponse.redirect(new URL(`/`, req.url));
+
+      return NextResponse.redirect(
+        new URL(
+          `/consejo-comunal/${encodeURIComponent(consejoComunalId)}/censo`,
+          req.url,
+        ),
+      );
     }
 
-    if (token.role_user === ("LIDER_COMUNIDAD" as ROLE)) {
-      if (
-        !isLiderCalleRoutes(req.nextUrl.pathname) &&
-        !isLiderComunidadRoutes(req.nextUrl.pathname)
-      ) {
-        if (token.consejoComunalId) {
-          const url = new URL(
-            `/consejo-comunal/${token.consejoComunalId as string}`,
-            req.url
-          );
-          return NextResponse.redirect(url);
-        }
-        const url = new URL(`/`, req.url);
-        return NextResponse.redirect(url);
+    if (role_user === "LIDER_COMUNIDAD") {
+      if (isLiderCalleRoutes(pathname) || isLiderComunidadRoutes(pathname)) {
+        return;
       }
+
+      if (!consejoComunalId)
+        return NextResponse.redirect(new URL(`/`, req.url));
+
+      return NextResponse.redirect(
+        new URL(
+          `/consejo-comunal/${encodeURIComponent(consejoComunalId)}`,
+          req.url,
+        ),
+      );
     }
   },
   {
@@ -71,7 +78,7 @@ export default withAuth(
         return true;
       },
     },
-  }
+  },
 );
 
 export const config = {
