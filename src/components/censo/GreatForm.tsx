@@ -28,7 +28,7 @@ interface OtrosProps {
   serialCarnetPatria: string;
   codCarnetPatria: string;
   observacion?: string;
-  condicionEspecial?: string;
+  discapacidad?: string;
 }
 
 interface BasicDataProps {

@@ -17,7 +17,7 @@ export const jefeRouter = createTRPCRouter({
           serialCarnetPatria: z.string().default(""),
           codCarnetPatria: z.string().default(""),
           observacion: z.string().default(""),
-          condicionEspecial: z.string().default(""),
+          discapacidad: z.string().default(""),
         }),
         jefe: z.object({
           primerNombre: z.string(),
@@ -177,7 +177,7 @@ export const jefeRouter = createTRPCRouter({
           serialCarnetPatria: z.string().default(""),
           codCarnetPatria: z.string().default(""),
           observacion: z.string().default(""),
-          condicionEspecial: z.string().default(""),
+          discapacidad: z.string().default(""),
         }),
         jefe: z.object({
           primerNombre: z.string(),
@@ -250,7 +250,7 @@ export const jefeRouter = createTRPCRouter({
           apellidos: infoFamiliar?.apellidos,
           codCarnetPatria: infoFamiliar?.codCarnetPatria,
           tipoDocumento: input.newJefe.tipoDocumento,
-          condicionEspecial: infoFamiliar?.condicionEspecial,
+          discapacidad: infoFamiliar?.discapacidad,
           nombres: infoFamiliar?.nombres,
           numeroDocumento: input.newJefe.numeroDocumento,
           genero: infoFamiliar?.genero,
@@ -268,7 +268,7 @@ export const jefeRouter = createTRPCRouter({
         data: {
           apellidos: infoJefe.apellidos,
           codCarnetPatria: infoJefe.codCarnetPatria,
-          condicionEspecial: infoJefe.condicionEspecial,
+          discapacidad: infoJefe.discapacidad,
           fechaNacimiento: infoJefe.fechaNacimiento,
           genero: infoJefe.genero,
           nombres: infoJefe.nombres,

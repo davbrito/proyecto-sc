@@ -34,6 +34,7 @@ const isLiderComunidadRoutes = (url: string) => {
 
 export default withAuth(
   async function middleware(req) {
+    console.log("DSDSDSDSD");
     const token = req.nextauth.token;
     console.log("token", token);
     if (!token) return null;
@@ -83,15 +84,16 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    // "/",
+    "/",
     // "/consejo-comunal",
-    "/consejo-comunal/:path*",
-    "/consejo-comunal/(.*)",
-    "/consejo-comunal/:id",
-    "/consejo-comunal/:id/censo",
-    "/consejo-comunal/:id/censo/create",
-    "/consejo-comunal/:id/censo/estadisticas",
-    "/consejo-comunal/:id/censo/:jefeId",
-    "/profile/:path*",
+    // "/consejo-comunal/:path*",
+    // "/consejo-comunal/(.*)",
+    // "/consejo-comunal/:id",
+    // "/consejo-comunal/:id/censo",
+    // "/consejo-comunal/:id/censo/create",
+    // "/consejo-comunal/:id/censo/estadisticas",
+    // "/consejo-comunal/:id/censo/:jefeId",
+    // "/profile/:path*",
   ],
+  
 };

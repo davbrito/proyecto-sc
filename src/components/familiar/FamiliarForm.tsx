@@ -20,7 +20,7 @@ interface OtrosProps {
   serialCarnetPatria: string;
   codCarnetPatria: string;
   observacion?: string;
-  condicionEspecial?: string;
+  discapacidad?: string;
 }
 
 export interface BasicDataProps {
@@ -100,7 +100,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
             observacion: familia.observacion,
             serialCarnetPatria: familia.serialCarnetPatria,
             tipoDocumento: familia.tipoDocumento,
-            condicionEspecial: familia.condicionEspecial,
+            discapacidad: familia.discapacidad,
           },
           parentesco: familia.parentesco,
           jefeId: familia.jefeFamiliaId.toString(),

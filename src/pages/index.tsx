@@ -6,6 +6,7 @@ import { verifySession } from "~/utils/verifySession";
 import NextImage from "next/image";
 
 const Home: NextPage = () => {
+  console.log("DSADDSDSADSADASDASDASDA");
   const { data } = useSession();
 
   if (data?.user.role_user === "LIDER_CALLE") {
