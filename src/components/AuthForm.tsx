@@ -83,6 +83,7 @@ export const LoginForm = () => {
         <Spacer y={4} />
         <Input
           type="password"
+          autoComplete="current-password"
           isClearable
           label="Contraseña:"
           placeholder="Escriba su contraseña..."
