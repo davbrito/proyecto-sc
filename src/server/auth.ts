@@ -122,7 +122,7 @@ export const authOptions: NextAuthOptions = {
  * @see https://next-auth.js.org/configuration/nextjs
  */
 export const getServerAuthSession = (
-  ctx: Pick<GetServerSidePropsContext, "req" | "res">
+  ctx: Pick<GetServerSidePropsContext, "req" | "res">,
 ) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };
