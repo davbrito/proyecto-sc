@@ -12,17 +12,16 @@ import { prisma } from "~/server/db";
 import { comparePassword } from "~/utils/hashPassword";
 
 declare module "next-auth/jwt" {
-  interface Token extends JWT {
+  interface JWT {
     username: string;
     role_user: ROLE;
     consejoComunalId: number | null;
-    // consejoComunalId: number;
   }
 }
 
 /**
- * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
- * object and keep type safety.
+ * Module augmentation for `next-auth` types. Allows us to add custom properties
+ * to the `session` object and keep type safety.
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
@@ -63,9 +62,9 @@ export const authOptions: NextAuthOptions = {
     },
     session({ session, token }) {
       if (session?.user) {
-        session.user.username = token.username as string;
-        session.user.role_user = token.role_user as ROLE;
-        session.user.consejoComunalId = token.consejoComunalId as number;
+        session.user.username = token.username;
+        session.user.role_user = token.role_user;
+        session.user.consejoComunalId = token.consejoComunalId;
         if (token.picture) session.user.image = token.picture;
       }
       return session;
@@ -117,7 +116,8 @@ export const authOptions: NextAuthOptions = {
 };
 
 /**
- * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
+ * Wrapper for `getServerSession` so that you don't need to import the
+ * `authOptions` in every file.
  *
  * @see https://next-auth.js.org/configuration/nextjs
  */

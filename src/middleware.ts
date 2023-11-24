@@ -3,17 +3,10 @@ import { type ROLE } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { match } from "path-to-regexp";
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    role_user?: ROLE;
-    consejoComunalId?: string;
-  }
-}
-
 const profileMatch = match("/profile/:path*");
 const consejoComunalMatch = match("/consejo-comunal/:id?");
 const censoMatch = match(
-  "/consejo-comunal/:id/censo/:tab(create|estadisticas)?",
+  "/consejo-comunal/:id/censo/:tab(create|estadisticas)?"
 );
 const censoJefeMatch = match("/consejo-comunal/:id/censo/:jefeId");
 
@@ -56,7 +49,7 @@ export default withAuth(
         return true;
       },
     },
-  },
+  }
 );
 
 export const config = {
