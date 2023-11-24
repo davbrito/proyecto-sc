@@ -34,7 +34,6 @@ export const RegisterForm = () => {
     try {
       const user = await mutateAsync(values);
 
-      console.log(user);
       reset(
         { password: "", username: "", lastName: "", name: "" },
         { keepErrors: true },

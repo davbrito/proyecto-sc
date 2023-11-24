@@ -7,8 +7,13 @@ interface Props {
 
 export const CustomLoading = ({ className }: Props) => {
   return (
-    <div className={clsx(className, "container my-4 w-full text-center")}>
-      <Spinner size="lg" label="Cargando..." />
-    </div>
+    <Spinner
+      size="lg"
+      label="Cargando..."
+      className={clsx(
+        className,
+        "mx-auto my-4 flex w-fit rounded-xl bg-content4 bg-opacity-75 px-4 py-3 text-center backdrop-blur-sm"
+      )}
+    />
   );
 };

@@ -1,4 +1,6 @@
+import { CONDICION_VIVIENDA, ESTADO_CIVIL } from "@prisma/client";
 import { createReactProxyDecoration } from "@trpc/react-query/shared";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -33,61 +35,33 @@ export const jefeRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      try {
-        const { casa, documentos, jefe, consejoComunalId } = input;
+      const { casa, documentos, jefe, consejoComunalId } = input;
+      const cc = await ctx.prisma.consejoComunal.findUnique({
+        where: { id: consejoComunalId },
+        include: {
+          censos: { include: { jefeFamilia: { include: { casa: true } } } },
+        },
+      });
+      return await ctx.prisma.$transaction(async (prisma) => {
+        // const nroMz = newCasa.manzana;
 
-        const newCasa = await ctx.prisma.casa.create({
-          data: {
-            ...casa,
-          },
-        });
+        // const manzanasCC = await ctx.prisma.censo.count({
+        //   where: {
+        //     consejoComunalId: consejoComunalId,
+        //     jefeFamilia: { casa: { manzana: newCasa.manzana } },
+        //   },
+        // });
 
-        if (!newCasa) throw new Error("Error creating the house");
+        // const secuenciaMz = manzanasCC + 1;
 
-        const nroMz = newCasa.manzana;
+        // const jefes = await ctx.prisma.jefeFamilia.findMany({
+        //   orderBy: { id: "desc" },
+        //   take: 1,
+        // });
 
-        const cc = await ctx.prisma.consejoComunal.findFirst({
-          where: {
-            id: consejoComunalId,
-          },
-          include: {
-            censos: {
-              include: {
-                jefeFamilia: {
-                  include: {
-                    casa: true,
-                  },
-                },
-              },
-            },
-          },
-        });
-
-        const manzanasCC = cc?.censos.filter(
-          (censo) => censo.jefeFamilia?.casa?.manzana === newCasa.manzana
-        ).length;
-
-        const secuenciaMz = manzanasCC ? manzanasCC + 1 : 1;
-
-        const jefes = await ctx.prisma.jefeFamilia.findMany({
-          orderBy: { id: "desc" },
-          take: 1,
-        });
-
-        const secJefe = jefes[0]?.id
-          ? (jefes[0]?.id + BigInt(1)).toString()
-          : "1";
-
-        const censo = await ctx.prisma.censo.create({
-          data: {
-            id: `${nroMz.padStart(2, "0")}${secJefe.padStart(
-              3,
-              "0"
-            )}${secuenciaMz.toString().padStart(4, "0")}`,
-            consejoComunalId,
-          },
-        });
-        if (!censo) throw new Error("Error creating the censo");
+        // const secJefe = jefes[0]?.id
+        //   ? (jefes[0]?.id + BigInt(1)).toString()
+        //   : "1";
 
         const newJefe = await ctx.prisma.jefeFamilia.create({
           data: {
@@ -97,17 +71,40 @@ export const jefeRouter = createTRPCRouter({
             genero: jefe.genero,
             email: jefe.email,
             telefono: jefe.telefono,
+
+            //temporal
+            deporte: "",
+            enfermedad_cronica: "",
+            estado_civil: ESTADO_CIVIL.Soltero,
+            estudiando: "",
+            nivel_educativo: "",
+            ocupacion: "",
+            profesion: "",
+            telefono_habitacion: "",
+            //temporal/
+
             ...documentos,
-            censoId: censo.id,
-            casaId: newCasa.id,
+
+            censo: {
+              create: {
+                // id: `${nroMz.padStart(2, "0")}${secJefe.padStart(
+                //   3,
+                //   "0"
+                // )}${secuenciaMz.toString().padStart(4, "0")}`,
+                consejoComunal: {
+                  connect: { id: consejoComunalId },
+                },
+                condicion_vivienda: CONDICION_VIVIENDA.PROPIA,
+              },
+            },
+            casa: {
+              create: {
+                ...casa,
+              },
+            },
           },
         });
-        if (!newJefe) throw new Error("Error creating the jefe");
-
-        return { newJefe, newCasa, censo };
-      } catch (error) {
-        throw error;
-      }
+      });
     }),
 
   getById: publicProcedure

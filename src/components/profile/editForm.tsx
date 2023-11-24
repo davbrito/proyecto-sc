@@ -1,15 +1,11 @@
-import { Button, Input, Spacer } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
-import { Controller, useForm, type SubmitHandler } from "react-hook-form";
-import { api } from "~/utils/api";
+import { Controller, useForm } from "react-hook-form";
+import { type RouterInputs, api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 
-interface FormProps {
-  username: string;
-  name: string;
-  lastName: string;
-}
+type FormProps = RouterInputs["user"]["updateDataInfoById"];
 
 interface EditFormProps {
   isModal?: boolean;
@@ -40,10 +36,9 @@ export const EditForm = ({
       }
     },
   });
-  const onSubmit: SubmitHandler<FormProps> = async (value) => {
-    await mutation
-      .mutateAsync({ ...value, id: data?.id as string })
-      .catch(() => {});
+
+  const onSubmit = async (value: FormProps) => {
+    await mutation.mutateAsync(value).catch(() => {});
   };
 
   const {
@@ -55,17 +50,19 @@ export const EditForm = ({
   } = useForm<FormProps>({
     values: useMemo(
       () => ({
+        id: data?.id ?? "",
         username: data?.username ?? "",
         name: data?.name ?? "",
         lastName: data?.lastName ?? "",
       }),
-      [data]
+      [data],
     ),
     resetOptions: { keepDefaultValues: true },
   });
 
   if (isLoading) return <CustomLoading />;
   if (!data) return null;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="">
       <div className="grid gap-3">

@@ -1,5 +1,4 @@
 import { Input, Select, SelectItem, Textarea } from "@nextui-org/react";
-import React from "react";
 import { type FieldErrors, type UseFormRegister } from "react-hook-form";
 import { type JefeProps } from "./GreatForm";
 
@@ -41,10 +40,7 @@ export const DocumentosForm = ({ register, errors }: Props) => {
           placeholder="Ejemplo: 1234578"
           type="text"
           {...register("documentos.numeroDocumento", {
-            required: {
-              value: true,
-              message: "Este campo es obligatorio",
-            },
+            required: "Este campo es obligatorio",
             pattern: {
               value: /^[0-9]*$/,
               message: "Debe escribirlo en el siguiente formato: '12345678'",
@@ -54,6 +50,7 @@ export const DocumentosForm = ({ register, errors }: Props) => {
               message: "Corrija el numero de cedula por favor.",
             },
           })}
+          autoFocus
           isInvalid={!!errors?.documentos?.numeroDocumento}
           errorMessage={errors?.documentos?.numeroDocumento?.message}
         />

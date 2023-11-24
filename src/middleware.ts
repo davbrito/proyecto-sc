@@ -34,24 +34,20 @@ const isLiderComunidadRoutes = (url: string) => {
 
 export default withAuth(
   async function middleware(req) {
-    console.log("DSDSDSDSD");
     const token = req.nextauth.token;
-    console.log("token", token);
     if (!token) return null;
 
     const { role_user, consejoComunalId } = token;
     const { pathname } = req.nextUrl;
 
-    if (isLiderCalleRoutes(pathname)) {
-      if (role_user !== "LIDER_CALLE") {
-        return NextResponse.redirect(new URL(`/`, req.url));
-      }
+    if (role_user === "ADMIN") return null;
+
+    if (isLiderCalleRoutes(pathname) && role_user !== "LIDER_CALLE") {
+      return NextResponse.redirect(new URL(`/`, req.url));
     }
 
-    if (isLiderComunidadRoutes(pathname)) {
-      if (role_user !== "LIDER_COMUNIDAD") {
-        return NextResponse.redirect(new URL(`/`, req.url));
-      }
+    if (isLiderComunidadRoutes(pathname) && role_user !== "LIDER_COMUNIDAD") {
+      return NextResponse.redirect(new URL(`/`, req.url));
     }
   },
   {

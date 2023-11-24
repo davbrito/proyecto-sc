@@ -71,12 +71,14 @@ export const NavBar = () => {
             .filter((ruta) => {
               if (!ruta.role_user) return true;
               if (!role_user) return false;
+
               return ruta.role_user.includes(role_user);
             })
             .map(({ href, pathName, needId }) => {
+              if (needId && !consejo) return null;
               const route = !needId
                 ? href
-                : `${href.replace(":id", `${consejo as number}`)}`;
+                : `${href.replace(":id", `${consejo}`)}`;
 
               const isActive = route === router.asPath;
               return (

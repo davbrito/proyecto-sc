@@ -13,11 +13,11 @@ import { CustomLoading } from "../Loading";
 import { ErrorMessage } from "../ErrorMessage";
 
 export const FamiliarList = () => {
-  const { data, isLoading, error } = api.familia.getAll.useQuery();
+  const { data, isLoading, isError, error } = api.familia.getAll.useQuery();
 
   if (isLoading) return <CustomLoading className="place-content-center" />;
 
-  if (!data || error)
+  if (isError)
     return (
       <div className="container mx-auto">
         <ErrorMessage

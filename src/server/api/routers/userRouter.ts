@@ -94,18 +94,19 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { id, lastName, name, username } = input;
 
-      const isUsernameUsed = await ctx.prisma.user.findFirst({
-        where: { username },
-      });
+      const oldUser = await ctx.prisma.user.findFirst({ where: { id } });
 
-      if (isUsernameUsed)
+      const isUsernameUsed =
+        username !== oldUser?.username &&
+        !!(await ctx.prisma.user.findUnique({ where: { username } }));
+
+      if (isUsernameUsed) {
         throw new TRPCError({
           code: "CONFLICT",
           cause: "Username already used",
           message: "El nombre de usuario no esta disponible",
         });
-
-      const oldUser = await ctx.prisma.user.findFirst({ where: { id } });
+      }
 
       const newData = {
         lastName: lastName || oldUser?.lastName,

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { api } from "~/utils/api";
-import { CustomLoading } from "../Loading";
 import {
+  Button,
   Chip,
-  type ChipProps,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  Pagination,
   Table,
   TableBody,
   TableCell,
@@ -12,24 +14,28 @@ import {
   TableRow,
   Tooltip,
   User,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  Pagination,
+  type ButtonVariantProps,
+  type ChipProps,
+  type TooltipProps,
 } from "@nextui-org/react";
 import { type ROLE } from "@prisma/client";
-import { EditIcon } from "../icons/EditIcon";
-import { DeleteIcon } from "../icons/DeleteIcon";
-import { EditForm } from "../profile/editForm";
-import DeleteConfirmation from "../DeleteConfirmation";
-import { PasswordIcon } from "../icons/PasswordIcon";
-import { ChangePassword } from "./ChangePassword";
-import { PeopleIcon } from "../icons/PeopleIcon";
-import { ChangeConsejoComunal } from "./ChangeConsejoComunal";
+import clsx from "clsx";
 import Link from "next/link";
+import { useState } from "react";
+import { api, type RouterOutputs } from "~/utils/api";
+import DeleteConfirmation from "../DeleteConfirmation";
+import { CustomLoading } from "../Loading";
+import { DeleteIcon } from "../icons/DeleteIcon";
+import { EditIcon } from "../icons/EditIcon";
+import { PasswordIcon } from "../icons/PasswordIcon";
+import { PeopleIcon } from "../icons/PeopleIcon";
 import { RuleIcon } from "../icons/RuleIcon";
+import { EditForm } from "../profile/editForm";
+import { ChangeConsejoComunal } from "./ChangeConsejoComunal";
+import { ChangePassword } from "./ChangePassword";
 import { RoleForm } from "./RoleForm";
+
+type UserItem = RouterOutputs["user"]["getUsers"]["items"][0];
 
 const statusColorMap: Record<ROLE, ChipProps["color"]> = {
   ADMIN: "danger",
@@ -40,17 +46,24 @@ const statusColorMap: Record<ROLE, ChipProps["color"]> = {
 const LIMITS = 5;
 
 export const UserList = () => {
-  const { isLoading, data, refetch, fetchNextPage, isFetching, hasNextPage } =
-    api.user.getUsers.useInfiniteQuery(
-      {
-        limits: LIMITS,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
-        refetchOnWindowFocus: false,
-        keepPreviousData: true,
-      }
-    );
+  const {
+    isLoading,
+    data,
+    refetch,
+    fetchNextPage,
+    isFetching,
+    hasNextPage,
+    isFetchingNextPage,
+  } = api.user.getUsers.useInfiniteQuery(
+    {
+      limits: LIMITS,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+    }
+  );
 
   const { mutateAsync } = api.user.deleteById.useMutation({
     onSuccess() {
@@ -62,13 +75,14 @@ export const UserList = () => {
   const [deleteUser, setDeleteUser] = useState("");
   const [changePassword, setChangePassword] = useState("");
   const [changeConsejo, setChangeConsejo] = useState("");
-  const [changeRole, setChangeRole] = useState("");
+
+  const [changeRole, setChangeRole] = useState<UserItem | null>(null);
   const [page, setPage] = useState(0);
 
   if (isLoading) return <CustomLoading />;
 
   if (!data) return null;
-  console.log(data);
+
   return (
     <>
       <Table
@@ -89,9 +103,7 @@ export const UserList = () => {
             />
           </div>
         }
-        classNames={{
-          wrapper: "min-h-[300px]",
-        }}
+        classNames={{ wrapper: "min-h-[300px]" }}
       >
         <TableHeader>
           <TableColumn className="text-center">Usuario</TableColumn>
@@ -102,7 +114,9 @@ export const UserList = () => {
         <TableBody
           items={data.pages[page]?.items || []}
           loadingContent={<CustomLoading />}
-          loadingState={isLoading || isFetching ? "loading" : "idle"}
+          loadingState={
+            isLoading ? "loading" : isFetchingNextPage ? "loadingMore" : "idle"
+          }
           emptyContent={""}
         >
           {(item) => (
@@ -155,62 +169,60 @@ export const UserList = () => {
                 )}
               </TableCell>
               <TableCell className="border-b-2">
-                <div className="relative flex items-center justify-end gap-3">
+                <div className="relative flex items-center justify-end gap-1">
                   {item.role_user !== "ADMIN" && (
                     <>
-                      <Tooltip
-                        content="Cambiar rol"
-                        className="bg-[#670378] text-white"
-                      >
-                        <span className="cursor-pointer text-lg text-red-600 active:opacity-50">
-                          <RuleIcon
-                            fill="#670378"
-                            onClick={() => {
-                              setChangeRole(item.id);
-                            }}
-                          />
-                        </span>
-                      </Tooltip>
-                      <Tooltip
-                        content="Unir a consejo comunal"
-                        className="bg-[#0E793C] text-white"
-                      >
-                        <span className="cursor-pointer text-lg text-red-600 active:opacity-50">
-                          <PeopleIcon
-                            fill="#0E793C"
-                            onClick={() => {
-                              setChangeConsejo(item.id);
-                            }}
-                          />
-                        </span>
-                      </Tooltip>
+                      <ActionButton
+                        title="Cambiar rol"
+                        classNames={{
+                          tooltip: "bg-[#670378] text-white",
+                          button: "text-[#670378]",
+                        }}
+                        icon={<RuleIcon />}
+                        onClick={() => {
+                          setChangeRole(item);
+                        }}
+                      />
+                      <ActionButton
+                        title="Unir a consejo comunal"
+                        classNames={{
+                          tooltip: "bg-[#0E793C] text-white",
+                          button: "text-[#0E793C]",
+                        }}
+                        icon={<PeopleIcon />}
+                        onClick={() => {
+                          setChangeConsejo(item.id);
+                        }}
+                      />
                     </>
                   )}
-                  <Tooltip content="Nueva contraseña" color="primary">
-                    <span className="cursor-pointer text-lg text-blue-600 active:opacity-50">
-                      <PasswordIcon
-                        fill="#165ad0"
-                        onClick={() => {
-                          setChangePassword(item.id);
-                        }}
-                      />
-                    </span>
-                  </Tooltip>
 
-                  <Tooltip content="Editar" color="secondary">
-                    <span className="cursor-pointer text-lg text-purple-600 active:opacity-50">
-                      <EditIcon
-                        onClick={() => {
-                          setOpenEditUser(item.username);
-                        }}
-                      />
-                    </span>
-                  </Tooltip>
-                  <Tooltip color="danger" content="Eliminar">
-                    <span className="cursor-pointer text-lg text-red-600 active:opacity-50">
-                      <DeleteIcon onClick={() => setDeleteUser(item.id)} />
-                    </span>
-                  </Tooltip>
+                  <ActionButton
+                    title="Nueva contraseña"
+                    tooltipColor="primary"
+                    buttonColor="primary"
+                    icon={<PasswordIcon />}
+                    onClick={() => {
+                      setChangePassword(item.id);
+                    }}
+                  />
+
+                  <ActionButton
+                    title="Editar"
+                    tooltipColor="secondary"
+                    buttonColor="secondary"
+                    icon={<EditIcon />}
+                    onClick={() => {
+                      setOpenEditUser(item.username);
+                    }}
+                  />
+                  <ActionButton
+                    title="Eliminar"
+                    tooltipColor="danger"
+                    buttonColor="danger"
+                    icon={<DeleteIcon />}
+                    onClick={() => setDeleteUser(item.id)}
+                  />
                 </div>
               </TableCell>
             </TableRow>
@@ -224,7 +236,6 @@ export const UserList = () => {
         size="lg"
         onClose={() => {
           setOpenEditUser("");
-          refetch();
         }}
       >
         <ModalContent>
@@ -241,6 +252,7 @@ export const UserList = () => {
                   isModal={true}
                   handleSuccess={() => {
                     close();
+                    refetch();
                   }}
                 />
               </ModalBody>
@@ -309,20 +321,28 @@ export const UserList = () => {
         isOpen={!!changeRole}
         size="lg"
         onClose={() => {
-          setChangeRole("");
-          refetch();
+          setChangeRole(null);
         }}
       >
         <ModalContent>
           {(close) => (
             <>
               <ModalHeader>
-                <h2 className=" mx-auto  text-2xl font-bold">
-                  Unir a consejo comunal
+                <h2 className="mx-auto text-2xl font-bold">
+                  Cambiar rol de usuario
                 </h2>
               </ModalHeader>
               <ModalBody>
-                <RoleForm handleSuccess={() => close()} userId={changeRole} />
+                {changeRole && (
+                  <RoleForm
+                    handleSuccess={() => {
+                      refetch();
+                      close();
+                    }}
+                    userId={changeRole.id}
+                    initialRole={changeRole.role_user}
+                  />
+                )}
               </ModalBody>
             </>
           )}
@@ -341,3 +361,41 @@ export const UserList = () => {
     </>
   );
 };
+
+function ActionButton({
+  icon,
+  buttonColor,
+  tooltipColor,
+  onClick,
+  title,
+  classNames,
+}: {
+  icon: React.ReactNode;
+  tooltipColor?: TooltipProps["color"];
+  buttonColor?: ButtonVariantProps["color"];
+  title: React.ReactNode;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  classNames?: {
+    tooltip?: string;
+    button?: string;
+  };
+}) {
+  return (
+    <Tooltip
+      content={title}
+      color={tooltipColor}
+      className={classNames?.tooltip}
+    >
+      <Button
+        color={buttonColor}
+        isIconOnly
+        className={clsx(classNames?.button, "text-lg")}
+        variant="light"
+        size="sm"
+        onClick={onClick}
+      >
+        {icon}
+      </Button>
+    </Tooltip>
+  );
+}

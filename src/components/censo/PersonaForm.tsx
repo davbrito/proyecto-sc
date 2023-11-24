@@ -1,7 +1,22 @@
-import { Divider, Input, Select, SelectItem } from "@nextui-org/react";
-import React from "react";
+import { Input, Select, SelectItem } from "@nextui-org/react";
+import {
+  type Control,
+  Controller,
+  type FieldErrors,
+  type UseFormRegister,
+} from "react-hook-form";
+import { z } from "zod";
+import { type JefeProps } from "./GreatForm";
 
-export const PersonaForm = ({ register, errors, getFieldState }: any) => {
+export const PersonaForm = ({
+  register,
+  errors,
+  control,
+}: {
+  register: UseFormRegister<JefeProps>;
+  errors: FieldErrors<JefeProps>;
+  control: Control<JefeProps>;
+}) => {
   return (
     <div className="grid grid-cols-12 gap-2">
       <div className="col-span-6">
@@ -9,7 +24,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           fullWidth
           label="Primer nombre:"
           placeholder="Ej: pedro"
-          bordered
+          variant="bordered"
           type="text"
           {...register("datosBasicos.primerNombre", {
             required: { value: true, message: "Campo requerido" },
@@ -19,8 +34,8 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
               message: "El nombre no es valido",
             },
           })}
-          helperText={errors?.datosBasicos?.primerNombre?.message}
-          helperColor="error"
+          errorMessage={errors?.datosBasicos?.primerNombre?.message}
+          isInvalid={!!errors?.datosBasicos?.primerNombre?.message}
         />
       </div>
 
@@ -29,7 +44,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           fullWidth
           label="Segundo nombre:"
           placeholder="Ej: jose"
-          bordered
+          variant="bordered"
           type="text"
           {...register("datosBasicos.segundoNombre", {
             pattern: {
@@ -38,8 +53,8 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
               message: "El nombre no es valido",
             },
           })}
-          helperText={errors?.datosBasicos?.segundoNombre?.message}
-          helperColor="error"
+          errorMessage={errors?.datosBasicos?.segundoNombre?.message}
+          isInvalid={!!errors?.datosBasicos?.segundoNombre?.message}
         />
       </div>
 
@@ -48,7 +63,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           fullWidth
           label="Primer apellido:"
           placeholder="Ej: perez"
-          bordered
+          variant="bordered"
           type="text"
           {...register("datosBasicos.primerApellido", {
             required: { value: true, message: "Campo requerido" },
@@ -58,8 +73,8 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
               message: "El apellido no es valido",
             },
           })}
-          helperText={errors?.datosBasicos?.primerApellido?.message}
-          helperColor="error"
+          errorMessage={errors?.datosBasicos?.primerApellido?.message}
+          isInvalid={!!errors?.datosBasicos?.primerApellido?.message}
         />
       </div>
 
@@ -68,7 +83,7 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           fullWidth
           label="Segundo apellido:"
           placeholder="Ej: jimenez"
-          bordered
+          variant="bordered"
           type="text"
           {...register("datosBasicos.segundoApellido", {
             pattern: {
@@ -77,8 +92,8 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
               message: "El apellido no es valido",
             },
           })}
-          helperText={errors?.datosBasicos?.segundoApellido?.message}
-          helperColor="error"
+          errorMessage={errors?.datosBasicos?.segundoApellido?.message}
+          isInvalid={!!errors?.datosBasicos?.segundoApellido?.message}
         />
       </div>
 
@@ -87,14 +102,14 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           fullWidth
           label="Fecha de nacimiento:"
           placeholder="Ingrese la fecha de nacimiento..."
-          bordered
+          variant="bordered"
           type="date"
           max={new Date().toISOString().split("T")[0]}
           {...register("datosBasicos.fechaNacimiento", {
             required: { value: true, message: "Campo requerido" },
           })}
-          helperText={errors?.datosBasicos?.fechaNacimiento?.message}
-          helperColor="error"
+          errorMessage={errors?.datosBasicos?.fechaNacimiento?.message}
+          isInvalid={!!errors?.datosBasicos?.fechaNacimiento?.message}
         />
       </div>
 
@@ -123,35 +138,52 @@ export const PersonaForm = ({ register, errors, getFieldState }: any) => {
           fullWidth
           label="Email:"
           placeholder="Ej: pedro@gmail.com"
-          bordered
+          variant="bordered"
           type="text"
           {...register("datosBasicos.email", {
             required: { value: true, message: "Campo requerido" },
-            pattern: {
-              value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-              message: "La direccion del correo no es valida.",
+            validate(value) {
+              if (z.string().email().safeParse(value).success) return true;
+              return "La direccion del correo no es valida.";
             },
           })}
-          helperText={errors?.datosBasicos?.email?.message}
-          helperColor="error"
+          errorMessage={errors?.datosBasicos?.email?.message}
+          isInvalid={!!errors?.datosBasicos?.email?.message}
         />
       </div>
       <div className="col-span-4">
-        <Input
-          fullWidth
-          label="Numero de contacto:"
-          placeholder="Ej: 0414-1234567"
-          bordered
-          type="text"
-          {...register("datosBasicos.telefono", {
+        <Controller
+          control={control}
+          name="datosBasicos.telefono"
+          rules={{
             required: { value: true, message: "Campo requerido" },
             pattern: {
-              value: /^(0414|0424|0412|0416|0426)[-][0-9]{7}$/,
+              value: /^(0414|0424|0412|0416|0426)[-]\d{7}$/,
               message: "El numero no es valido.",
             },
-          })}
-          helperText={errors?.datosBasicos?.telefono?.message}
-          helperColor="error"
+          }}
+          render={({ field, fieldState }) => (
+            <Input
+              fullWidth
+              label="Numero de contacto:"
+              placeholder="Ej: 0414-1234567"
+              variant="bordered"
+              type="text"
+              maxLength={12}
+              errorMessage={fieldState.error?.message}
+              isInvalid={!!fieldState.error?.message}
+              {...field}
+              value={field.value ?? ""}
+              onChange={(e) => {
+                let { value } = e.target;
+                value = value.replace(/[^\d]/g, "");
+                if (value.length > 4) {
+                  value = value.slice(0, 4) + "-" + value.slice(4, 11);
+                }
+                field.onChange(value);
+              }}
+            />
+          )}
         />
       </div>
     </div>

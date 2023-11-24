@@ -64,16 +64,32 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValidating },
     trigger,
     watch,
     setError,
+    control,
   } = useForm<JefeProps>();
   const router = useRouter();
-  const { mutateAsync } = api.jefe.create.useMutation();
+  const { mutateAsync } = api.jefe.create.useMutation({
+    onSuccess() {
+      router.push(`/consejo-comunal/${consejoComunalId}/censo`);
+    },
+    onError(error) {
+      setError("root", {
+        message: error.data?.code,
+        type: "validate",
+      });
+    },
+  });
 
   const sections = [
-    <PersonaForm register={register} errors={errors} key="personaForm" />,
+    <PersonaForm
+      control={control}
+      register={register}
+      errors={errors}
+      key="personaForm"
+    />,
     <DocumentosForm register={register} errors={errors} key="documentosForm" />,
     <CasaForm
       register={register}
@@ -83,44 +99,8 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
     />,
   ];
 
-  const onSubmit: SubmitHandler<JefeProps> = async (values) => {
-    try {
-      await mutateAsync(
-        {
-          casa: values.casa,
-          documentos: values.documentos,
-          jefe: {
-            primerApellido: values.datosBasicos.primerApellido,
-            genero: values.datosBasicos.genero,
-            primerNombre: values.datosBasicos.primerNombre,
-            segundoNombre: values.datosBasicos.segundoNombre,
-            fechaNacimiento: values.datosBasicos.fechaNacimiento,
-            segundoApellido: values.datosBasicos.segundoApellido,
-            email: values.datosBasicos.email,
-            telefono: values.datosBasicos.telefono,
-          },
-          consejoComunalId: parseInt(consejoComunalId),
-        },
-        {
-          onSuccess(data, variables, context) {
-            router.push(`/consejo-comunal/${consejoComunalId}/censo`);
-          },
-          onError({ data }) {
-            setError("root", {
-              message: data?.code,
-              type: "validate",
-            });
-          },
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const isDisabledBackButton = () => {
-    return step.currentPos === 0;
-  };
+  const isFirstStep = step.currentPos === 0;
+  const isLastStep = step.currentPos === sections.length - 1;
 
   const handleSteps = async (n: number) => {
     if (n < 0 && step.currentPos !== 0)
@@ -136,30 +116,55 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
     switch (step.currentPos) {
       case 0:
         isValid = await trigger("datosBasicos");
-
         break;
       case 1:
-        isValid = await trigger([
-          "documentos.tipoDocumento",
-          "documentos.serialCarnetPatria",
-          "documentos.observacion",
-          "documentos.numeroDocumento",
-          "documentos.codCarnetPatria",
-        ]);
-
+        isValid = await trigger("documentos");
         break;
     }
 
-    if (isValid)
-      setStep(({ currentPos, filled }) => ({
-        currentPos: currentPos + n,
-        filled: filled + 1,
-      }));
+    if (!isValid) return;
+
+    setStep(({ currentPos, filled }) => ({
+      currentPos: currentPos + 1,
+      filled: filled < currentPos + 1 ? currentPos + 1 : filled,
+    }));
   };
+
+  const onSubmit = handleSubmit(async (values) => {
+    try {
+      await mutateAsync({
+        casa: values.casa,
+        documentos: values.documentos,
+        jefe: {
+          primerApellido: values.datosBasicos.primerApellido,
+          genero: values.datosBasicos.genero,
+          primerNombre: values.datosBasicos.primerNombre,
+          segundoNombre: values.datosBasicos.segundoNombre,
+          fechaNacimiento: values.datosBasicos.fechaNacimiento,
+          segundoApellido: values.datosBasicos.segundoApellido,
+          email: values.datosBasicos.email,
+          telefono: values.datosBasicos.telefono,
+        },
+        consejoComunalId: parseInt(consejoComunalId),
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  });
 
   return (
     <>
-      <Card as="form" onSubmit={handleSubmit(onSubmit)}>
+      <Card
+        as="form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (isLastStep) {
+            onSubmit(event);
+          } else {
+            handleSteps(1);
+          }
+        }}
+      >
         <CardHeader>
           <h3 className="mx-auto text-2xl">
             Datos personales del Jefe de Familia
@@ -193,46 +198,42 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
 
         <CardFooter className="flex justify-center gap-4">
           <Button
-            color={"secondary"}
-            className="text-white hover:bg-purple-800  disabled:bg-purple-950"
-            disabled={isDisabledBackButton()}
+            type="button"
+            color="secondary"
+            isDisabled={isFirstStep}
             onPress={() => handleSteps(-1)}
           >
             Atras
           </Button>
 
-          <Button
-            type="button"
-            onPress={() => handleSteps(1)}
-            className="bg-blue-600 text-white  hover:bg-blue-800 disabled:bg-gray-600"
-            style={{
-              display:
-                step.currentPos !== sections.length - 1 ? "block" : "none",
-            }}
-          >
-            {isSubmitting && (
-              <Spinner as="span" color={"secondary"} className="mx-4" />
-            )}
-            Continuar
-          </Button>
-          <Button
-            disabled={isSubmitting}
-            className="bg-blue-600 text-white  hover:bg-blue-800 disabled:bg-gray-600"
-            type="submit"
-            style={{
-              display:
-                step.currentPos !== sections.length - 1 ? "none" : "block",
-            }}
-          >
-            Guardar datos
-          </Button>
+          {isLastStep ? (
+            <Button
+              disabled={isSubmitting}
+              isLoading={isSubmitting}
+              color="success"
+              type="submit"
+            >
+              Guardar datos
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              color="primary"
+              onPress={() => handleSteps(1)}
+              isLoading={isSubmitting || isValidating}
+            >
+              Continuar
+            </Button>
+          )}
         </CardFooter>
 
         <CirclesReference
           count={sections.length}
           filled={step.filled}
           current={step.currentPos}
-          setStep={setStep}
+          onChangeStep={(step) => {
+            setStep((prev) => ({ ...prev, currentPos: step }));
+          }}
         />
       </Card>
     </>
