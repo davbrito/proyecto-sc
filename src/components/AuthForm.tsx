@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 
 interface Inputs {
   username: string;
@@ -26,6 +26,7 @@ export const LoginForm = () => {
     register,
     setError,
     clearErrors,
+    control,
   } = useForm<Inputs>();
   const router = useRouter();
 
@@ -67,35 +68,50 @@ export const LoginForm = () => {
       </CardHeader>
       <Divider />
       <CardBody>
-        <Input
-          type="text"
-          autoComplete="username"
-          label="Nombre de usuario:"
-          placeholder="Escriba su nombre de usuario..."
-          {...register("username", {
+        <Controller
+          control={control}
+          name="username"
+          rules={{
             required: {
               value: true,
               message: "Se requiere del nombre de usuario.",
             },
-          })}
-          isInvalid={!!errors.username}
-          errorMessage={errors.username?.message}
+          }}
+          render={({ field, fieldState }) => (
+            <Input
+              type="text"
+              autoComplete="username"
+              label="Nombre de usuario:"
+              placeholder="Escriba su nombre de usuario..."
+              {...field}
+              isInvalid={!!fieldState.error}
+              errorMessage={fieldState.error?.message}
+            />
+          )}
         />
+
         <Spacer y={4} />
-        <Input
-          type="password"
-          autoComplete="current-password"
-          isClearable
-          label="Contraseña:"
-          placeholder="Escriba su contraseña..."
-          {...register("password", {
+        <Controller
+          control={control}
+          name="password"
+          rules={{
             required: {
               value: true,
               message: "Se requiere la contraseña.",
             },
-          })}
-          isInvalid={!!errors.password}
-          errorMessage={errors.password?.message}
+          }}
+          render={({ field, fieldState }) => (
+            <Input
+              type="password"
+              autoComplete="current-password"
+              isClearable
+              label="Contraseña:"
+              placeholder="Escriba su contraseña..."
+              {...field}
+              isInvalid={!!fieldState.error}
+              errorMessage={fieldState.error?.message}
+            />
+          )}
         />
 
         {errors.root && (

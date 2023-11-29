@@ -1,4 +1,8 @@
-import { CONDICION_VIVIENDA, ESTADO_CIVIL } from "@prisma/client";
+import {
+  CONDICION_VIVIENDA,
+  ESTADO_CIVIL,
+  ESTADO_TRABAJO,
+} from "@prisma/client";
 import { createReactProxyDecoration } from "@trpc/react-query/shared";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -12,6 +16,7 @@ export const jefeRouter = createTRPCRouter({
           manzana: z.string(),
           casa: z.string(),
           calle: z.string(),
+          condicion_vivienda: z.nativeEnum(CONDICION_VIVIENDA),
         }),
         documentos: z.object({
           tipoDocumento: z.string(),
@@ -20,6 +25,10 @@ export const jefeRouter = createTRPCRouter({
           codCarnetPatria: z.string().default(""),
           observacion: z.string().default(""),
           discapacidad: z.string().default(""),
+          recibe_pension: z.boolean(),
+          vacuna_covid: z.boolean(),
+          enfermedad_cronica: z.string(),
+          carnet_conapdis: z.boolean(),
         }),
         jefe: z.object({
           primerNombre: z.string(),
@@ -30,12 +39,22 @@ export const jefeRouter = createTRPCRouter({
           genero: z.string(),
           email: z.string(),
           telefono: z.string(),
+          telefono_habitacion: z.string(),
+          estado_civil: z.nativeEnum(ESTADO_CIVIL),
+        }),
+        trabajo: z.object({
+          estudiando: z.string(),
+          profesion: z.string(),
+          ocupacion: z.string(),
+          deporte: z.string(),
+          nivel_educativo: z.string(),
+          trabaja: z.nativeEnum(ESTADO_TRABAJO),
         }),
         consejoComunalId: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { casa, documentos, jefe, consejoComunalId } = input;
+      const { casa, documentos, jefe, consejoComunalId, trabajo } = input;
       const cc = await ctx.prisma.consejoComunal.findUnique({
         where: { id: consejoComunalId },
         include: {
@@ -71,18 +90,10 @@ export const jefeRouter = createTRPCRouter({
             genero: jefe.genero,
             email: jefe.email,
             telefono: jefe.telefono,
+            estado_civil: jefe.estado_civil,
+            telefono_habitacion: jefe.telefono_habitacion,
 
-            //temporal
-            deporte: "",
-            enfermedad_cronica: "",
-            estado_civil: ESTADO_CIVIL.Soltero,
-            estudiando: "",
-            nivel_educativo: "",
-            ocupacion: "",
-            profesion: "",
-            telefono_habitacion: "",
-            //temporal/
-
+            ...trabajo,
             ...documentos,
 
             censo: {
@@ -94,12 +105,14 @@ export const jefeRouter = createTRPCRouter({
                 consejoComunal: {
                   connect: { id: consejoComunalId },
                 },
-                condicion_vivienda: CONDICION_VIVIENDA.PROPIA,
+                condicion_vivienda: casa.condicion_vivienda,
               },
             },
             casa: {
               create: {
-                ...casa,
+                calle: casa.calle,
+                manzana: casa.manzana,
+                casa: casa.casa,
               },
             },
           },
@@ -175,6 +188,10 @@ export const jefeRouter = createTRPCRouter({
           codCarnetPatria: z.string().default(""),
           observacion: z.string().default(""),
           discapacidad: z.string().default(""),
+          recibe_pension: z.boolean(),
+          vacuna_covid: z.boolean(),
+          enfermedad_cronica: z.string(),
+          carnet_conapdis: z.boolean(),
         }),
         jefe: z.object({
           primerNombre: z.string(),
@@ -185,24 +202,38 @@ export const jefeRouter = createTRPCRouter({
           genero: z.string(),
           email: z.string(),
           telefono: z.string(),
+          telefono_habitacion: z.string(),
+          estado_civil: z.nativeEnum(ESTADO_CIVIL),
+        }),
+        trabajo: z.object({
+          estudiando: z.string(),
+          profesion: z.string(),
+          ocupacion: z.string(),
+          deporte: z.string(),
+          nivel_educativo: z.string(),
+          trabaja: z.nativeEnum(ESTADO_TRABAJO),
         }),
         id: z.bigint(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const { documentos, id, jefe, trabajo } = input;
       const jefeUpdated = await ctx.prisma.jefeFamilia.update({
         where: {
-          id: input.id,
+          id,
         },
         data: {
-          nombres: input.jefe.primerNombre + " " + input.jefe.segundoNombre,
-          apellidos:
-            input.jefe.primerApellido + " " + input.jefe.segundoApellido,
-          fechaNacimiento: new Date(input.jefe.fechaNacimiento).toJSON(),
-          genero: input.jefe.genero,
-          email: input.jefe.email,
-          telefono: input.jefe.telefono,
-          ...input.documentos,
+          nombres: jefe.primerNombre + " " + jefe.segundoNombre,
+          apellidos: jefe.primerApellido + " " + jefe.segundoApellido,
+          fechaNacimiento: new Date(jefe.fechaNacimiento).toJSON(),
+          genero: jefe.genero,
+          email: jefe.email,
+          telefono: jefe.telefono,
+
+          telefono_habitacion: jefe.telefono_habitacion,
+          estado_civil: jefe.estado_civil,
+          ...documentos,
+          ...trabajo,
         },
       });
 

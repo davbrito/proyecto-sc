@@ -1,4 +1,4 @@
-import { ESTADO_CIVIL } from "@prisma/client";
+import { ESTADO_CIVIL, ESTADO_TRABAJO } from "@prisma/client";
 import { TRPCClientError, createTRPCProxyClient } from "@trpc/client";
 import { TRPCError } from "@trpc/server";
 import { randomInt } from "crypto";
@@ -17,6 +17,30 @@ const createFamiliarSchema = z.object({
   segundoApellido: z.string(),
   fechaNacimiento: z.string(),
   genero: z.string(),
+  telefono: z.string(),
+  email: z.string(),
+  estado_civil: z.nativeEnum(ESTADO_CIVIL),
+});
+
+const documentosFamiliarSchema = z.object({
+  tipoDocumento: z.string(),
+  numeroDocumento: z.string(),
+  serialCarnetPatria: z.string().default(""),
+  codCarnetPatria: z.string().default(""),
+  observacion: z.string().default(""),
+  discapacidad: z.string().default(""),
+  enfermedad_cronica: z.string(),
+  recibe_pension: z.boolean(),
+  vacuna_covid: z.boolean(),
+});
+
+const trabajoFamiliarSchema = z.object({
+  profesion: z.string(),
+  ocupacion: z.string(),
+  trabaja: z.nativeEnum(ESTADO_TRABAJO),
+  nivel_educativo: z.string(),
+  estudiando: z.string(),
+  deporte: z.string(),
 });
 
 export const familiarRouter = createTRPCRouter({
@@ -24,14 +48,8 @@ export const familiarRouter = createTRPCRouter({
     .input(
       z.object({
         familiar: createFamiliarSchema,
-        documentos: z.object({
-          tipoDocumento: z.string(),
-          numeroDocumento: z.string(),
-          serialCarnetPatria: z.string().default(""),
-          codCarnetPatria: z.string().default(""),
-          observacion: z.string().default(""),
-          discapacidad: z.string().default(""),
-        }),
+        documentos: documentosFamiliarSchema,
+        trabajo: trabajoFamiliarSchema,
         jefe: z.object({
           jefeId: z.bigint(),
           parentesco: z.string(),
@@ -39,7 +57,7 @@ export const familiarRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { jefe, familiar, documentos } = input;
+      const { jefe, familiar, documentos, trabajo } = input;
 
       const jefeToEdit = await ctx.prisma.jefeFamilia.findUnique({
         where: {
@@ -58,21 +76,15 @@ export const familiarRouter = createTRPCRouter({
           nombres: `${familiar.primerNombre} ${familiar.segundoNombre}`,
           fechaNacimiento: new Date(familiar.fechaNacimiento).toJSON(),
           genero: familiar.genero,
-          ...documentos,
+          estado_civil: familiar.estado_civil,
+          email: familiar.email,
+          telefono: familiar.telefono,
+
           parentesco: jefe.parentesco,
           jefeFamiliaId: jefe.jefeId,
 
-          // temp
-          deporte: "",
-          email: "",
-          telefono: "",
-          enfermedad_cronica: "",
-          ocupacion: "",
-          estado_civil: ESTADO_CIVIL.Soltero,
-          estudiando: "",
-          nivel_educativo: "",
-          profesion: "",
-          trabaja: true,
+          ...documentos,
+          ...trabajo,
         },
       });
 
@@ -163,22 +175,9 @@ export const familiarRouter = createTRPCRouter({
   update: publicProcedure
     .input(
       z.object({
-        familiar: z.object({
-          primerNombre: z.string(),
-          segundoNombre: z.string(),
-          primerApellido: z.string(),
-          segundoApellido: z.string(),
-          fechaNacimiento: z.string(),
-          genero: z.string(),
-        }),
-        documentos: z.object({
-          tipoDocumento: z.string(),
-          numeroDocumento: z.string(),
-          serialCarnetPatria: z.string().default(""),
-          codCarnetPatria: z.string().default(""),
-          observacion: z.string().default(""),
-          discapacidad: z.string().default(""),
-        }),
+        familiar: createFamiliarSchema,
+        documentos: documentosFamiliarSchema,
+        trabajo: trabajoFamiliarSchema,
         jefe: z.object({
           jefeId: z.bigint(),
           parentesco: z.string(),
@@ -187,7 +186,7 @@ export const familiarRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { documentos, familiar, jefe, id } = input;
+      const { documentos, familiar, jefe, id, trabajo } = input;
 
       const familiarUpdated = await ctx.prisma.familiar.update({
         where: {
@@ -198,9 +197,15 @@ export const familiarRouter = createTRPCRouter({
           nombres: `${familiar.primerNombre} ${familiar.segundoNombre}`,
           fechaNacimiento: new Date(familiar.fechaNacimiento).toJSON(),
           genero: familiar.genero,
+          estado_civil: familiar.estado_civil,
+          email: familiar.email,
+          telefono: familiar.telefono,
 
-          ...documentos,
           parentesco: jefe.parentesco,
+          jefeFamiliaId: jefe.jefeId,
+
+          ...trabajo,
+          ...documentos,
         },
       });
 

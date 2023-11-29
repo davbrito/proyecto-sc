@@ -123,6 +123,10 @@ export const PersonaForm = ({
               message: "Este campo no puede estar vacio",
             },
           })}
+          errorMessage={
+            errors?.datosBasicos?.genero && errors.datosBasicos.genero.message
+          }
+          isInvalid={!!errors?.datosBasicos?.genero}
         >
           <SelectItem key={"f"} value="f">
             Femenino
@@ -185,6 +189,72 @@ export const PersonaForm = ({
             />
           )}
         />
+      </div>
+      <div className="col-span-6">
+        <Controller
+          control={control}
+          name="datosBasicos.telefono_habitacion"
+          rules={{
+            required: { value: true, message: "Campo requerido" },
+            pattern: {
+              value: /^(0414|0424|0412|0416|0426)[-]\d{7}$/,
+              message: "El numero no es valido.",
+            },
+          }}
+          render={({ field, fieldState }) => (
+            <Input
+              fullWidth
+              label="Numero de contacto:"
+              placeholder="Ej: 0414-1234567"
+              variant="bordered"
+              type="text"
+              maxLength={12}
+              errorMessage={fieldState.error?.message}
+              isInvalid={!!fieldState.error?.message}
+              {...field}
+              value={field.value ?? ""}
+              onChange={(e) => {
+                let { value } = e.target;
+                value = value.replace(/[^\d]/g, "");
+                if (value.length > 4) {
+                  value = value.slice(0, 4) + "-" + value.slice(4, 11);
+                }
+                field.onChange(value);
+              }}
+            />
+          )}
+        />
+      </div>
+
+      <div className="col-span-6">
+        <Select
+          label="Estado Civil:"
+          className="max-w-xs"
+          {...register("datosBasicos.estado_civil", {
+            required: {
+              value: true,
+              message: "Este campo no puede estar vacio",
+            },
+          })}
+          errorMessage={
+            errors?.datosBasicos?.estado_civil &&
+            errors.datosBasicos.estado_civil.message
+          }
+          isInvalid={!!errors.datosBasicos?.estado_civil}
+        >
+          <SelectItem key={"Soltero"} value="Soltero">
+            Soltero
+          </SelectItem>
+          <SelectItem key={"Casado"} value="Casado">
+            Casado
+          </SelectItem>
+          <SelectItem key={"Divorciado"} value="Divorciado">
+            Divorciado
+          </SelectItem>
+          <SelectItem key={"Viudo"} value="Viudo">
+            Viudo
+          </SelectItem>
+        </Select>
       </div>
     </div>
   );

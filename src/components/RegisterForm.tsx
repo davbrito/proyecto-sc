@@ -36,7 +36,7 @@ export const RegisterForm = () => {
 
       reset(
         { password: "", username: "", lastName: "", name: "" },
-        { keepErrors: true },
+        { keepErrors: true }
       );
 
       await signIn("credentials", {
@@ -144,7 +144,7 @@ export const RegisterForm = () => {
         <Button
           size="lg"
           type="submit"
-          className="ml-auto bg-blue-600 hover:bg-blue-800 disabled:bg-slate-700  "
+          className="ml-auto bg-blue-600 text-white hover:bg-blue-800 disabled:bg-slate-700  "
           disabled={isSubmitting}
         >
           {isSubmitting && (

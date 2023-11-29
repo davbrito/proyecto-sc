@@ -27,6 +27,7 @@ import { ChangeJefeForm } from "./ChangeJefeForm";
 import EditCajaForm from "./EditCajaForm";
 import JefeEditForm from "./JefeEditForm";
 import { ErrorMessage } from "../ErrorMessage";
+import { GreatForm } from "./GreatForm";
 
 interface Edit {
   data?: Familiar | JefeFamilia;
@@ -530,7 +531,7 @@ const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
           {() => (
             <>
               <ModalHeader as={"h2"} className="mx-auto text-2xl">
-                Datos del familiar
+                Datos del familiars
               </ModalHeader>
               <ModalBody>
                 <FamiliarForm

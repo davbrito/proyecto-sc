@@ -1,20 +1,22 @@
 import {
   Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Divider,
   Input,
   Select,
   SelectItem,
   Spinner,
   Textarea,
 } from "@nextui-org/react";
-import { type JefeFamilia } from "@prisma/client";
+import {
+  type ESTADO_CIVIL,
+  type ESTADO_TRABAJO,
+  type JefeFamilia,
+} from "@prisma/client";
 import React from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm, Controller } from "react-hook-form";
+import { z } from "zod";
 import { api } from "~/utils/api";
+import { Checkbox } from "../Checkbox";
+import { ESTADOS_TRABAJOS } from "~/utils/estado_trabajo";
 
 interface EditJefe {
   primerNombre: string;
@@ -22,6 +24,18 @@ interface EditJefe {
   primerApellido: string;
   segundoApellido: string;
   fechaNacimiento: string;
+  estado_civil: ESTADO_CIVIL;
+  telefono_habitacion: string;
+  estudiando: string;
+  profesion: string;
+  ocupacion: string;
+  deporte: string;
+  nivel_educativo: string;
+  trabaja: ESTADO_TRABAJO;
+  carnet_conapdis: boolean;
+  enfermedad_cronica: string;
+  recibe_pension: boolean;
+  vacuna_covid: boolean;
   genero: string;
   telefono: string;
   email: string;
@@ -30,6 +44,7 @@ interface EditJefe {
   serialCarnetPatria: string;
   codCarnetPatria: string;
   observacion: string;
+  discapacidad: string;
 }
 
 interface Props {
@@ -39,10 +54,11 @@ interface Props {
 
 const JefeEditForm = ({ jefe, onClose }: Props) => {
   const {
-    register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
+    control,
+    register,
   } = useForm<EditJefe>({
     defaultValues: {
       primerApellido: jefe.apellidos.split(" ")[0],
@@ -58,6 +74,19 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
       serialCarnetPatria: jefe.serialCarnetPatria,
       telefono: jefe.telefono,
       tipoDocumento: jefe.tipoDocumento,
+      estado_civil: jefe.estado_civil,
+      carnet_conapdis: jefe.carnet_conapdis,
+      deporte: jefe.deporte,
+      discapacidad: jefe.discapacidad,
+      enfermedad_cronica: jefe.enfermedad_cronica,
+      estudiando: jefe.estudiando,
+      nivel_educativo: jefe.nivel_educativo,
+      ocupacion: jefe.ocupacion,
+      profesion: jefe.profesion,
+      recibe_pension: jefe.recibe_pension,
+      telefono_habitacion: jefe.telefono_habitacion,
+      trabaja: jefe.trabaja,
+      vacuna_covid: jefe.vacuna_covid,
     },
   });
 
@@ -75,6 +104,11 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
           codCarnetPatria: value.codCarnetPatria,
           observacion: value.observacion,
           serialCarnetPatria: value.serialCarnetPatria,
+          discapacidad: value.discapacidad,
+          carnet_conapdis: value.carnet_conapdis,
+          enfermedad_cronica: value.enfermedad_cronica,
+          recibe_pension: value.recibe_pension,
+          vacuna_covid: value.vacuna_covid,
         },
         jefe: {
           email: value.email,
@@ -85,6 +119,16 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
           segundoApellido: value.segundoApellido,
           segundoNombre: value.segundoNombre,
           telefono: value.telefono,
+          estado_civil: value.estado_civil,
+          telefono_habitacion: value.telefono_habitacion,
+        },
+        trabajo: {
+          deporte: value.deporte,
+          estudiando: value.estudiando,
+          nivel_educativo: value.nivel_educativo,
+          ocupacion: value.ocupacion,
+          profesion: value.profesion,
+          trabaja: value.trabaja,
         },
       },
       {
@@ -101,183 +145,321 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <h2 className="mx-auto my-2 text-xl">Datos personales</h2>
-
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-6">
-          <Input
-            fullWidth
-            label="Primer nombre:"
-            placeholder="Ej: pedro"
-            type="text"
-            {...register("primerNombre", {
+          <Controller
+            name="primerNombre"
+            control={control}
+            rules={{
               required: { value: true, message: "Campo requerido" },
               pattern: {
                 value:
                   /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
                 message: "El nombre no es valido",
               },
-            })}
-            isInvalid={!!errors.primerNombre}
-            errorMessage={errors.primerNombre?.message}
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Primer nombre:"
+                placeholder="Ej: pedro"
+                variant="bordered"
+                type="text"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              />
+            )}
           />
         </div>
 
         <div className="col-span-6">
-          <Input
-            fullWidth
-            label="Segundo nombre:"
-            placeholder="Ej: jose"
-            type="text"
-            {...register("segundoNombre", {
-              required: { value: true, message: "Campo requerido" },
+          <Controller
+            control={control}
+            name="segundoNombre"
+            rules={{
               pattern: {
                 value:
                   /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
                 message: "El nombre no es valido",
               },
-            })}
-            isInvalid={!!errors.segundoNombre}
-            errorMessage={errors.segundoNombre?.message}
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Segundo nombre:"
+                placeholder="Ej: jose"
+                variant="bordered"
+                type="text"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              />
+            )}
           />
         </div>
 
         <div className="col-span-6">
-          <Input
-            fullWidth
-            label="Primer apellido:"
-            placeholder="Ej: perez"
-            type="text"
-            {...register("primerApellido", {
+          <Controller
+            control={control}
+            name="primerApellido"
+            rules={{
               required: { value: true, message: "Campo requerido" },
               pattern: {
                 value:
                   /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
                 message: "El apellido no es valido",
               },
-            })}
-            isInvalid={!!errors.primerApellido}
-            errorMessage={errors.primerApellido?.message}
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Primer apellido:"
+                placeholder="Ej: perez"
+                variant="bordered"
+                type="text"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              />
+            )}
           />
         </div>
 
         <div className="col-span-6">
-          <Input
-            fullWidth
-            label="Segundo apellido:"
-            placeholder="Ej: jimenez"
-            type="text"
-            {...register("segundoApellido", {
-              required: { value: true, message: "Campo requerido" },
+          <Controller
+            control={control}
+            name="segundoApellido"
+            rules={{
               pattern: {
                 value:
                   /^(?=.{1,40}$)[a-zA-ZáéíóúüñÁÉÍÓÚÑ]+(?:[\s][a-zA-ZáéíóúüñÁÉÍÓÚÑ]+)*$/,
                 message: "El apellido no es valido",
               },
-            })}
-            isInvalid={!!errors.segundoApellido}
-            errorMessage={errors.segundoApellido?.message}
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Segundo apellido:"
+                placeholder="Ej: jimenez"
+                variant="bordered"
+                type="text"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              />
+            )}
           />
         </div>
 
         <div className="col-span-6">
-          <Input
-            fullWidth
-            label="Fecha de nacimiento:"
-            placeholder="Ingrese la fecha de nacimiento..."
-            type="date"
-            max={new Date().toISOString().split("T")[0]}
-            {...register("fechaNacimiento", {
-              required: { value: true, message: "Campo requerido" },
-            })}
-            isInvalid={!!errors.fechaNacimiento}
-            errorMessage={errors.fechaNacimiento?.message}
+          <Controller
+            control={control}
+            name="fechaNacimiento"
+            rules={{ required: { value: true, message: "Campo requerido" } }}
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Fecha de nacimiento:"
+                placeholder="Ingrese la fecha de nacimiento..."
+                variant="bordered"
+                type="date"
+                max={new Date().toISOString().split("T")[0]}
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              />
+            )}
           />
         </div>
 
         <div className="col-span-6">
-          <Select
-            label="Genero:"
-            placeholder="Seleccione el genero"
-            {...register("genero", {
+          <Controller
+            control={control}
+            name="genero"
+            rules={{
               required: {
                 value: true,
                 message: "Este campo no puede estar vacio",
               },
-            })}
-            isInvalid={!!errors.genero}
-            errorMessage={errors.genero?.message}
-            defaultSelectedKeys={jefe.genero}
-          >
-            <SelectItem key="f">Femenino</SelectItem>
-            <SelectItem key="m">Masculino</SelectItem>
-          </Select>
+            }}
+            render={({ field, fieldState }) => (
+              <Select
+                label="Genero:"
+                className="max-w-xs"
+                {...field}
+                selectedKeys={[field.value]}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              >
+                <SelectItem key={"f"} value="f">
+                  Femenino
+                </SelectItem>
+                <SelectItem key={"m"} value="m">
+                  Masculino
+                </SelectItem>
+              </Select>
+            )}
+          />
         </div>
 
-        <div className="col-span-6">
-          <Input
-            fullWidth
-            label="Email:"
-            placeholder="Ej: pedro@gmail.com"
-            type="text"
-            {...register("email", {
+        <div className="col-span-8">
+          <Controller
+            control={control}
+            rules={{
+              required: { value: true, message: "Campo requerido" },
+              validate(value) {
+                if (z.string().email().safeParse(value).success) return true;
+                return "La direccion del correo no es valida.";
+              },
+            }}
+            name="email"
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Email:"
+                placeholder="Ej: pedro@gmail.com"
+                variant="bordered"
+                type="text"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              />
+            )}
+          />
+        </div>
+        <div className="col-span-4">
+          <Controller
+            control={control}
+            name="telefono"
+            rules={{
               required: { value: true, message: "Campo requerido" },
               pattern: {
-                value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                message: "La direccion del correo no es valida.",
+                value: /^(0414|0424|0412|0416|0426)[-]\d{7}$/,
+                message: "El numero no es valido.",
               },
-            })}
-            isInvalid={!!errors.email}
-            errorMessage={errors.email?.message}
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Numero de contacto:"
+                placeholder="Ej: 0414-1234567"
+                variant="bordered"
+                type="text"
+                maxLength={12}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error?.message}
+                {...field}
+                value={field.value ?? ""}
+                onChange={(e) => {
+                  let { value } = e.target;
+                  value = value.replace(/[^\d]/g, "");
+                  if (value.length > 4) {
+                    value = value.slice(0, 4) + "-" + value.slice(4, 11);
+                  }
+                  field.onChange(value);
+                }}
+              />
+            )}
           />
         </div>
         <div className="col-span-6">
-          <Input
-            fullWidth
-            label="Numero de contacto:"
-            placeholder="Ej: 0414-1234567"
-            type="text"
-            {...register("telefono", {
+          <Controller
+            control={control}
+            name="telefono_habitacion"
+            rules={{
               required: { value: true, message: "Campo requerido" },
               pattern: {
-                value: /^(0414|0424|0412|0416|0426)[-][0-9]{7}$/,
+                value: /^(0414|0424|0412|0416|0426)[-]\d{7}$/,
                 message: "El numero no es valido.",
               },
-            })}
-            isInvalid={!!errors.telefono}
-            errorMessage={errors.telefono?.message}
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Telefono habitacion:"
+                placeholder="Ej: 0414-1234567"
+                variant="bordered"
+                type="text"
+                maxLength={12}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error?.message}
+                {...field}
+                onChange={(e) => {
+                  let { value } = e.target;
+                  value = value.replace(/[^\d]/g, "");
+                  if (value.length > 4) {
+                    value = value.slice(0, 4) + "-" + value.slice(4, 11);
+                  }
+                  field.onChange(value);
+                }}
+              />
+            )}
+          />
+        </div>
+
+        <div className="col-span-6">
+          <Controller
+            control={control}
+            name="estado_civil"
+            rules={{
+              required: {
+                value: true,
+                message: "Este campo no puede estar vacio",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <Select
+                label="Estado Civil:"
+                className="max-w-xs"
+                {...field}
+                selectedKeys={[field.value]}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              >
+                <SelectItem key={"Soltero"}>Soltero</SelectItem>
+                <SelectItem key={"Casado"}>Casado</SelectItem>
+                <SelectItem key={"Divorciado"}>Divorciado</SelectItem>
+                <SelectItem key={"Viudo"}>Viudo</SelectItem>
+              </Select>
+            )}
           />
         </div>
       </div>
-
       <h2 className="mx-auto my-2 text-xl">Documentos personales</h2>
 
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-4">
-          <Select
-            label="Tipo documento:"
-            placeholder="Seleccione una opcion"
-            {...register("tipoDocumento", {
+          <Controller
+            control={control}
+            name="tipoDocumento"
+            rules={{
               required: {
                 message: "Este campo no puede estar vacio",
                 value: true,
               },
-            })}
-            isInvalid={!!errors.tipoDocumento}
-            errorMessage={errors.tipoDocumento?.message}
-            selectedKeys={jefe.tipoDocumento}
-          >
-            <SelectItem key={"v"}>Venezolano</SelectItem>
-            <SelectItem key={"e"}>Extranjero</SelectItem>
-            <SelectItem key={"f"}>Firma</SelectItem>
-          </Select>
+            }}
+            render={({ field, fieldState }) => (
+              <Select
+                label="Tipo documento:"
+                placeholder="Seleccione una opcion"
+                {...field}
+                isInvalid={!!fieldState.error}
+                errorMessage={fieldState.error?.message}
+                selectedKeys={field.value}
+              >
+                <SelectItem key={"v"}>Venezolano</SelectItem>
+                <SelectItem key={"e"}>Extranjero</SelectItem>
+                <SelectItem key={"f"}>Firma</SelectItem>
+              </Select>
+            )}
+          />
         </div>
         <div className="col-span-8">
-          <Input
-            fullWidth
-            label="Numero documento:"
-            placeholder="Ejemplo: 1234578"
-            type="text"
-            {...register("numeroDocumento", {
+          <Controller
+            control={control}
+            name="numeroDocumento"
+            rules={{
               required: {
                 value: true,
                 message: "Este campo es obligatorio",
@@ -290,43 +472,234 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                 value: 8,
                 message: "Corrija el numero de cedula por favor.",
               },
-            })}
-            isInvalid={!!errors.numeroDocumento}
-            errorMessage={errors.numeroDocumento?.message}
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Numero documento:"
+                placeholder="Ejemplo: 1234578"
+                type="text"
+                {...field}
+                isInvalid={!!fieldState.error}
+                errorMessage={fieldState.error?.message}
+              />
+            )}
           />
         </div>
         <div className="col-span-6">
-          <Input
-            fullWidth
-            label="Serial Carnet de la patria:"
-            placeholder="Escriba el serial del carnet de la patria..."
-            type="text"
-            {...register("serialCarnetPatria")}
-            isInvalid={!!errors.serialCarnetPatria}
-            errorMessage={errors.serialCarnetPatria?.message}
+          <Controller
+            control={control}
+            name="serialCarnetPatria"
+            render={({ field }) => (
+              <Input
+                fullWidth
+                label="Serial Carnet de la patria:"
+                placeholder="Escriba el serial del carnet de la patria..."
+                type="text"
+                {...field}
+              />
+            )}
           />
         </div>
 
         <div className="col-span-6">
-          <Input
-            fullWidth
-            label="Codigo del carnet de la patria:"
-            placeholder="Escriba el codigo del carnet de la patria..."
-            type="text"
-            {...register("codCarnetPatria")}
-            isInvalid={!!errors.codCarnetPatria}
-            errorMessage={errors.codCarnetPatria?.message}
+          <Controller
+            control={control}
+            name="codCarnetPatria"
+            render={({ field }) => (
+              <Input
+                fullWidth
+                label="Codigo del carnet de la patria:"
+                placeholder="Escriba el codigo del carnet de la patria..."
+                type="text"
+                {...field}
+              />
+            )}
+          />
+        </div>
+
+        <div className="col-span-8">
+          <Controller
+            name="observacion"
+            control={control}
+            render={({ field }) => (
+              <Textarea
+                fullWidth
+                label="Observacion:"
+                placeholder="Escriba alguna observacion (opcional)"
+                {...field}
+              />
+            )}
+          />
+        </div>
+
+        <div className="col-span-4">
+          <Controller
+            control={control}
+            name="discapacidad"
+            render={({ field }) => (
+              <Textarea
+                fullWidth
+                label="Discapacidad:"
+                placeholder="Escriba si tiene alguna discapacidad"
+                {...field}
+              />
+            )}
           />
         </div>
 
         <div className="col-span-12">
-          <Textarea
-            fullWidth
-            label="Observacion:"
-            placeholder="Escriba alguna observacion (opcional)"
-            {...register("observacion")}
-            isInvalid={!!errors.observacion}
-            errorMessage={errors.observacion?.message}
+          <Controller
+            control={control}
+            name="enfermedad_cronica"
+            render={({ field }) => (
+              <Textarea
+                fullWidth
+                label="Sufre enfermedad cronica? (especifique):"
+                placeholder="Escriba si tiene alguna enfermedad cronica"
+                {...field}
+              />
+            )}
+          />
+        </div>
+        <div className="col-span-12 grid grid-cols-12  place-content-center  gap-4">
+          <div className="col-span-4">
+            <Checkbox
+              label="Posee Carnet CONAPDIS"
+              name="carnet_conapdis"
+              register={register}
+            />
+          </div>
+          <div className="col-span-4">
+            <Checkbox
+              label="Vacuna COVID"
+              name="vacuna_covid"
+              register={register}
+            />
+          </div>
+          <div className="col-span-4">
+            <Checkbox
+              label="Recibe pension?"
+              name="recibe_pension"
+              register={register}
+            />
+          </div>
+        </div>
+      </div>
+
+      <h2 className="mx-auto my-2 text-xl">Informacion de trabajo</h2>
+
+      <div className="grid grid-cols-12 gap-2">
+        <div className="col-span-4">
+          <Controller
+            control={control}
+            name="nivel_educativo"
+            rules={{
+              required: "Este campo es obligatorio",
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Nivel educativo? "
+                placeholder="Escriba el nivel educativo."
+                type="text"
+                {...field}
+                autoFocus
+              />
+            )}
+          />
+        </div>
+        <div className="col-span-8">
+          <Controller
+            control={control}
+            name="profesion"
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Profesion:"
+                placeholder="Describa lo que estudio."
+                type="text"
+                {...field}
+                autoFocus
+              />
+            )}
+          />
+        </div>
+
+        <div className="col-span-6">
+          <Controller
+            control={control}
+            name="ocupacion"
+            rules={{
+              required: "Este campo es obligatorio",
+            }}
+            render={({ field }) => (
+              <Input
+                fullWidth
+                label="Ocupacion:"
+                placeholder="Describa lo que hace."
+                type="text"
+                {...field}
+                autoFocus
+              />
+            )}
+          />
+        </div>
+
+        <div className="col-span-6">
+          <Controller
+            control={control}
+            name="estudiando"
+            render={({ field }) => (
+              <Input
+                fullWidth
+                label="Estudia? (describa en caso de si):"
+                placeholder="Describa lo que estudio."
+                type="text"
+                {...field}
+                autoFocus
+              />
+            )}
+          />
+        </div>
+
+        <div className="col-span-6">
+          <Controller
+            control={control}
+            name="deporte"
+            render={({ field }) => (
+              <Input
+                fullWidth
+                label="Realiza deporte?:"
+                placeholder="Describa el deporte."
+                type="text"
+                {...field}
+                autoFocus
+              />
+            )}
+          />
+        </div>
+
+        <div className="col-span-6">
+          <Controller
+            control={control}
+            name="trabaja"
+            rules={{
+              required: { message: "Este campo es requerido", value: true },
+            }}
+            render={({ field, fieldState }) => (
+              <Select
+                {...field}
+                items={ESTADOS_TRABAJOS}
+                label="Sector de trabajo:"
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              >
+                {(trabajo) => (
+                  <SelectItem key={trabajo.key}>{trabajo.label}</SelectItem>
+                )}
+              </Select>
+            )}
           />
         </div>
       </div>
@@ -340,12 +713,12 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
         type="submit"
         fullWidth
         disabled={isSubmitting}
-        className=" my-2 bg-blue-600 hover:bg-blue-800 disabled:bg-gray-500"
+        className=" my-2 bg-blue-600 text-white hover:bg-blue-800 disabled:bg-gray-500"
       >
         {isSubmitting && (
           <Spinner as={"span"} className="mx-4" color={"secondary"} />
         )}
-        Actualizar.
+        Actualizar
       </Button>
     </form>
   );

@@ -58,6 +58,7 @@ model User {
 
     accounts Account[]
     sessions Session[]
+    Censo    Censo[]
 }
 
 model VerificationToken {
@@ -103,6 +104,11 @@ model Censo {
     fecha                DateTime           @default(now())
     condicion_vivienda   CONDICION_VIVIENDA
 
+    //VALIDACION DE INFORMACION QUE HACE EL JEFE DE COMUNIDAD
+    datos_validado          Boolean @default(false)
+    encargado_validacion    User?   @relation(fields: [encargado_validacion_id], references: [id])
+    encargado_validacion_id String?
+
     //FOREIGN KEY
     jefeFamilia      JefeFamilia?
     consejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
@@ -140,18 +146,15 @@ enum ESTADO_TRABAJO {
 }
 
 model JefeFamilia {
-    id              BigInt   @id() @default(autoincrement())
-    nombres         String
-    apellidos       String
-    fechaNacimiento DateTime
-    genero          String
-    telefono        String
-    email           String
-
-    // NUEVOS DATOS
+    id                  BigInt         @id() @default(autoincrement())
+    nombres             String
+    apellidos           String
+    fechaNacimiento     DateTime
+    genero              String
+    telefono            String
+    email               String
     estado_civil        ESTADO_CIVIL
     telefono_habitacion String
-    // tiempo_viviendo_casa Int
     estudiando          String
     profesion           String
     ocupacion           String
@@ -202,13 +205,13 @@ model Familiar {
     email              String
     profesion          String
     ocupacion          String
-    trabaja            Boolean
+    trabaja            ESTADO_TRABAJO @default(NO_TRABAJA)
     nivel_educativo    String
     estudiando         String
     deporte            String
     enfermedad_cronica String
-    recibe_pension     Boolean      @default(false)
-    vacuna_covid       Boolean      @default(false)
+    recibe_pension     Boolean        @default(false)
+    vacuna_covid       Boolean        @default(false)
 
     //FOREIGN KEY
     jefeFamilia   JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])

@@ -1,6 +1,7 @@
 import { Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { type FieldErrors, type UseFormRegister } from "react-hook-form";
 import { type JefeProps } from "./GreatForm";
+import { Checkbox } from "../Checkbox";
 
 interface Props {
   register: UseFormRegister<JefeProps>;
@@ -39,6 +40,7 @@ export const DocumentosForm = ({ register, errors }: Props) => {
           label="Cedula:"
           placeholder="Ejemplo: 1234578"
           type="text"
+          variant="bordered"
           {...register("documentos.numeroDocumento", {
             required: "Este campo es obligatorio",
             pattern: {
@@ -50,6 +52,7 @@ export const DocumentosForm = ({ register, errors }: Props) => {
               message: "Corrija el numero de cedula por favor.",
             },
           })}
+          maxLength={8}
           autoFocus
           isInvalid={!!errors?.documentos?.numeroDocumento}
           errorMessage={errors?.documentos?.numeroDocumento?.message}
@@ -92,12 +95,43 @@ export const DocumentosForm = ({ register, errors }: Props) => {
       <div className="col-span-4">
         <Textarea
           fullWidth
-          label="Condicion:"
-          placeholder="Escriba si tiene alguna condicion especial"
+          label="Discapacidad:"
+          placeholder="Escriba si tiene alguna discapacidad"
           {...register("documentos.discapacidad")}
-          isInvalid={!!errors?.documentos?.discapacidad}
-          errorMessage={errors?.documentos?.discapacidad?.message}
         />
+      </div>
+
+      <div className="col-span-12">
+        <Textarea
+          fullWidth
+          label="Sufre enfermedad cronica? (especifique):"
+          placeholder="Escriba si tiene alguna enfermedad cronica"
+          {...register("documentos.enfermedad_cronica")}
+        />
+      </div>
+
+      <div className="col-span-12 grid grid-cols-12  place-content-center  gap-4">
+        <div className="col-span-4">
+          <Checkbox
+            label="Posee Carnet CONAPDIS"
+            name="documentos.carnet_conapdis"
+            register={register}
+          />
+        </div>
+        <div className="col-span-4">
+          <Checkbox
+            label="Vacuna COVID"
+            name="documentos.vacuna_covid"
+            register={register}
+          />
+        </div>
+        <div className="col-span-4">
+          <Checkbox
+            label="Recibe pension?"
+            name="documentos.recibe_pension"
+            register={register}
+          />
+        </div>
       </div>
     </div>
   );
