@@ -84,6 +84,8 @@ CREATE TABLE `Censo` (
     `cajasClapsPorRecibir` INTEGER NOT NULL DEFAULT 0,
     `fecha` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `condicion_vivienda` ENUM('PROPIA', 'ALQUILADA', 'ARRIMADO', 'OTRO') NOT NULL,
+    `datos_validado` BOOLEAN NOT NULL DEFAULT false,
+    `encargado_validacion_id` VARCHAR(191) NULL,
     `consejoComunalId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -154,7 +156,7 @@ CREATE TABLE `Familiar` (
     `email` VARCHAR(191) NOT NULL,
     `profesion` VARCHAR(191) NOT NULL,
     `ocupacion` VARCHAR(191) NOT NULL,
-    `trabaja` BOOLEAN NOT NULL,
+    `trabaja` ENUM('PUBLICA', 'PRIVADO', 'NO_TRABAJA') NOT NULL DEFAULT 'NO_TRABAJA',
     `nivel_educativo` VARCHAR(191) NOT NULL,
     `estudiando` VARCHAR(191) NOT NULL,
     `deporte` VARCHAR(191) NOT NULL,
