@@ -87,9 +87,8 @@ export const TrabajoForm = ({ register, errors }: Props) => {
           })}
           items={ESTADOS_TRABAJOS}
           label="Sector de trabajo:"
-          errorMessage={
-            errors.trabajo?.trabaja && errors.trabajo?.trabaja.message
-          }
+          errorMessage={errors.trabajo?.trabaja?.message}
+          isInvalid={!!errors.trabajo?.trabaja}
         >
           {(trabajo) => (
             <SelectItem key={trabajo.key}>{trabajo.label}</SelectItem>

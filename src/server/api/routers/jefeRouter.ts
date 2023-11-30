@@ -166,7 +166,6 @@ export const jefeRouter = createTRPCRouter({
           id: input.censoId,
         },
       });
-      console.log(censoDelete);
 
       const jefeDeleted = await ctx.prisma.jefeFamilia.delete({
         where: {
@@ -174,7 +173,6 @@ export const jefeRouter = createTRPCRouter({
         },
       });
 
-      console.log(jefeDeleted);
       return jefeDeleted;
     }),
 
@@ -239,7 +237,7 @@ export const jefeRouter = createTRPCRouter({
 
       return jefeUpdated;
     }),
-
+  // TRabajo
   changeJefe: publicProcedure
     .input(
       z.object({
@@ -275,17 +273,28 @@ export const jefeRouter = createTRPCRouter({
           id: infoJefe?.id,
         },
         data: {
+          email: input.newJefe.email,
+          telefono: input.newJefe.telefono,
+          numeroDocumento: input.newJefe.numeroDocumento,
+          tipoDocumento: input.newJefe.tipoDocumento,
           apellidos: infoFamiliar?.apellidos,
           codCarnetPatria: infoFamiliar?.codCarnetPatria,
-          tipoDocumento: input.newJefe.tipoDocumento,
           discapacidad: infoFamiliar?.discapacidad,
           nombres: infoFamiliar?.nombres,
-          numeroDocumento: input.newJefe.numeroDocumento,
           genero: infoFamiliar?.genero,
-          telefono: input.newJefe.telefono,
           observacion: infoFamiliar?.observacion,
           fechaNacimiento: infoFamiliar?.fechaNacimiento,
-          email: input.newJefe.email,
+          deporte: infoFamiliar.deporte,
+          enfermedad_cronica: infoFamiliar.enfermedad_cronica,
+          estado_civil: infoFamiliar.estado_civil,
+          estudiando: infoFamiliar.estudiando,
+          nivel_educativo: infoFamiliar.nivel_educativo,
+          ocupacion: infoFamiliar.ocupacion,
+          trabaja: infoFamiliar.trabaja,
+          vacuna_covid: infoFamiliar.vacuna_covid,
+          serialCarnetPatria: infoFamiliar.serialCarnetPatria,
+          recibe_pension: infoFamiliar.recibe_pension,
+          profesion: infoFamiliar.profesion,
         },
       });
 
@@ -304,6 +313,19 @@ export const jefeRouter = createTRPCRouter({
           numeroDocumento: infoJefe.numeroDocumento,
           observacion: infoJefe.observacion,
           serialCarnetPatria: infoJefe.serialCarnetPatria,
+          deporte: infoJefe.deporte,
+          email: infoJefe.email,
+          enfermedad_cronica: infoJefe.enfermedad_cronica,
+          estado_civil: infoJefe.estado_civil,
+          estudiando: infoJefe.estudiando,
+          nivel_educativo: infoJefe.nivel_educativo,
+          ocupacion: infoJefe.ocupacion,
+          profesion: infoJefe.profesion,
+          recibe_pension: infoJefe.recibe_pension,
+          trabaja: infoJefe.trabaja,
+          telefono: infoJefe.telefono,
+          vacuna_covid: infoJefe.vacuna_covid,
+
           parentesco:
             infoFamiliar.parentesco.at(-1) === "o"
               ? infoFamiliar.parentesco.slice(

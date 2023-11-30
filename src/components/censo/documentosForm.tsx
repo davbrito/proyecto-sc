@@ -22,6 +22,8 @@ export const DocumentosForm = ({ register, errors }: Props) => {
               value: true,
             },
           })}
+          isInvalid={!!errors.documentos?.tipoDocumento}
+          errorMessage={errors.documentos?.tipoDocumento?.message}
         >
           <SelectItem value={"v"} key={"v"}>
             Venezolano

@@ -531,7 +531,7 @@ const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
           {() => (
             <>
               <ModalHeader as={"h2"} className="mx-auto text-2xl">
-                Datos del familiars
+                Datos del familiar
               </ModalHeader>
               <ModalBody>
                 <FamiliarForm

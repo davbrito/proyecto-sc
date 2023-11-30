@@ -692,6 +692,7 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
                 {...field}
                 items={ESTADOS_TRABAJOS}
                 label="Sector de trabajo:"
+                selectedKeys={[field.value]}
                 errorMessage={fieldState.error?.message}
                 isInvalid={!!fieldState.error}
               >
