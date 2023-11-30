@@ -12,13 +12,10 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { api } from "~/utils/api";
-import { CustomLoading } from "../Loading";
-import { ErrorMessage } from "../ErrorMessage";
-import { EncargadoForm } from "./EncargadoForm";
 import DeleteConfirmation from "../DeleteConfirmation";
-import { type GetResult } from "@prisma/client/runtime";
+import { EncargadoForm } from "./EncargadoForm";
 
 interface Props {
   consejoId: number;
