@@ -4,6 +4,10 @@ import {
   CardFooter,
   CardHeader,
   Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
   Table,
   TableBody,
   TableCell,
@@ -11,12 +15,14 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import { ErrorMessage } from "../ErrorMessage";
 import { LayoutContent } from "../Layout";
 import { type ROLE } from "@prisma/client";
+import { JefeCalleForm } from "../jefe-calle/JefeCalleForm";
+import JefeCalleList from "../jefe-calle/JefeCalleList";
 
 interface Props {
   consejoId: string;
@@ -29,6 +35,11 @@ export const ConsejoInfor = ({ consejoId, role }: Props) => {
     },
     { cacheTime: 30 * 60 * 1000 }
   );
+
+  const { data: lideres, isLoading: lideresIsLoading } =
+    api.lider.getAll.useQuery();
+
+  const [openJefeCalle, setOpenJefeCalle] = useState(false);
 
   if (isLoading) return <CustomLoading className="place-content-center" />;
 
@@ -148,55 +159,54 @@ export const ConsejoInfor = ({ consejoId, role }: Props) => {
               Lideres de calle
             </h1>
             {role === "ADMIN" && (
-              <button className="h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600">
+              <button
+                onClick={() => {
+                  setOpenJefeCalle(true);
+                }}
+                className="h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600"
+              >
                 Añadir
               </button>
             )}
           </CardHeader>
           <CardBody>
-            <Table>
-              <TableHeader>
-                <TableColumn align="center">N#</TableColumn>
-                <TableColumn align="center">Cedula</TableColumn>
-                <TableColumn align="center">Nacionalidad</TableColumn>
-                <TableColumn align="center" className="w-max">
-                  Fecha de nacimiento
-                </TableColumn>
-                <TableColumn align="center">Genero</TableColumn>
-                <TableColumn align="center">Profesion</TableColumn>
-                <TableColumn align="center">Nombres y Apellidos</TableColumn>
-                <TableColumn align="center">Familias</TableColumn>
-                <TableColumn align="center">Combos</TableColumn>
-                <TableColumn align="center">Telefono</TableColumn>
-                <TableColumn align="center">Correo Electronico</TableColumn>
-                <TableColumn align="center">Direccion</TableColumn>
-              </TableHeader>
-              <TableBody>
-                <TableRow key={1}>
-                  <TableCell>1</TableCell>
-                  <TableCell>17339263</TableCell>
-                  <TableCell>V</TableCell>
-                  <TableCell>3/6/1985</TableCell>
-                  <TableCell>F</TableCell>
-                  <TableCell>AMA DE CASA</TableCell>
-                  <TableCell>YHANEDDY RIVAS</TableCell>
-                  <TableCell>28</TableCell>
-                  <TableCell>29</TableCell>
-                  <TableCell>04168674166</TableCell>
-                  <TableCell>yhannedys15@gmail.com</TableCell>
-                  <TableCell>CLL. PIJIGUAOS, MZNA 16, CASA 14</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-
+            {lideresIsLoading && <CustomLoading />}
+            {lideres && <JefeCalleList lideres={lideres} />}
             <div className="mt-2 text-center">
               <h4 className="mx-auto font-normal">
-                TOTAL COMBOS: <span className="font-bold">56</span>
+                TOTAL COMBOS:{" "}
+                <span className="font-bold">{data.cantidad_combos}</span>
               </h4>
             </div>
           </CardBody>
         </Card>
       </div>
+
+      <Modal
+        isOpen={openJefeCalle}
+        aria-label="create-jefe-calle-form"
+        size="2xl"
+        scrollBehavior="inside"
+        onClose={() => {
+          setOpenJefeCalle(false);
+        }}
+        placement="center"
+      >
+        <ModalContent>
+          {(close) => (
+            <>
+              <ModalHeader>
+                <h2 className=" mx-auto text-2xl">
+                  Seleccion de jefe de calle
+                </h2>
+              </ModalHeader>
+              <ModalBody>
+                <JefeCalleForm consejoId={parseInt(consejoId)} />
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 };

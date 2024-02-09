@@ -646,7 +646,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
           <div className="col-span-12 grid grid-cols-12  place-content-center  gap-4">
             <div className="col-span-4">
               <Checkbox
-                label="Posee Carnet CONAPDIS"
+                label="¿Posee Carnet CONAPDIS?"
                 name="documentos.carnet_conapdis"
                 register={register}
               />
@@ -660,7 +660,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
             </div>
             <div className="col-span-4">
               <Checkbox
-                label="Recibe pension?"
+                label="¿Recibe pension?"
                 name="documentos.recibe_pension"
                 register={register}
               />
@@ -679,7 +679,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                 <Input
                   fullWidth
                   variant="bordered"
-                  label="Nivel educativo? "
+                  label="Nivel educativo: "
                   placeholder="Escriba el nivel educativo."
                   type="text"
                   {...field}
@@ -741,7 +741,7 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                 <Input
                   variant="bordered"
                   fullWidth
-                  label="Estudia? (describa en caso de si):"
+                  label="¿Estudia? (describa en caso de si):"
                   placeholder="Describa lo que estudio."
                   type="text"
                   {...field}

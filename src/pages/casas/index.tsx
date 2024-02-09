@@ -10,7 +10,7 @@ import { verifySession } from "~/utils/verifySession";
 const CasaIndex = () => {
   return (
     <LayoutContent>
-      <div className="container my-5 place-content-center">
+      <div className="container mx-auto my-5 place-content-center">
         <Card>
           <CardBody>
             <h3 className="mb-6 text-center text-4xl font-light">

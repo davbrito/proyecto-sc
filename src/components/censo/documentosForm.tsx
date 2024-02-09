@@ -115,7 +115,7 @@ export const DocumentosForm = ({ register, errors }: Props) => {
       <div className="col-span-12 grid grid-cols-12  place-content-center  gap-4">
         <div className="col-span-4">
           <Checkbox
-            label="Posee Carnet CONAPDIS"
+            label="¿Posee Carnet CONAPDIS?"
             name="documentos.carnet_conapdis"
             register={register}
           />
@@ -129,7 +129,7 @@ export const DocumentosForm = ({ register, errors }: Props) => {
         </div>
         <div className="col-span-4">
           <Checkbox
-            label="Recibe pension?"
+            label="¿Recibe pension?"
             name="documentos.recibe_pension"
             register={register}
           />

@@ -150,7 +150,6 @@ export const EncargadoList = ({
           setEditEncargado({
             isOpen: false,
           });
-          refreshData();
         }}
         placement="center"
       >

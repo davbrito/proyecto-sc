@@ -130,11 +130,14 @@ export const jefeRouter = createTRPCRouter({
     }),
 
   getAll: publicProcedure
-    .input(z.object({ consejoId: z.number() }))
+    .input(
+      z.object({ consejoId: z.number(), casas: z.boolean().default(false) })
+    )
     .query(async ({ ctx, input }) => {
       const jefes = await ctx.prisma.jefeFamilia.findMany({
         include: {
           censo: true,
+          casa: input.casas,
         },
       });
 
@@ -341,4 +344,12 @@ export const jefeRouter = createTRPCRouter({
 
       return { newJefe, newFamiliar };
     }),
+  // getWithCasas: publicProcedure
+  //   .input(z.object({ consejoId: z.number() }))
+  //   .query(async ({ ctx, input }) => {
+  //     const { consejoId } = input;
+
+  //     return await ctx.prisma.
+
+  //   }),
 });

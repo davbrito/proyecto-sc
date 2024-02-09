@@ -48,4 +48,22 @@ export const casaRouter = createTRPCRouter({
 
       return;
     }),
+
+  getAllByConsejoId: publicProcedure
+    .input(z.object({ consejoId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const { consejoId } = input;
+      const jefes = await ctx.prisma.jefeFamilia.findMany({
+        include: {
+          censo: true,
+          casa: true,
+        },
+      });
+
+      const casas = jefes
+        .filter((jefe) => jefe.censo.consejoComunalId === input.consejoId)
+        .map((jefe) => jefe.casa);
+
+      return casas;
+    }),
 });

@@ -7,7 +7,7 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
 
 interface EncargadoData {
@@ -44,7 +44,6 @@ interface Props {
 
 const initialValues = {
   cargo: "",
-  codigoTelefono: "",
   telefono: "",
   email: "",
   tipoDocumento: "",
@@ -71,13 +70,13 @@ export const EncargadoForm = ({ consejoId, oldData, closeModal }: Props) => {
     formState: { errors, defaultValues },
     setError,
     watch,
+    control,
   } = useForm<EncargadoData>({
     defaultValues: !oldData
       ? initialValues
       : {
           cargo: oldData?.cargo,
-          codigoTelefono: oldData?.telefono.slice(0, 4),
-          telefono: oldData?.telefono.slice(4),
+          telefono: oldData?.telefono,
           email: oldData?.email,
           tipoDocumento: oldData?.cedula.slice(0, 1),
           numeroDocumento: oldData?.cedula.slice(1),
@@ -251,7 +250,7 @@ export const EncargadoForm = ({ consejoId, oldData, closeModal }: Props) => {
             errorMessage={errors.numeroDocumento?.message}
           />
         </div>
-        <div className="col-span-2">
+        {/* <div className="col-span-2">
           <Select
             label="Codigo:"
             placeholder="Ej: 0414"
@@ -268,9 +267,42 @@ export const EncargadoForm = ({ consejoId, oldData, closeModal }: Props) => {
           >
             {(item) => <SelectItem key={item.key}>{item.key}</SelectItem>}
           </Select>
-        </div>
-        <div className="col-span-4">
-          <Input
+        </div> */}
+        <div className="col-span-6">
+          <Controller
+            control={control}
+            name="telefono"
+            rules={{
+              required: { value: true, message: "Campo requerido" },
+              pattern: {
+                value: /^(0414|0424|0412|0416|0426)[-]\d{7}$/,
+                message: "El numero no es valido.",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                fullWidth
+                label="Numero de contacto:"
+                placeholder="Ej: 0414-1234567"
+                variant="bordered"
+                type="text"
+                maxLength={12}
+                errorMessage={fieldState.error?.message}
+                isInvalid={!!fieldState.error?.message}
+                {...field}
+                value={field.value ?? ""}
+                onChange={(e) => {
+                  let { value } = e.target;
+                  value = value.replace(/[^\d]/g, "");
+                  if (value.length > 4) {
+                    value = value.slice(0, 4) + "-" + value.slice(4, 11);
+                  }
+                  field.onChange(value);
+                }}
+              />
+            )}
+          />
+          {/* <Input
             label="Telefono:"
             placeholder="Ej:1234567"
             {...register("telefono", {
@@ -285,7 +317,7 @@ export const EncargadoForm = ({ consejoId, oldData, closeModal }: Props) => {
             })}
             isInvalid={!!errors.telefono}
             errorMessage={errors.telefono?.message}
-          />
+          /> */}
         </div>
         <div className="col-span-4">
           <Input

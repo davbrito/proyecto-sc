@@ -250,7 +250,6 @@ model EncargadoClap {
     email     String
 
     fechaRegistro    DateTime       @default(now())
-    //FOREIGN KEY
     ConsejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
     consejoComunalId Int
 }

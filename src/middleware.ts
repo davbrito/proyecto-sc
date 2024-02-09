@@ -46,8 +46,11 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        return true;
+        return !!token;
       },
+    },
+    pages: {
+      signIn: "/login",
     },
   }
 );
@@ -55,14 +58,14 @@ export default withAuth(
 export const config = {
   matcher: [
     "/",
-    // "/consejo-comunal",
-    // "/consejo-comunal/:path*",
-    // "/consejo-comunal/(.*)",
-    // "/consejo-comunal/:id",
-    // "/consejo-comunal/:id/censo",
-    // "/consejo-comunal/:id/censo/create",
-    // "/consejo-comunal/:id/censo/estadisticas",
-    // "/consejo-comunal/:id/censo/:jefeId",
-    // "/profile/:path*",
+    "/consejo-comunal",
+    "/consejo-comunal/:path*",
+    "/consejo-comunal/(.*)",
+    "/consejo-comunal/:id",
+    "/consejo-comunal/:id/censo",
+    "/consejo-comunal/:id/censo/create",
+    "/consejo-comunal/:id/censo/estadisticas",
+    "/consejo-comunal/:id/censo/:jefeId",
+    "/profile/:path*",
   ],
 };

@@ -7,6 +7,7 @@ import { censoRouter } from "./routers/censoRouter";
 import { encargadosRouter } from "./routers/encargadosRouter";
 import { lideresRouter } from "./routers/liderRouter";
 import { consejoRouter } from "./routers/consejoRouter";
+import { liderCalleRouter } from "./routers/liderCalleRouter";
 
 /**
  * This is the primary router for your server.

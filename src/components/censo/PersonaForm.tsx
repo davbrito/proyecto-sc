@@ -197,15 +197,15 @@ export const PersonaForm = ({
           rules={{
             required: { value: true, message: "Campo requerido" },
             pattern: {
-              value: /^(0414|0424|0412|0416|0426)[-]\d{7}$/,
+              value: /^(02)(\d{1,2})[-]\d{7}$/,
               message: "El numero no es valido.",
             },
           }}
           render={({ field, fieldState }) => (
             <Input
               fullWidth
-              label="Numero de contacto:"
-              placeholder="Ej: 0414-1234567"
+              label="Telefono de habitacion:"
+              placeholder="Ej: 0286-1234567"
               variant="bordered"
               type="text"
               maxLength={12}

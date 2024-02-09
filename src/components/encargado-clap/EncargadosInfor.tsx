@@ -23,9 +23,12 @@ export const EncargadosInfor = ({
   role?: ROLE;
 }) => {
   const { data, isLoading, refetch, error, isFetching } =
-    api.encargados.getByConsejoId.useQuery({
-      id: consejoId,
-    });
+    api.encargados.getByConsejoId.useQuery(
+      {
+        id: consejoId,
+      },
+      { cacheTime: 30 * 60 * 1000, refetchOnWindowFocus: false }
+    );
 
   const [isCreateEncargadoModal, setIsCreateEncargadoModal] = useState(false);
 

@@ -107,7 +107,7 @@ export const ProfileData = () => {
                           onSuccess(data, variables, context) {
                             close();
                           },
-                        },
+                        }
                       );
                     }
                   }}

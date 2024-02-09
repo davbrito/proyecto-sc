@@ -7,8 +7,8 @@ import { verifySession } from "~/utils/verifySession";
 const Index = () => {
   return (
     <LayoutContent>
-      <div className="container my-5 place-content-center">
-        <Card>
+      <div className="container mx-auto my-5 place-content-center">
+        <Card className="">
           <CardBody>
             <h3 className="mb-6 text-center text-4xl font-light">
               Lista de familiares agregados

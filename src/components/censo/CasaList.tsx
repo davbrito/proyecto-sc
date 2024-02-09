@@ -48,19 +48,33 @@ export const CasaList = () => {
       {data.length > 0 && (
         <Table className="mt-2 h-auto min-w-full text-center">
           <TableHeader>
-            <TableColumn align="center" className="text-xl font-semibold">
-              N° Calle
-            </TableColumn>
-            <TableColumn align="center" className="text-xl font-semibold">
+            <TableColumn
+              align="center"
+              className="text-center text-xl font-semibold"
+            >
               N° Manzana
             </TableColumn>
-            <TableColumn align="center" className="text-xl font-semibold">
+            <TableColumn
+              align="center"
+              className="text-center text-xl font-semibold"
+            >
+              N° Calle
+            </TableColumn>
+            <TableColumn
+              align="center"
+              className="text-center text-xl font-semibold"
+            >
               N° Casa
             </TableColumn>
             <TableColumn
               align="center"
-              width={50}
-              className="text-xl font-semibold"
+              className="text-center text-xl font-semibold"
+            >
+              Jefe familia
+            </TableColumn>
+            <TableColumn
+              align="center"
+              className="text-center text-xl font-semibold"
             >
               Acciones
             </TableColumn>
@@ -69,9 +83,15 @@ export const CasaList = () => {
             {data &&
               data.map(({ id, calle, casa, manzana, jefeFamilia }) => (
                 <TableRow key={id}>
-                  <TableCell>{calle.toUpperCase()}</TableCell>
                   <TableCell>{manzana}</TableCell>
+                  <TableCell>{calle.toUpperCase()}</TableCell>
                   <TableCell>{casa}</TableCell>
+                  <TableCell className="uppercase">
+                    {jefeFamilia.map(
+                      (jefe) => jefe.apellidos + " " + jefe.nombres
+                    )}
+                    .
+                  </TableCell>
                   <TableCell>
                     {jefeFamilia[0]?.id ? (
                       <Link

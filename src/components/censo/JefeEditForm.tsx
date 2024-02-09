@@ -370,7 +370,7 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
             rules={{
               required: { value: true, message: "Campo requerido" },
               pattern: {
-                value: /^(0414|0424|0412|0416|0426)[-]\d{7}$/,
+                value: /^(02)(\d{1,2})[-]\d{7}$/,
                 message: "El numero no es valido.",
               },
             }}
@@ -378,7 +378,7 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
               <Input
                 fullWidth
                 label="Telefono habitacion:"
-                placeholder="Ej: 0414-1234567"
+                placeholder="Ej: 0286-1234567"
                 variant="bordered"
                 type="text"
                 maxLength={12}
@@ -565,7 +565,7 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
         <div className="col-span-12 grid grid-cols-12  place-content-center  gap-4">
           <div className="col-span-4">
             <Checkbox
-              label="Posee Carnet CONAPDIS"
+              label="¿Posee Carnet CONAPDIS?"
               name="carnet_conapdis"
               register={register}
             />
@@ -579,7 +579,7 @@ const JefeEditForm = ({ jefe, onClose }: Props) => {
           </div>
           <div className="col-span-4">
             <Checkbox
-              label="Recibe pension?"
+              label="¿Recibe pension?"
               name="recibe_pension"
               register={register}
             />
