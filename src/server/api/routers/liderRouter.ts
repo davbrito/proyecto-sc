@@ -8,27 +8,113 @@ import {
 } from "~/server/api/trpc";
 
 export const lideresRouter = createTRPCRouter({
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const lideres = await ctx.prisma.liderCalle.findMany({
-      include: { casa: true },
-    });
-    return lideres;
-  }),
+  getAll: publicProcedure
+    .input(z.object({ consejoComunalId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const consejo = await ctx.prisma.consejoComunal.findFirst({
+        where: { id: input.consejoComunalId },
+        include: {
+          censos: {
+            include: { jefeFamilia: { include: { casa: true } } },
+          },
+        },
+      });
 
+      if (!consejo)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          cause: "CONSEJO COMUNAL NO EXISTE",
+        });
+
+      const censos = consejo.censos.map((censo) => censo);
+
+      if (!censos)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          cause: "NO POSEE CENSO REGISTRADO",
+        });
+
+      const estadistica: {
+        manzana: string;
+        calle: string;
+        cajasClaps: number;
+        familias: number;
+        jefeFamiliaId: bigint;
+      }[] = [];
+
+      censos.forEach((censo) => {
+        const { jefeFamilia } = censo;
+        const { casa } = jefeFamilia || {};
+
+        if (casa) {
+          const { manzana, calle } = casa;
+          const index = estadistica.findIndex(
+            (casa) => casa["manzana"] === manzana && casa["calle"] === calle
+          );
+
+          const calleExistente = estadistica[index];
+
+          if (calleExistente) {
+            calleExistente.cajasClaps += censo.cajasClapsPorRecibir;
+            calleExistente.familias += censo.cargaFamiliar;
+          } else {
+            estadistica.push({
+              manzana: manzana ?? "",
+              calle: calle ?? "",
+              cajasClaps: censo.cajasClapsPorRecibir,
+              familias: censo.cargaFamiliar,
+              jefeFamiliaId: censo?.jefeFamilia?.id ?? BigInt(1),
+            });
+          }
+        }
+      });
+
+      const lideres = await ctx.prisma.lider.findMany({
+        where: { consejoComunalId: input.consejoComunalId },
+        include: {
+          jefeFamilia: {
+            select: {
+              id: true,
+              nombres: true,
+              apellidos: true,
+              tipoDocumento: true,
+              numeroDocumento: true,
+              profesion: true,
+              casa: true,
+              genero: true,
+              telefono: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      const lideresEstadistica = lideres.map((lider) => {
+        const estadisticaLider = estadistica.find(
+          (e) => e.jefeFamiliaId === lider.jefeFamiliaId
+        ) || { cajasClaps: 0, familias: 0 };
+        return {
+          ...lider,
+          cajasClaps: estadisticaLider.cajasClaps,
+          familias: estadisticaLider.familias,
+        };
+      });
+
+      return lideresEstadistica;
+    }),
   getById: publicProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
-      const lideres = await ctx.prisma.liderCalle.findFirst({
+      const lideres = await ctx.prisma.lider.findFirst({
         where: { id: input.id },
       });
-
       return lideres;
     }),
   create: publicProcedure
     .input(
       z.object({
         jefeId: z.bigint(),
-        casaId: z.bigint(),
+        consejoComunalId: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -45,24 +131,20 @@ export const lideresRouter = createTRPCRouter({
           message: "JEFE DE FAMILIA NO EXISTE",
         });
 
-      return await ctx.prisma.liderCalle.create({
+      const existe = await ctx.prisma.lider.count({
+        where: { jefeFamiliaId: input.jefeId },
+      });
+
+      if (existe)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          cause: "JEFE FAMILIA YA ES LIDER DE CALLE",
+        });
+
+      return await ctx.prisma.lider.create({
         data: {
-          apellidos: dataJefeFamilia.apellidos,
-          cedula: dataJefeFamilia.numeroDocumento,
-          email: dataJefeFamilia.email,
-          genero: dataJefeFamilia.genero,
-          nacionalidad:
-            dataJefeFamilia.tipoDocumento.slice(1).toUpperCase() === "V"
-              ? "VENEZOLANO"
-              : "EXTRANJERO",
-          nombres: dataJefeFamilia.nombres,
-          profesion: dataJefeFamilia.profesion,
-          telefono: dataJefeFamilia.telefono,
-          casaId: input.casaId,
-          cantidad_familias: 0,
-          cantidad_combos: 0,
-          longitud: 0.0,
-          latitud: 0.0,
+          jefeFamiliaId: input.jefeId,
+          consejoComunalId: input.consejoComunalId,
         },
       });
     }),
@@ -70,7 +152,7 @@ export const lideresRouter = createTRPCRouter({
   delete: publicProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.liderCalle.delete({
+      return await ctx.prisma.lider.delete({
         where: { id: input.id },
       });
     }),

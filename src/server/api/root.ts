@@ -7,6 +7,7 @@ import { censoRouter } from "./routers/censoRouter";
 import { encargadosRouter } from "./routers/encargadosRouter";
 import { lideresRouter } from "./routers/liderRouter";
 import { consejoRouter } from "./routers/consejoRouter";
+import { liderComunidadRouter } from "./routers/liderComunidadRouter";
 
 /**
  * This is the primary router for your server.
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   encargados: encargadosRouter,
   lider: lideresRouter,
   consejo: consejoRouter,
+  liderComunidad: liderComunidadRouter,
 });
 
 // export type definition of API

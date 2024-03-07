@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 
 interface Props {
   consejoId: number;
+  onClose?: () => void;
 }
 
 interface Casa {
@@ -18,27 +19,32 @@ interface JefeCalleProps {
   jefeId: number;
 }
 
-export const JefeCalleForm = ({ consejoId }: Props) => {
+export const LiderCalleForm = ({ consejoId, onClose }: Props) => {
   const { data } = api.jefe.getAll.useQuery({ consejoId, casas: true });
   const { data: casas } = api.casa.getAllByConsejoId.useQuery({ consejoId });
   const convertJefeCalle = api.lider.create.useMutation();
-  const [selectedJefe, setSelectedJefe] = useState<Set<string | number>>(
-    new Set("")
-  );
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setError,
   } = useForm<JefeCalleProps>();
 
   const onSubmit = handleSubmit(async ({ casaId, jefeId }) => {
     try {
       await convertJefeCalle.mutateAsync(
-        { casaId: BigInt(casaId), jefeId: BigInt(jefeId) },
         {
-          onSuccess(data, variables, context) {},
-          onError(error, variables, context) {},
+          jefeId: BigInt(jefeId),
+          consejoComunalId: consejoId,
+        },
+        {
+          onSuccess(data, variables, context) {
+            onClose && onClose();
+          },
+          onError(error, variables, context) {
+            setError("root", { message: error.message });
+          },
         }
       );
     } catch (error) {}
@@ -58,6 +64,8 @@ export const JefeCalleForm = ({ consejoId }: Props) => {
             items={data}
             placeholder="Seleccione una opcion"
             label="Seleccione un jefe:"
+            isInvalid={!!errors.jefeId}
+            errorMessage={errors.jefeId?.message}
           >
             {({ id, nombres, apellidos, tipoDocumento, numeroDocumento }) => (
               <SelectItem key={id.toString()}>
@@ -74,7 +82,7 @@ export const JefeCalleForm = ({ consejoId }: Props) => {
             )}
           </Select>
         </div>
-        <div className="col-span-6">
+        {/* <div className="col-span-6">
           {casas.length > 0 && (
             <Select
               items={casas as Casa[]}
@@ -91,9 +99,13 @@ export const JefeCalleForm = ({ consejoId }: Props) => {
               )}
             </Select>
           )}
-        </div>
+        </div> */}
       </div>
-
+      {errors.root && (
+        <div className="col-span-12 mt-2 text-center">
+          <em className="font-bold text-red-700">{errors.root.message}</em>
+        </div>
+      )}
       <Button color="primary" type="submit" className="mt-4 w-full">
         Convertir en jefe de calle
       </Button>

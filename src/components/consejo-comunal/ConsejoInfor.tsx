@@ -8,12 +8,6 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
 } from "@nextui-org/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
@@ -21,25 +15,24 @@ import { CustomLoading } from "../Loading";
 import { ErrorMessage } from "../ErrorMessage";
 import { LayoutContent } from "../Layout";
 import { type ROLE } from "@prisma/client";
-import { JefeCalleForm } from "../jefe-calle/JefeCalleForm";
-import JefeCalleList from "../jefe-calle/JefeCalleList";
+import LiderComunidadList from "../lider-comunidad/LiderComunidadList";
+import { LiderComunidadForm } from "../lider-comunidad/LiderComunidadForm";
+import LiderCalle from "../lider-calle/LiderCalle";
+import LiderComunidad from "../lider-comunidad/LiderComunidad";
 
 interface Props {
   consejoId: string;
-  role?: ROLE;
+  role: ROLE;
 }
 export const ConsejoInfor = ({ consejoId, role }: Props) => {
-  const { data, error, isLoading, refetch } = api.consejo.getById.useQuery(
+  const { data, error, isLoading } = api.consejo.getById.useQuery(
     {
       id: parseInt(consejoId),
     },
     { cacheTime: 30 * 60 * 1000 }
   );
 
-  const { data: lideres, isLoading: lideresIsLoading } =
-    api.lider.getAll.useQuery();
-
-  const [openJefeCalle, setOpenJefeCalle] = useState(false);
+  const [openJefeComunidad, setOpenJefeComunidad] = useState(false);
 
   if (isLoading) return <CustomLoading className="place-content-center" />;
 
@@ -153,60 +146,10 @@ export const ConsejoInfor = ({ consejoId, role }: Props) => {
           </CardFooter>
         </Card>
 
-        <Card className="my-4">
-          <CardHeader className="relative">
-            <h1 className="mx-auto flex-shrink text-center text-2xl font-medium">
-              Lideres de calle
-            </h1>
-            {role === "ADMIN" && (
-              <button
-                onClick={() => {
-                  setOpenJefeCalle(true);
-                }}
-                className="h-fit w-fit rounded-md border-none bg-green-700 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600"
-              >
-                Añadir
-              </button>
-            )}
-          </CardHeader>
-          <CardBody>
-            {lideresIsLoading && <CustomLoading />}
-            {lideres && <JefeCalleList lideres={lideres} />}
-            <div className="mt-2 text-center">
-              <h4 className="mx-auto font-normal">
-                TOTAL COMBOS:{" "}
-                <span className="font-bold">{data.cantidad_combos}</span>
-              </h4>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
+        <LiderCalle role={role} consejoId={parseInt(consejoId)} />
 
-      <Modal
-        isOpen={openJefeCalle}
-        aria-label="create-jefe-calle-form"
-        size="2xl"
-        scrollBehavior="inside"
-        onClose={() => {
-          setOpenJefeCalle(false);
-        }}
-        placement="center"
-      >
-        <ModalContent>
-          {(close) => (
-            <>
-              <ModalHeader>
-                <h2 className=" mx-auto text-2xl">
-                  Seleccion de jefe de calle
-                </h2>
-              </ModalHeader>
-              <ModalBody>
-                <JefeCalleForm consejoId={parseInt(consejoId)} />
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+        <LiderComunidad role={role} consejoId={parseInt(consejoId)} />
+      </div>
     </>
   );
 };

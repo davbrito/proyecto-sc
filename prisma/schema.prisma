@@ -89,9 +89,11 @@ model ConsejoComunal {
     fecha_registro    DateTime @default(now())
 
     //FOREIGN KEY
-    censos     Censo[]
-    encargados EncargadoClap[]
-    User       User[]
+    censos         Censo[]
+    encargados     EncargadoClap[]
+    User           User[]
+    Lider          Lider[]
+    LiderComunidad LiderComunidad[]
 }
 
 // CENSO 
@@ -116,13 +118,11 @@ model Censo {
 }
 
 model Casa {
-    id      BigInt @id() @default(autoincrement())
-    manzana String
-    casa    String
-    calle   String
-
+    id          BigInt        @id() @default(autoincrement())
+    manzana     String
+    casa        String
+    calle       String
     jefeFamilia JefeFamilia[]
-    liderCalle  LiderCalle?
 }
 
 enum CONDICION_VIVIENDA {
@@ -176,11 +176,13 @@ model JefeFamilia {
     fechaRegistro DateTime @default(now())
 
     //FOREIGN KEY
-    censo    Censo      @relation(fields: [censoId], references: [id])
-    censoId  String     @unique
-    casa     Casa?      @relation(fields: [casaId], references: [id])
-    casaId   BigInt?
-    familiar Familiar[]
+    censo          Censo           @relation(fields: [censoId], references: [id])
+    censoId        String          @unique
+    casa           Casa?           @relation(fields: [casaId], references: [id])
+    casaId         BigInt?
+    familiar       Familiar[]
+    Lider          Lider[]
+    LiderComunidad LiderComunidad?
 }
 
 model Familiar {
@@ -220,23 +222,22 @@ model Familiar {
 
 // Nuevos Modelos
 
-model LiderCalle {
-    id                Int      @unique @default(autoincrement())
-    nombres           String
-    apellidos         String
-    cedula            String
-    telefono          String
-    profesion         String
-    nacionalidad      String
-    genero            String
-    cantidad_familias Int
-    email             String
-    cantidad_combos   Int
-    longitud          Float
-    latitud           Float
-    fechaRegistro     DateTime @default(now())
-    casa              Casa     @relation(fields: [casaId], references: [id])
-    casaId            BigInt   @unique
+model Lider {
+    id               Int            @unique @default(autoincrement())
+    fechaRegistro    DateTime       @default(now())
+    jefeFamiliaId    BigInt         @unique
+    jefeFamilia      JefeFamilia    @relation(fields: [jefeFamiliaId], references: [id])
+    consejoComunalId Int
+    ConsejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+}
+
+model LiderComunidad {
+    id               Int            @unique @default(autoincrement())
+    jefeFamiliaId    BigInt         @unique
+    jefeFamilia      JefeFamilia    @relation(fields: [jefeFamiliaId], references: [id])
+    fechaRegistro    DateTime       @default(now())
+    ConsejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+    consejoComunalId Int
 }
 
 model EncargadoClap {

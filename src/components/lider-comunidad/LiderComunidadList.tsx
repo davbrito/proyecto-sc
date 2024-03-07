@@ -1,3 +1,6 @@
+import React from "react";
+import { type ROLE } from "@prisma/client";
+import { api } from "~/utils/api";
 import {
   Button,
   Table,
@@ -7,99 +10,82 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-
-import { type ROLE, type Casa } from "@prisma/client";
-import { api } from "~/utils/api";
-
-interface JefeFamilia {
-  id: bigint;
-  nombres: string;
-  apellidos: string;
-  tipoDocumento: string;
-  numeroDocumento: string;
-  profesion: string;
-  casa: Casa | null;
-  genero: string;
-  telefono: string;
-  email: string;
-}
-
-interface TuInterfaz {
-  id: number;
-  jefeFamilia: JefeFamilia;
-  cajasClaps: number;
-  familias: number;
-  jefeFamiliaId: bigint;
-  consejoComunalId: number;
-  fechaRegistro: Date;
-}
+import { CustomLoading } from "../Loading";
 
 interface Props {
-  lideres: TuInterfaz[];
   role?: ROLE;
-  update?: () => void;
+  onSuccess?: () => void;
+  consejoId: number;
 }
 
-const LiderCalleList = ({ lideres, role = "LIDER_CALLE", update }: Props) => {
-  const jefeCalle = api.lider.delete.useMutation();
+const LiderComunidadList = ({
+  role = "LIDER_CALLE",
+  onSuccess,
+  consejoId,
+}: Props) => {
+  const deleteLider = api.liderComunidad.delete.useMutation();
+  const { data, isLoading, refetch } = api.liderComunidad.getAll.useQuery({
+    consejoComunalId: consejoId,
+  });
 
   const handleDelete = async (id: number) => {
-    await jefeCalle.mutateAsync(
+    await deleteLider.mutateAsync(
       { id },
       {
         onSuccess(data, variables, context) {
-          update && update();
+          onSuccess && onSuccess();
         },
         onError(error, variables, context) {},
       }
     );
   };
 
+  if (isLoading) return <CustomLoading />;
+
+  if (!data) return null;
+
+  if (data.length === 0)
+    return (
+      <div className="mx-auto min-h-[20vh] w-full place-content-center rounded-3xl border border-gray-400 px-6 py-10">
+        <h2 className="text-center text-2xl font-light">
+          Aun no existen lideres de comunidad registrados.
+        </h2>
+      </div>
+    );
+
   return (
-    <Table>
+    <Table isStriped>
       <TableHeader>
         <TableColumn className="text-center">N#</TableColumn>
         <TableColumn className="text-center">Cedula</TableColumn>
         <TableColumn className="text-center">Nacionalidad</TableColumn>
-        {/* <TableColumn align="center" className="w-max">
-          Fecha de nacimiento
-        </TableColumn> */}
         <TableColumn className="text-center">Genero</TableColumn>
         <TableColumn align="center">Profesion</TableColumn>
         <TableColumn className="text-center">Nombres y Apellidos</TableColumn>
-        <TableColumn className="text-center">Familias</TableColumn>
-        <TableColumn className="text-center">Combos</TableColumn>
         <TableColumn className="text-center">Telefono</TableColumn>
         <TableColumn className="text-center">Correo Electronico</TableColumn>
-        <TableColumn className="text-center">Direccion</TableColumn>
         <TableColumn className="text-center">Acciones</TableColumn>
       </TableHeader>
       <TableBody>
-        {lideres.map(({ jefeFamilia, id, cajasClaps, familias }, index) => (
+        {data.map(({ id, jefeFamilia }, index) => (
           <TableRow key={id} className="text-center uppercase">
             <TableCell>{index + 1}</TableCell>
-            <TableCell>{jefeFamilia.numeroDocumento}</TableCell>
+            <TableCell>
+              {jefeFamilia.tipoDocumento}-{jefeFamilia.numeroDocumento}
+            </TableCell>
             <TableCell>
               {jefeFamilia.tipoDocumento.toUpperCase() === "V"
                 ? "VENEZOLANO"
                 : "EXTRANJERO"}
             </TableCell>
-            {/* <TableCell>3/6/1985</TableCell> */}
             <TableCell>{jefeFamilia.genero}</TableCell>
             <TableCell>{jefeFamilia.profesion}</TableCell>
             <TableCell>
               {jefeFamilia.nombres + " " + jefeFamilia.apellidos}{" "}
             </TableCell>
-            <TableCell>{familias}</TableCell>
-            <TableCell>{cajasClaps}</TableCell>
             <TableCell>{jefeFamilia.telefono}</TableCell>
             <TableCell className="lowercase">{jefeFamilia.email}</TableCell>
-            <TableCell>
-              {jefeFamilia.casa
-                ? `CLL. ${jefeFamilia.casa.calle}, MZNA ${jefeFamilia.casa.manzana},
-              CASA ${jefeFamilia.casa.casa}`
-                : "CLL. NO, MZNA NO, CASA NO"}
-            </TableCell>
+
             <TableCell className="">
               {role === "LIDER_CALLE" ? (
                 <div></div>
@@ -109,7 +95,7 @@ const LiderCalleList = ({ lideres, role = "LIDER_CALLE", update }: Props) => {
                     size={"sm"}
                     className="bg-red-600 text-white transition-all hover:bg-red-800 disabled:bg-red-800"
                     onPress={() => {
-                      handleDelete(parseInt(id.toString()));
+                      handleDelete(id as number);
                     }}
                   >
                     Eliminar
@@ -124,4 +110,4 @@ const LiderCalleList = ({ lideres, role = "LIDER_CALLE", update }: Props) => {
   );
 };
 
-export default LiderCalleList;
+export default LiderComunidadList;

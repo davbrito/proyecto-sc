@@ -61,27 +61,8 @@ export const jefeRouter = createTRPCRouter({
           censos: { include: { jefeFamilia: { include: { casa: true } } } },
         },
       });
+
       return await ctx.prisma.$transaction(async (prisma) => {
-        // const nroMz = newCasa.manzana;
-
-        // const manzanasCC = await ctx.prisma.censo.count({
-        //   where: {
-        //     consejoComunalId: consejoComunalId,
-        //     jefeFamilia: { casa: { manzana: newCasa.manzana } },
-        //   },
-        // });
-
-        // const secuenciaMz = manzanasCC + 1;
-
-        // const jefes = await ctx.prisma.jefeFamilia.findMany({
-        //   orderBy: { id: "desc" },
-        //   take: 1,
-        // });
-
-        // const secJefe = jefes[0]?.id
-        //   ? (jefes[0]?.id + BigInt(1)).toString()
-        //   : "1";
-
         const newJefe = await ctx.prisma.jefeFamilia.create({
           data: {
             nombres: jefe.primerNombre + " " + jefe.segundoNombre,
@@ -98,10 +79,6 @@ export const jefeRouter = createTRPCRouter({
 
             censo: {
               create: {
-                // id: `${nroMz.padStart(2, "0")}${secJefe.padStart(
-                //   3,
-                //   "0"
-                // )}${secuenciaMz.toString().padStart(4, "0")}`,
                 consejoComunal: {
                   connect: { id: consejoComunalId },
                 },

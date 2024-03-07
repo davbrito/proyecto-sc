@@ -393,7 +393,7 @@ const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
             </CardHeader>
             <CardBody>
               {data.familiar.length === 0 && (
-                <div className="mx-auto min-h-[40vh] w-full place-content-center border border-gray-400 px-6 py-10">
+                <div className="mx-auto min-h-[20vh] w-full place-content-center border border-gray-400 px-6 py-10">
                   <h2 className="text-center text-2xl font-light">
                     Aun no se han registrados familiares.
                   </h2>
