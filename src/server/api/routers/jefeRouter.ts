@@ -102,7 +102,13 @@ export const jefeRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return ctx.prisma.jefeFamilia.findFirstOrThrow({
         where: { id: BigInt(input.id) },
-        include: { censo: true, familiar: true, casa: true },
+        include: {
+          censo: {
+            include: { encargado_validacion: true },
+          },
+          familiar: true,
+          casa: true,
+        },
       });
     }),
 

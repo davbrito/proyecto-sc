@@ -62,4 +62,29 @@ export const censoRouter = createTRPCRouter({
 
       return response;
     }),
+
+  validarInformacion: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { username } = ctx.session.user;
+      const user = await ctx.prisma.user.findFirst({ where: { username } });
+
+      if (!user)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "ERROR, USUARIO NO EXISTE",
+        });
+
+      await ctx.prisma.censo.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          encargado_validacion_id: user.id,
+          datos_validado: true,
+        },
+      });
+
+      return true;
+    }),
 });

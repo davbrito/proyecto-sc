@@ -3,6 +3,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Chip,
   Modal,
   ModalBody,
   ModalContent,
@@ -52,6 +53,7 @@ const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
   );
   const familiar = api.familia.deleteById.useMutation();
   const jefe = api.jefe.delete.useMutation();
+  const validar = api.censo.validarInformacion.useMutation();
 
   // Estados
   const [editJefe, setEditJefe] = useState<Edit>({
@@ -169,6 +171,25 @@ const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
             >
               Cambiar jefe
             </Button>
+
+            {!data.censo.datos_validado && (
+              <Button
+                className="bg-lime-600 text-center text-white hover:bg-lime-800 disabled:bg-lime-300"
+                onPress={async () => {
+                  await validar.mutateAsync(
+                    { id: data.censoId },
+                    {
+                      onSuccess(data, variables, context) {
+                        console.log(data);
+                      },
+                      onError(error, variables, context) {},
+                    }
+                  );
+                }}
+              >
+                Validar informacion
+              </Button>
+            )}
           </div>
         )}
       </div>
@@ -198,14 +219,26 @@ const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
                       </span>
                     </li>
                   </ul>
+                  <div className="mx-auto">
+                    {data.censo.datos_validado ? (
+                      <Chip color={"success"}>
+                        Validado por{" "}
+                        <em className="uppercase">
+                          {data.censo.encargado_validacion?.username}
+                        </em>
+                      </Chip>
+                    ) : (
+                      <Chip color={"danger"}>Por validar</Chip>
+                    )}
+                  </div>
                 </div>
               </CardBody>
             </Card>
             <div className="my-4"></div>
 
             <Card>
-              <CardBody className="justify-center  ">
-                <div className="flex items-center justify-center  space-x-2 px-2 leading-8">
+              <CardHeader>
+                <div className="mx-auto flex items-center justify-center  space-x-2 px-2 leading-8">
                   <span className="text-gray-500">
                     <svg
                       className="h-8 w-8"
@@ -219,6 +252,8 @@ const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
                   </span>
                   <h2 className="text-2xl  font-normal  text-gray-400">Casa</h2>
                 </div>
+              </CardHeader>
+              <CardBody className="justify-center  ">
                 <div className="grid gap-2 text-sm">
                   <div className="grid grid-cols-2  gap-6 px-3 py-2">
                     <div className=" font-semibold">Nro</div>
@@ -245,8 +280,8 @@ const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
 
           <div className="w-full  text-gray-600  md:w-9/12 ">
             <Card className="">
-              <CardBody>
-                <div className="flex items-center justify-center  space-x-2 px-2 font-semibold leading-8">
+              <CardHeader>
+                <div className="mx-auto flex items-center justify-center  space-x-2 px-2 font-semibold leading-8">
                   <span className="text-gray-500">
                     <svg
                       className="h-8 w-8"
@@ -267,7 +302,8 @@ const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
                     Informacion
                   </h2>
                 </div>
-
+              </CardHeader>
+              <CardBody>
                 <div className="grid  gap-2 text-sm md:grid-cols-2">
                   {/* className="grid grid-cols-2 gap-6" */}
                   <div className="grid grid-cols-2 gap-6 px-3 py-2">

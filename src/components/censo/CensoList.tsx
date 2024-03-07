@@ -11,6 +11,7 @@ import {
   useDisclosure,
   ModalContent,
   ModalHeader,
+  Chip,
 } from "@nextui-org/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
@@ -104,11 +105,14 @@ export const CensoList = ({
             Genero
           </TableColumn>
           <TableColumn align="center" className="text-center">
+            Estado
+          </TableColumn>
+          <TableColumn align="center" className="text-center">
             Acciones
           </TableColumn>
         </TableHeader>
         <TableBody>
-          {data.map(({ jefeFamilia, id, tipoFamilia }) => (
+          {data.map(({ jefeFamilia, id, tipoFamilia, datos_validado }) => (
             <TableRow key={id} className="border-b-2">
               <TableCell className="text-center text-sm">
                 <Link
@@ -153,6 +157,11 @@ export const CensoList = ({
                 {jefeFamilia?.genero.toUpperCase() === "F"
                   ? "Femenino"
                   : "Masculino"}
+              </TableCell>
+              <TableCell className="text-center text-sm">
+                <Chip color={datos_validado ? "success" : "danger"}>
+                  {datos_validado ? "Validado" : "Por validar"}
+                </Chip>
               </TableCell>
               <TableCell>
                 <Button
