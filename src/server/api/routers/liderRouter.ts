@@ -115,6 +115,7 @@ export const lideresRouter = createTRPCRouter({
       z.object({
         jefeId: z.bigint(),
         consejoComunalId: z.number(),
+        manzana: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -132,19 +133,29 @@ export const lideresRouter = createTRPCRouter({
         });
 
       const existe = await ctx.prisma.lider.count({
-        where: { jefeFamiliaId: input.jefeId },
+        where: {
+          OR: [
+            {
+              jefeFamiliaId: input.jefeId,
+            },
+            { manzana: input.manzana },
+          ],
+        },
       });
+      console.log(existe, " DSSSSSSSSSSSSSSSSSS");
 
       if (existe)
         throw new TRPCError({
           code: "BAD_REQUEST",
-          cause: "JEFE FAMILIA YA ES LIDER DE CALLE",
+          cause:
+            "JEFE FAMILIA YA ES LIDER DE CALLE O MANZANA YA ESTA REGISTRADA",
         });
 
       return await ctx.prisma.lider.create({
         data: {
           jefeFamiliaId: input.jefeId,
           consejoComunalId: input.consejoComunalId,
+          manzana: input.manzana,
         },
       });
     }),

@@ -223,12 +223,16 @@ model Familiar {
 // Nuevos Modelos
 
 model Lider {
-    id               Int            @unique @default(autoincrement())
-    fechaRegistro    DateTime       @default(now())
-    jefeFamiliaId    BigInt         @unique
-    jefeFamilia      JefeFamilia    @relation(fields: [jefeFamiliaId], references: [id])
+    id               Int         @unique @default(autoincrement())
+    fechaRegistro    DateTime    @default(now())
+    jefeFamiliaId    BigInt      @unique
+    jefeFamilia      JefeFamilia @relation(fields: [jefeFamiliaId], references: [id])
     consejoComunalId Int
-    ConsejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+    manzana          String
+
+    ConsejoComunal ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+
+    @@unique([consejoComunalId, manzana])
 }
 
 model LiderComunidad {
@@ -253,4 +257,14 @@ model EncargadoClap {
     fechaRegistro    DateTime       @default(now())
     ConsejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
     consejoComunalId Int
+}
+
+// Entrega de cajas clap
+
+model EntregaCajas {
+    id              Int      @unique @default(autoincrement())
+    costeCajaUnidad Float
+    costeTransporte Float
+    costeLogistica  Float
+    fechaEntrega    DateTime
 }

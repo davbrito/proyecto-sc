@@ -1,4 +1,5 @@
 import { Select, SelectItem, Button } from "@nextui-org/react";
+import { String } from "lodash";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "~/utils/api";
@@ -31,12 +32,22 @@ export const LiderCalleForm = ({ consejoId, onClose }: Props) => {
     setError,
   } = useForm<JefeCalleProps>();
 
+  if (!data) return null;
+  if (!casas) return null;
+
+  const listaCasas = [...new Set(casas.map((casa) => casa?.manzana))].map(
+    (manzana) => casas.find((casa) => casa?.manzana === manzana)
+  );
+
   const onSubmit = handleSubmit(async ({ casaId, jefeId }) => {
+    const casa = casas.find((casa) => casa?.id === BigInt(casaId));
+    if (!casa) return;
     try {
       await convertJefeCalle.mutateAsync(
         {
           jefeId: BigInt(jefeId),
           consejoComunalId: consejoId,
+          manzana: casa.manzana,
         },
         {
           onSuccess(data, variables, context) {
@@ -49,9 +60,6 @@ export const LiderCalleForm = ({ consejoId, onClose }: Props) => {
       );
     } catch (error) {}
   });
-
-  if (!data) return null;
-  if (!casas) return null;
 
   return (
     <form onSubmit={onSubmit} className="py-4">
@@ -82,24 +90,24 @@ export const LiderCalleForm = ({ consejoId, onClose }: Props) => {
             )}
           </Select>
         </div>
-        {/* <div className="col-span-6">
-          {casas.length > 0 && (
+        <div className="col-span-6">
+          {listaCasas.length > 0 && (
             <Select
-              items={casas as Casa[]}
+              items={listaCasas as Casa[]}
               {...register("casaId", {
-                required: "Necesitas seleccionar una casa",
+                required: "Necesitas seleccionar una manzana",
               })}
               placeholder="Seleccione una opcion"
               label="Seleccione una casa:"
             >
-              {({ id, calle, manzana }) => (
+              {({ id, manzana }) => (
                 <SelectItem key={id.toString()}>
-                  {("Calle: " + calle + " -  Mza: " + manzana).toUpperCase()}
+                  {("Mza: " + manzana).toUpperCase()}
                 </SelectItem>
               )}
             </Select>
           )}
-        </div> */}
+        </div>
       </div>
       {errors.root && (
         <div className="col-span-12 mt-2 text-center">
