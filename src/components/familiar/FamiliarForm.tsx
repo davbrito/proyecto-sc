@@ -94,6 +94,27 @@ const initialValues = {
   parentesco: "",
 };
 
+const PARENTESCOS = [
+  {
+    parentesco: "conyuge",
+  },
+  {
+    parentesco: "hija(o)",
+  },
+  {
+    parentesco: "nieta(o)",
+  },
+  {
+    parentesco: "hermana(o)",
+  },
+  {
+    parentesco: "cuñada(o)",
+  },
+  {
+    parentesco: "sobrina(o)",
+  },
+];
+
 interface FamiliarFormProps {
   jefeId?: bigint;
   familia?: Familiar;
@@ -811,16 +832,20 @@ const FamiliarForm: NextPage<FamiliarFormProps> = ({
                 },
               }}
               render={({ field, fieldState }) => (
-                <Input
-                  variant="bordered"
+                <Select
                   fullWidth
                   label="Parentesco:"
-                  placeholder="Ej: hijo"
-                  type="text"
                   {...field}
+                  items={PARENTESCOS}
                   errorMessage={fieldState.error?.message}
                   isInvalid={!!fieldState.error}
-                />
+                >
+                  {({ parentesco }) => (
+                    <SelectItem key={parentesco}>
+                      {parentesco.toUpperCase()}
+                    </SelectItem>
+                  )}
+                </Select>
               )}
             />
           </div>

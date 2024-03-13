@@ -110,7 +110,7 @@ model Censo {
     datos_validado          Boolean @default(false)
     encargado_validacion    User?   @relation(fields: [encargado_validacion_id], references: [id])
     encargado_validacion_id String?
-
+    estatus Int
     //FOREIGN KEY
     jefeFamilia      JefeFamilia?
     consejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
@@ -268,3 +268,11 @@ model EntregaCajas {
     costeLogistica  Float
     fechaEntrega    DateTime
 }
+
+// model CajaClap {
+//     id              Int   @unique @default(autoincrement())
+//     pagado          Float
+//     pagoPorEfectivo Float
+//     pagoPorBanco    Float
+//     logistica       Float
+// }

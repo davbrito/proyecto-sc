@@ -95,7 +95,7 @@ const LiderComunidadList = ({
                     size={"sm"}
                     className="bg-red-600 text-white transition-all hover:bg-red-800 disabled:bg-red-800"
                     onPress={() => {
-                      handleDelete(id as number);
+                      handleDelete(id);
                     }}
                   >
                     Eliminar

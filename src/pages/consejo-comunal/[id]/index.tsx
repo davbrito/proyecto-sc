@@ -1,3 +1,4 @@
+import { type ROLE } from "@prisma/client";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
@@ -34,7 +35,7 @@ const Index = (
   const { data } = useSession();
   return (
     <LayoutContent className="flex-col  ">
-      <ConsejoInfor consejoId={props.id} role={data?.user.role_user} />
+      <ConsejoInfor consejoId={props.id} role={data?.user.role_user as ROLE} />
       <EncargadosInfor
         consejoId={parseInt(props.id)}
         role={data?.user.role_user}
