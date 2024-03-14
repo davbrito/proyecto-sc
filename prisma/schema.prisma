@@ -3,10 +3,12 @@ generator client {
 }
 
 datasource db {
-    provider          = "mysql"
-    url               = env("DATABASE_URL")
-    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-    relationMode      = "prisma"
+    provider  = "postgresql"
+    // Uses connection pooling
+    url       = env("POSTGRES_PRISMA_URL")
+    // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
+    // or you'll have dangling databases from migrations
+    directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 // Necessary for Next auth
@@ -107,14 +109,14 @@ model Censo {
     condicion_vivienda   CONDICION_VIVIENDA
 
     //VALIDACION DE INFORMACION QUE HACE EL JEFE DE COMUNIDAD
-    datos_validado          Boolean @default(false)
-    encargado_validacion    User?   @relation(fields: [encargado_validacion_id], references: [id])
+    datos_validado          Boolean        @default(false)
+    encargado_validacion    User?          @relation(fields: [encargado_validacion_id], references: [id])
     encargado_validacion_id String?
-    estatus Int
+    estatus                 Int
     //FOREIGN KEY
-    jefeFamilia      JefeFamilia?
-    consejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
-    consejoComunalId Int
+    jefeFamilia             JefeFamilia?
+    consejoComunal          ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+    consejoComunalId        Int
 }
 
 model Casa {
