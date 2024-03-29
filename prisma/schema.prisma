@@ -96,6 +96,7 @@ model ConsejoComunal {
     User           User[]
     Lider          Lider[]
     LiderComunidad LiderComunidad[]
+    EntregaCajas   EntregaCajas[]
 }
 
 // CENSO 
@@ -109,14 +110,15 @@ model Censo {
     condicion_vivienda   CONDICION_VIVIENDA
 
     //VALIDACION DE INFORMACION QUE HACE EL JEFE DE COMUNIDAD
-    datos_validado          Boolean        @default(false)
-    encargado_validacion    User?          @relation(fields: [encargado_validacion_id], references: [id])
+    datos_validado          Boolean @default(false)
+    encargado_validacion    User?   @relation(fields: [encargado_validacion_id], references: [id])
     encargado_validacion_id String?
     estatus                 Int?
+
     //FOREIGN KEY
-    jefeFamilia             JefeFamilia?
-    consejoComunal          ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
-    consejoComunalId        Int
+    jefeFamilia      JefeFamilia?
+    consejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+    consejoComunalId Int
 }
 
 model Casa {
@@ -263,18 +265,35 @@ model EncargadoClap {
 
 // Entrega de cajas clap
 
+model Beneficiados {
+    id              Int          @unique @default(autoincrement())
+    nombres         String
+    apellidos       String
+    numeroDocumento String
+    tipoDocumento   String
+    cajasAsignadas  Int
+    casa            String
+    manzana         String
+    EntregaCajas    EntregaCajas @relation(fields: [entregaCajasId], references: [id])
+    entregaCajasId  Int
+}
+
 model EntregaCajas {
     id              Int      @unique @default(autoincrement())
     costeCajaUnidad Float
     costeTransporte Float
     costeLogistica  Float
     fechaEntrega    DateTime
+
+    //foreign
+    beneficiados     Beneficiados[]
+    ConsejoComunal   ConsejoComunal @relation(fields: [consejoComunalId], references: [id])
+    consejoComunalId Int
 }
 
 // model CajaClap {
 //     id              Int   @unique @default(autoincrement())
 //     pagado          Float
-//     pagoPorEfectivo Float
-//     pagoPorBanco    Float
+//     metodoPago 
 //     logistica       Float
 // }

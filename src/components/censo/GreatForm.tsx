@@ -166,7 +166,8 @@ export const GreatForm = ({ consejoComunalId }: Props) => {
           email: values.datosBasicos.email,
           telefono: values.datosBasicos.telefono,
           estado_civil: values.datosBasicos.estado_civil,
-          telefono_habitacion: values.datosBasicos.telefono_habitacion,
+          telefono_habitacion:
+            values.datosBasicos.telefono_habitacion ?? "no posee",
         },
         trabajo: {
           deporte: values.trabajo.deporte,
