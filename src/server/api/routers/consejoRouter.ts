@@ -40,7 +40,7 @@ export const consejoRouter = createTRPCRouter({
         rif: z.string(),
         cantidad_combos: z.number().default(0),
         cantidad_familias: z.number().default(0),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.consejoComunal.create({
@@ -80,16 +80,16 @@ export const consejoRouter = createTRPCRouter({
 
       for (let i = 0; i < casas.length; i++) {
         const arrayTemporal = estadistica.filter(
-          (resp) => resp["manzana"] === casas[i]?.casa?.manzana,
+          (resp) => resp["manzana"] === casas[i]?.casa?.manzana
         );
 
         const censo = consejo?.censos.find(
-          (censo) => censo.id === casas[i]?.censoId,
+          (censo) => censo.id === casas[i]?.censoId
         );
 
         if (arrayTemporal.length > 0) {
           const index = estadistica.findIndex(
-            (array) => array.manzana === casas[i]?.casa?.manzana,
+            (array) => array.manzana === casas[i]?.casa?.manzana
           );
 
           estadistica[index]?.casas.push(casas[i]?.casa);
@@ -104,7 +104,7 @@ export const consejoRouter = createTRPCRouter({
           estadistica[index]?.tipoFamilia.push(
             censo?.tipoFamilia.toLowerCase() === "unifamiliar"
               ? "unifamiliar"
-              : "multifamiliar",
+              : "multifamiliar"
           );
         } else {
           estadistica.push({

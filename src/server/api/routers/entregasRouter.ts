@@ -68,4 +68,74 @@ export const entregasRouter = createTRPCRouter({
 
       return entrega;
     }),
+
+  getAll: publicProcedure
+    .input(z.object({ consejoComunalId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.entregaCajas.findMany({
+        where: { consejoComunalId: input.consejoComunalId },
+        include: { beneficiados: true },
+        orderBy: {
+          fechaEntrega: "asc",
+        },
+      });
+    }),
+
+  getById: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.entregaCajas.findUnique({
+        where: { id: input.id },
+        include: { beneficiados: true, ConsejoComunal: true },
+      });
+    }),
+
+  getStatisticsById: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const entregaCaja = await ctx.prisma.entregaCajas.findUnique({
+        where: { id: input.id },
+        include: { beneficiados: true, ConsejoComunal: true },
+      });
+
+      const estadistica = [];
+
+      const beneficiados = entregaCaja?.beneficiados;
+
+      if (!beneficiados) return null;
+
+      for (let i = 0; i < beneficiados.length; i++) {
+        const arrayTemporal = estadistica.filter(
+          (resp) => resp["manzana"] === beneficiados[i]?.manzana
+        );
+
+        const beneficiado = beneficiados.find(
+          (beneficiado) => beneficiado.id === beneficiados[i]?.id
+        );
+
+        if (arrayTemporal.length > 0) {
+          const index = estadistica.findIndex(
+            (array) => array.manzana === beneficiado?.manzana
+          );
+
+          // if (typeof estadistica[index]?.cajas === "number") {
+          estadistica[index]?.cajas?.push(beneficiado?.cajasAsignadas || 0);
+          // }
+        } else {
+          estadistica.push({
+            manzana: beneficiado?.manzana ?? "",
+            cajas: beneficiado?.cajasAsignadas
+              ? [beneficiado?.cajasAsignadas]
+              : [0],
+          });
+        }
+      }
+
+      return {
+        entrega: entregaCaja,
+        estadistica: estadistica.sort(
+          (a, b) => parseInt(a.manzana) - parseInt(b.manzana)
+        ),
+      };
+    }),
 });
