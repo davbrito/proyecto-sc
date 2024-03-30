@@ -25,7 +25,9 @@ export const userRouter = createTRPCRouter({
         username: z.string(),
         lastName: z.string(),
         password: z.string(),
-      }),
+        consejoId: z.number(),
+        role_user: z.nativeEnum(ROLE),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       try {
@@ -40,7 +42,8 @@ export const userRouter = createTRPCRouter({
             message: "Username is already used!",
           });
 
-        const { lastName, name, password, username } = input;
+        const { lastName, name, password, username, consejoId, role_user } =
+          input;
         const hashed = await hashPassword(password);
 
         const newUser = await ctx.prisma.user.create({
@@ -49,6 +52,8 @@ export const userRouter = createTRPCRouter({
             lastName,
             name,
             username,
+            consejoComunalId: consejoId,
+            role_user,
           },
         });
         return safeUser(newUser);
@@ -68,7 +73,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-      }),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       const { id } = input;
@@ -89,7 +94,7 @@ export const userRouter = createTRPCRouter({
         name: z.string(),
         username: z.string(),
         lastName: z.string(),
-      }),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       const { id, lastName, name, username } = input;
@@ -150,7 +155,7 @@ export const userRouter = createTRPCRouter({
       z.object({
         cursor: z.string().nullish(),
         limits: z.number().min(1).max(100).default(20),
-      }),
+      })
     )
     .query(async ({ ctx, input }) => {
       const { cursor, limits } = input;
@@ -222,7 +227,7 @@ export const userRouter = createTRPCRouter({
         img_url: z.string(),
         user_id: z.string(),
         old_url: z.string().default(""),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const { img_url, old_url, user_id } = input;
@@ -230,10 +235,10 @@ export const userRouter = createTRPCRouter({
       if (old_url) {
         console.log(
           old_url,
-          old_url.slice(old_url.lastIndexOf("/") + 1, old_url.length),
+          old_url.slice(old_url.lastIndexOf("/") + 1, old_url.length)
         );
         const res = await utapi.deleteFiles(
-          old_url.slice(old_url.lastIndexOf("/") + 1, old_url.length),
+          old_url.slice(old_url.lastIndexOf("/") + 1, old_url.length)
         );
 
         console.log(res, old_url, "SDADASDDSDADS");
@@ -255,7 +260,7 @@ export const userRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         consejoId: z.number(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.update({
@@ -272,7 +277,7 @@ export const userRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         role: z.nativeEnum(ROLE),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.update({

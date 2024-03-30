@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.AUTH_SECRET,
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, trigger }) {
       if (user) {
         token.accessToken = user.id;
         token.name = user.name;
@@ -79,7 +79,8 @@ export const authOptions: NextAuthOptions = {
         username: { label: "username", type: "text", placeholder: "blablal" },
         password: { label: "password", type: "password" },
       },
-      async authorize(credentials) {
+
+      async authorize(credentials, { body }) {
         if (!credentials || !credentials.password || !credentials.username)
           throw new Error("Username or password cannot be empty!.");
 

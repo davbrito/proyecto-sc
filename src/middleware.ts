@@ -6,7 +6,7 @@ import { match } from "path-to-regexp";
 const profileMatch = match("/profile/:path*");
 const consejoComunalInforMatch = match("/consejo-comunal/:id?");
 const consejoComunalMatch = match("/consejo-comunal");
-
+const registerMatch = match("/register");
 const censoMatch = match(
   "/consejo-comunal/:id/censo/:tab(create|estadisticas)?"
 );
@@ -18,13 +18,13 @@ const isLiderCalleRoutes = (url: string) => {
   if (consejoComunalMatch(url)) return true;
   if (censoMatch(url)) return true;
   if (censoJefeMatch(url)) return true;
-
+  if (registerMatch(url)) return true;
   return false;
 };
 
 const isLiderComunidadRoutes = (url: string) => {
-  console.log(url);
   if (consejoComunalMatch(url)) return true;
+  if (registerMatch(url)) return true;
 
   return false;
 };
@@ -62,6 +62,7 @@ export default withAuth(
 export const config = {
   matcher: [
     "/",
+    "/register",
     "/consejo-comunal",
     "/consejo-comunal/:path*",
     "/consejo-comunal/(.*)",
