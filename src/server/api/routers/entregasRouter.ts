@@ -18,6 +18,7 @@ export const entregasRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
+        consejoComunalId: z.number(),
         censadosIds: z.array(z.string()),
         entrega: entregaSchema,
       })
@@ -39,7 +40,7 @@ export const entregasRouter = createTRPCRouter({
           message: "No puede registrar la entrega sin censados.",
         });
 
-      const CC = ctx.session.user.consejoComunalId;
+      const CC = input.consejoComunalId;
       if (!CC)
         throw new TRPCError({
           code: "BAD_REQUEST",
@@ -137,5 +138,11 @@ export const entregasRouter = createTRPCRouter({
           (a, b) => parseInt(a.manzana) - parseInt(b.manzana)
         ),
       };
+    }),
+
+  deleteById: publicProcedure
+    .input(z.object({ entrega: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.entregaCajas.delete({ where: { id: input.entrega } });
     }),
 });

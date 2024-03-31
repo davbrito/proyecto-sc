@@ -6,6 +6,8 @@ import {
   Checkbox,
   Divider,
   Input,
+  Select,
+  SelectItem,
   Spinner,
   Table,
   TableBody,
@@ -14,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
+import { type ROLE } from "@prisma/client";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
@@ -28,13 +31,20 @@ interface PropsForm {
   costeTransporteTotal: string;
   costeLogisticaTotal: string;
   costeLogisticaUnidad: string;
-
   fechaEntrega: string;
+  consejoComunalId?: string;
 }
 
-export const EntregaForm = () => {
-  const { data } = api.jefe.getJefesToEntrega.useQuery();
+interface Props {
+  role_user: ROLE;
+  consejoId: number;
+}
+
+export const EntregaForm = ({ consejoId, role_user }: Props) => {
+  const { data } = api.jefe.getJefesToEntrega.useQuery({ consejoId });
   const createEntrega = api.entrega.create.useMutation();
+  const { data: consejos } = api.consejo.getAll.useQuery();
+
   const {
     handleSubmit,
     control,
@@ -51,6 +61,17 @@ export const EntregaForm = () => {
       data,
       formData.jefeFamiliaIds
     );
+
+    if (censadosSeleccionados.length === 0) {
+      return setError("root", {
+        message: "Debe seleccionar al menos un censado",
+      });
+    }
+
+    const consejoComunalId = formData.consejoComunalId
+      ? parseInt(formData?.consejoComunalId)
+      : consejoId;
+
     await createEntrega.mutateAsync(
       {
         censadosIds: censadosSeleccionados.map((censado) => censado.id),
@@ -60,6 +81,7 @@ export const EntregaForm = () => {
           costeTransporte: parseFloat(formData.costeTransporteUnidad),
           fechaEntrega: formData.fechaEntrega,
         },
+        consejoComunalId,
       },
       {
         onSuccess(data, variables, context) {},
@@ -72,9 +94,9 @@ export const EntregaForm = () => {
 
   const buscarRegistrosValidos = (registros: any, validos: boolean[]) => {
     const entrega = [];
-    validos.splice(0, 1);
+    const validados = validos.slice(1);
     for (let i = 0; i < registros.length; i++) {
-      if (validos[i]) {
+      if (validados[i]) {
         entrega.push(registros[i]);
       }
     }
@@ -150,14 +172,22 @@ export const EntregaForm = () => {
                         name={`jefeFamiliaIds.${parseInt(
                           jefeFamilia?.id?.toString() ?? "0"
                         )}`}
-                        render={({ field }) => (
+                        render={({ field, fieldState }) => (
                           <Checkbox
                             id={field.name}
                             onChange={(e) => {
                               field.onChange(e);
-                              actualizarCostosUnidad(
-                                contar(watch("jefeFamiliaIds"))
+                              const censados = buscarRegistrosValidos(
+                                data,
+                                watch("jefeFamiliaIds")
                               );
+                              const total: number = censados.reduce(
+                                (prev, censado) =>
+                                  prev + censado.cajasClapsPorRecibir,
+                                0
+                              );
+
+                              actualizarCostosUnidad(total);
                             }}
                           />
                         )}
@@ -172,7 +202,7 @@ export const EntregaForm = () => {
         <Divider className="my-4" />
 
         <div className="grid grid-cols-12 gap-2">
-          <div className="col-span-10 mb-2">
+          <div className="col-span-8 mb-2">
             <Controller
               name="fechaEntrega"
               control={control}
@@ -190,6 +220,36 @@ export const EntregaForm = () => {
               )}
             />
           </div>
+
+          {role_user === "ADMIN" && (
+            <div className="col-span-4 mb-2">
+              <Controller
+                name="consejoComunalId"
+                control={control}
+                rules={{ required: "El consejo comunal es requerido" }}
+                render={({ field, fieldState }) => (
+                  <Select
+                    label="Consejo comunal"
+                    placeholder="Seleccione"
+                    fullWidth
+                    {...field}
+                    items={consejos}
+                    errorMessage={fieldState.error?.message}
+                    isInvalid={fieldState.invalid}
+                    classNames={{
+                      value: "capitalize",
+                    }}
+                  >
+                    {({ id, nombre_clap, nombre_consejo }) => (
+                      <SelectItem key={id} value={id} className="capitalize">
+                        {nombre_consejo + " " + nombre_clap}
+                      </SelectItem>
+                    )}
+                  </Select>
+                )}
+              />
+            </div>
+          )}
 
           <div className="col-span-6">
             <Controller
@@ -210,7 +270,16 @@ export const EntregaForm = () => {
                   }
                   onChange={(e) => {
                     field.onChange(e);
-                    actualizarCostosUnidad(contar(watch("jefeFamiliaIds")));
+                    const censados = buscarRegistrosValidos(
+                      data,
+                      watch("jefeFamiliaIds")
+                    );
+                    const total: number = censados.reduce(
+                      (prev, censado) => prev + censado.cajasClapsPorRecibir,
+                      0
+                    );
+
+                    actualizarCostosUnidad(total);
                   }}
                   errorMessage={fieldState.error?.message}
                   isInvalid={!!fieldState.error}
@@ -261,7 +330,16 @@ export const EntregaForm = () => {
                   }
                   onChange={(e) => {
                     field.onChange(e);
-                    actualizarCostosUnidad(contar(watch("jefeFamiliaIds")));
+                    const censados = buscarRegistrosValidos(
+                      data,
+                      watch("jefeFamiliaIds")
+                    );
+                    const total: number = censados.reduce(
+                      (prev, censado) => prev + censado.cajasClapsPorRecibir,
+                      0
+                    );
+
+                    actualizarCostosUnidad(total);
                   }}
                   errorMessage={fieldState.error?.message}
                   isInvalid={!!fieldState.error}
@@ -312,7 +390,16 @@ export const EntregaForm = () => {
                   }
                   onChange={(e) => {
                     field.onChange(e);
-                    actualizarCostosUnidad(contar(watch("jefeFamiliaIds")));
+                    const censados = buscarRegistrosValidos(
+                      data,
+                      watch("jefeFamiliaIds")
+                    );
+                    const total: number = censados.reduce(
+                      (prev, censado) => prev + censado.cajasClapsPorRecibir,
+                      0
+                    );
+
+                    actualizarCostosUnidad(total);
                   }}
                 />
               )}
@@ -341,7 +428,7 @@ export const EntregaForm = () => {
             />
           </div>
         </div>
-        <div className="mx-auto mt-2 w-fit">
+        <div className="mx-auto mt-2 flex w-fit flex-col gap-3">
           {errors?.root && (
             <h4 className="inline-block capitalize text-red-600">
               {errors?.root?.message}.

@@ -143,33 +143,37 @@ export const jefeRouter = createTRPCRouter({
     });
   }),
 
-  getJefesToEntrega: protectedProcedure.query(async ({ ctx, input }) => {
-    const id = ctx.session.user.consejoComunalId;
-    if (!id)
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "NO EXISTE EL CONSEJO COMUNAL ASOCIADO",
-      });
+  getJefesToEntrega: protectedProcedure
+    .input(z.object({ consejoId: z.number().optional() }))
+    .query(async ({ ctx, input }) => {
+      const id = input.consejoId
+        ? input.consejoId
+        : ctx.session.user.consejoComunalId;
+      if (!id)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "NO EXISTE EL CONSEJO COMUNAL ASOCIADO",
+        });
 
-    const censados = await ctx.prisma.censo.findMany({
-      where: {
-        consejoComunalId: 1,
-        datos_validado: true,
-      },
-      include: {
-        jefeFamilia: {
-          include: {
-            casa: true,
+      const censados = await ctx.prisma.censo.findMany({
+        where: {
+          consejoComunalId: 1,
+          datos_validado: true,
+        },
+        include: {
+          jefeFamilia: {
+            include: {
+              casa: true,
+            },
           },
         },
-      },
-      orderBy: {
-        id: "asc",
-      },
-    });
+        orderBy: {
+          id: "asc",
+        },
+      });
 
-    return censados;
-  }),
+      return censados;
+    }),
 
   delete: publicProcedure
     .input(
