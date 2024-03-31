@@ -1,8 +1,8 @@
 import {
-  InferGetServerSidePropsType,
+  type InferGetServerSidePropsType,
   type GetServerSidePropsContext,
 } from "next";
-import { useParams } from "next/navigation";
+
 import React from "react";
 import { LayoutContent } from "~/components/Layout";
 import EntregaInfor from "~/components/entrega-clap/EntregaInfor";

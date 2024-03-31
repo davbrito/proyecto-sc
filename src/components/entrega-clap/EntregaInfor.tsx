@@ -40,7 +40,8 @@ const EntregaInfor = ({ entregaId }: { entregaId: number }) => {
             month: "long",
             year: "numeric",
           })}{" "}
-          del Consejo Comunal '{data.entrega.ConsejoComunal.nombre_consejo}'
+          del Consejo Comunal &apos;{data.entrega.ConsejoComunal.nombre_consejo}
+          &apos;
         </h1>
       </CardHeader>
       <CardBody>
