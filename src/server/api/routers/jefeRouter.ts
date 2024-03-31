@@ -3,7 +3,6 @@ import {
   ESTADO_CIVIL,
   ESTADO_TRABAJO,
 } from "@prisma/client";
-import { createReactProxyDecoration } from "@trpc/react-query/shared";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {

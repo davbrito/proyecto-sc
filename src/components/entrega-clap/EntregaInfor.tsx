@@ -27,13 +27,14 @@ const EntregaInfor = ({ entregaId }: { entregaId: number }) => {
     });
     return `Bs.${formattedNumber.replace("VEF", "")}`;
   };
+
   if (isLoading)
     return <CustomLoading className="h-[30vh] place-content-center" />;
   if (!data) return null;
   return (
-    <Card className="container mx-auto mt-4">
+    <Card className="container mx-auto mt-8">
       <CardHeader>
-        <h1 className="mx-auto text-center text-2xl font-medium">
+        <h1 className="mx-auto text-center text-3xl font-medium">
           Informacion de entrega de cajas CLAP{" "}
           {data.entrega.fechaEntrega.toLocaleDateString("es-ES", {
             month: "long",
@@ -77,12 +78,11 @@ const EntregaInfor = ({ entregaId }: { entregaId: number }) => {
         <Table isCompact isStriped>
           <TableHeader>
             <TableColumn className="text-center">MANZANA</TableColumn>
-            <TableColumn className="text-center">CASAS</TableColumn>
             <TableColumn className="text-center">FAMILIA</TableColumn>
-            <TableColumn className="text-center">NO CARNET</TableColumn>
+            <TableColumn className="text-center">POSEEN CARNET</TableColumn>
             <TableColumn className="text-center">UNIFAMILIAR</TableColumn>
             <TableColumn className="text-center">EXTRA</TableColumn>
-            <TableColumn className="text-center">MULTIFAMILIAR</TableColumn>
+            <TableColumn className="text-center">BIFAMILIAR</TableColumn>
             <TableColumn className="text-center">ASIGNADAS</TableColumn>
             <TableColumn className="text-center">ENTREGADA</TableColumn>
             <TableColumn className="text-center">COSTE CAJA(TOTAL)</TableColumn>
@@ -94,116 +94,159 @@ const EntregaInfor = ({ entregaId }: { entregaId: number }) => {
             </TableColumn>
           </TableHeader>
           <TableBody>
-            {data.estadistica.map(({ cajas, manzana }) => (
-              <TableRow key={manzana}>
-                <TableCell className="text-center">{manzana}</TableCell>
-                <TableCell className="text-center">d</TableCell>
-                <TableCell className="text-center">d</TableCell>
-                <TableCell className="text-center">d</TableCell>
-                <TableCell className="text-center">d</TableCell>
-                <TableCell className="text-center">d</TableCell>
-                <TableCell className="text-center">d</TableCell>
+            {data.estadistica.map(
+              ({ cajas, manzana, carnets, tipoFamilia, familias }) => (
+                <TableRow key={manzana}>
+                  <TableCell className="text-center">{manzana}</TableCell>
 
-                <TableCell className="text-center">
-                  {cajas.reduce((a, b) => a + b, 0)}
-                </TableCell>
-                <TableCell className="text-center">
-                  {cajas.reduce((a, b) => a + b, 0)}
-                </TableCell>
-                <TableCell className="text-center font-bold">
-                  {formatToBs(
-                    cajas.reduce((a, b) => a + b, 0) *
-                      data.entrega.costeCajaUnidad
-                  )}
-                </TableCell>
-                <TableCell className="text-center font-bold">
-                  {formatToBs(
-                    cajas.reduce((a, b) => a + b, 0) *
-                      data.entrega.costeTransporte
-                  )}
-                </TableCell>
-                <TableCell className="text-center font-bold">
-                  {formatToBs(
-                    cajas.reduce((a, b) => a + b, 0) *
-                      data.entrega.costeLogistica
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
+                  <TableCell className="text-center">
+                    {familias.length}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {carnets.reduce((prev, carnet) => {
+                      if (carnet) return prev + 1;
+                      return prev;
+                    }, 0)}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {tipoFamilia.reduce((prev, tipo) => {
+                      if (tipo === "unifamiliar") return prev + 1;
+                      return prev;
+                    }, 0)}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {cajas.reduce((a, b) => a + b, 0) - familias.length}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {tipoFamilia.reduce((prev, tipo) => {
+                      if (tipo !== "unifamiliar") return prev + 1;
+                      return prev;
+                    }, 0)}
+                  </TableCell>
+
+                  <TableCell className="text-center">
+                    {cajas.reduce((a, b) => a + b, 0)}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {cajas.reduce((a, b) => a + b, 0)}
+                  </TableCell>
+                  <TableCell className="text-center font-bold">
+                    {formatToBs(
+                      cajas.reduce((a, b) => a + b, 0) *
+                        data.entrega.costeCajaUnidad
+                    )}
+                  </TableCell>
+                  <TableCell className="text-center font-bold">
+                    {formatToBs(
+                      cajas.reduce((a, b) => a + b, 0) *
+                        data.entrega.costeTransporte
+                    )}
+                  </TableCell>
+                  <TableCell className="text-center font-bold">
+                    {formatToBs(
+                      cajas.reduce((a, b) => a + b, 0) *
+                        data.entrega.costeLogistica
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            )}
           </TableBody>
         </Table>
       </CardBody>
+      <div className="relative overflow-x-auto border-t-1 pb-4  shadow-md sm:rounded-lg">
+        <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+          <thead className="bg-gray-50 text-base uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="px-6 py-3 text-center">
+                TOTAL
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                {data.estadistica.reduce(
+                  (prev, { familias }) => familias?.length + prev,
+                  0
+                )}
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                {data.estadistica.reduce(
+                  (prev, { carnets }) =>
+                    carnets.reduce((prev, carnet) => {
+                      if (carnet) return prev + 1;
+                      return prev;
+                    }, 0) + prev,
+                  0
+                )}
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                {data.estadistica.reduce(
+                  (prev, { tipoFamilia }) =>
+                    tipoFamilia.reduce((pre, tipo) => {
+                      if (tipo === "unifamiliar") return pre + 1;
+                      return pre;
+                    }, 0) + prev,
+                  0
+                )}
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                {data.estadistica.reduce(
+                  (prev, { cajas, familias }) =>
+                    cajas.reduce((a, b) => a + b, 0) - familias.length + prev,
+                  0
+                )}
+              </th>
 
-      <div className=" grid  w-full grid-cols-12   overflow-x-scroll px-6 py-4">
-        <div className="  border-y   ">
-          <div className="text-center uppercase">TOTAL</div>
-        </div>
-        <div className="   border-y   ">
-          <div className="text-center capitalize">d</div>
-        </div>
-        <div className="   border-y   ">
-          <div className="text-center capitalize">d</div>
-        </div>
-        <div className="  border-y   ">
-          <div className="text-center uppercase">d</div>
-        </div>
-        <div className="   border-y   ">
-          <div className="text-center capitalize">d</div>
-        </div>
-        <div className="   border-y   ">
-          <div className="text-center capitalize">d</div>
-        </div>
-        <div className="  border-y   ">
-          <div className="text-center uppercase">
-            {data.entrega.beneficiados.reduce(
-              (a, b) => a + b.cajasAsignadas,
-              0
-            )}
-          </div>
-        </div>
-        <div className="   border-y   ">
-          <div className="text-center capitalize">
-            {data.entrega.beneficiados.reduce(
-              (a, b) => a + b.cajasAsignadas,
-              0
-            )}
-          </div>
-        </div>
-        <div className="   border-y   ">
-          <div className="text-center capitalize">
-            {formatToBs(data.entrega.costeLogistica)}
-          </div>
-        </div>
-        <div className="  border-y   ">
-          <div className="text-center uppercase">
-            {formatToBs(
-              data.estadistica.reduce(
-                (prev, current) => current.cajas.reduce((a, b) => a + b) + prev,
-                0
-              ) * data.entrega.costeCajaUnidad
-            )}
-          </div>
-        </div>
-        <div className="   border-y   ">
-          <div className="text-center capitalize">
-            {formatToBs(
-              data.estadistica.reduce(
-                (prev, current) => current.cajas.reduce((a, b) => a + b) + prev,
-                0
-              ) * data.entrega.costeTransporte
-            )}
-          </div>
-        </div>
-        <div className="   border-y   ">
-          <div className="text-center capitalize">
-            {formatToBs(
-              data.estadistica.reduce(
-                (prev, current) => current.cajas.reduce((a, b) => a + b) + prev,
-                0
-              ) * data.entrega.costeLogistica
-            )}
-          </div>
-        </div>
+              <th scope="col" className="px-6 py-3 text-center">
+                {data.estadistica.reduce(
+                  (prev, { tipoFamilia }) =>
+                    tipoFamilia.reduce((pre, tipo) => {
+                      if (tipo !== "unifamiliar") return pre + 1;
+                      return pre;
+                    }, 0) + prev,
+                  0
+                )}
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                {data.entrega.beneficiados.reduce(
+                  (a, b) => a + b.cajasAsignadas,
+                  0
+                )}
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                {data.entrega.beneficiados.reduce(
+                  (a, b) => a + b.cajasAsignadas,
+                  0
+                )}
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                {formatToBs(
+                  data.estadistica.reduce(
+                    (prev, current) =>
+                      current.cajas.reduce((a, b) => a + b) + prev,
+                    0
+                  ) * data.entrega.costeCajaUnidad
+                )}
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                {formatToBs(
+                  data.estadistica.reduce(
+                    (prev, current) =>
+                      current.cajas.reduce((a, b) => a + b) + prev,
+                    0
+                  ) * data.entrega.costeTransporte
+                )}
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                {formatToBs(
+                  data.estadistica.reduce(
+                    (prev, current) =>
+                      current.cajas.reduce((a, b) => a + b) + prev,
+                    0
+                  ) * data.entrega.costeLogistica
+                )}
+              </th>
+            </tr>
+          </thead>
+        </table>
       </div>
     </Card>
   );

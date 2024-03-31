@@ -59,6 +59,8 @@ export const entregasRouter = createTRPCRouter({
               cajasAsignadas: censado.cajasClapsPorRecibir,
               casa: censado.jefeFamilia?.casa?.casa ?? "",
               manzana: censado.jefeFamilia?.casa?.manzana ?? "",
+              poseeCarnet: censado.jefeFamilia?.codCarnetPatria ? true : false,
+              tipoFamilia: censado.tipoFamilia,
             })),
           },
           consejoComunalId: CC,
@@ -119,15 +121,28 @@ export const entregasRouter = createTRPCRouter({
             (array) => array.manzana === beneficiado?.manzana
           );
 
-          // if (typeof estadistica[index]?.cajas === "number") {
+          estadistica[index]?.carnets.push(beneficiado?.poseeCarnet);
+
           estadistica[index]?.cajas?.push(beneficiado?.cajasAsignadas || 0);
-          // }
+          estadistica[index]?.familias.push(beneficiado?.id);
+
+          estadistica[index]?.tipoFamilia.push(
+            beneficiado?.tipoFamilia.toLowerCase() === "unifamiliar"
+              ? "unifamiliar"
+              : "multifamiliar"
+          );
         } else {
           estadistica.push({
             manzana: beneficiado?.manzana ?? "",
             cajas: beneficiado?.cajasAsignadas
               ? [beneficiado?.cajasAsignadas]
               : [0],
+            tipoFamilia:
+              beneficiado?.tipoFamilia.toLowerCase() === "unifamiliar"
+                ? ["unifamiliar"]
+                : ["multifamiliar"],
+            carnets: [beneficiado?.poseeCarnet],
+            familias: [beneficiado?.id],
           });
         }
       }

@@ -266,7 +266,7 @@ model EncargadoClap {
 // Entrega de cajas clap
 
 model Beneficiados {
-    id              Int          @unique @default(autoincrement())
+    id              Int    @unique @default(autoincrement())
     nombres         String
     apellidos       String
     numeroDocumento String
@@ -274,8 +274,11 @@ model Beneficiados {
     cajasAsignadas  Int
     casa            String
     manzana         String
-    EntregaCajas    EntregaCajas @relation(fields: [entregaCajasId], references: [id])
-    entregaCajasId  Int
+
+    poseeCarnet    Boolean      @default(false)
+    tipoFamilia    String       @default("unifamiliar")
+    EntregaCajas   EntregaCajas @relation(fields: [entregaCajasId], references: [id])
+    entregaCajasId Int
 }
 
 model EntregaCajas {
