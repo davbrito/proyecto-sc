@@ -3,10 +3,13 @@ import {
   ESTADO_CIVIL,
   ESTADO_TRABAJO,
 } from "@prisma/client";
-import { createReactProxyDecoration } from "@trpc/react-query/shared";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  publicProcedure,
+  protectedProcedure,
+} from "~/server/api/trpc";
 
 export const jefeRouter = createTRPCRouter({
   create: publicProcedure
@@ -138,6 +141,38 @@ export const jefeRouter = createTRPCRouter({
       },
     });
   }),
+
+  getJefesToEntrega: protectedProcedure
+    .input(z.object({ consejoId: z.number().optional() }))
+    .query(async ({ ctx, input }) => {
+      const id = input.consejoId
+        ? input.consejoId
+        : ctx.session.user.consejoComunalId;
+      if (!id)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "NO EXISTE EL CONSEJO COMUNAL ASOCIADO",
+        });
+
+      const censados = await ctx.prisma.censo.findMany({
+        where: {
+          consejoComunalId: 1,
+          datos_validado: true,
+        },
+        include: {
+          jefeFamilia: {
+            include: {
+              casa: true,
+            },
+          },
+        },
+        orderBy: {
+          id: "asc",
+        },
+      });
+
+      return censados;
+    }),
 
   delete: publicProcedure
     .input(

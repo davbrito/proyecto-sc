@@ -6,17 +6,24 @@ import {
   CardHeader,
   Divider,
   Input,
+  Select,
+  SelectItem,
   Spinner,
 } from "@nextui-org/react";
+import { ROLE } from "@prisma/client";
 import { signIn } from "next-auth/react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 import { api } from "~/utils/api";
+import { CustomLoading } from "./Loading";
 
 interface Inputs {
   username: string;
   password: string;
   name: string;
   lastName: string;
+  role_user: ROLE;
+  consejoId: string;
 }
 
 export const RegisterForm = () => {
@@ -26,31 +33,39 @@ export const RegisterForm = () => {
     formState: { errors, isSubmitting },
     register,
     setError,
+    control,
   } = useForm<Inputs>();
-
+  const router = useRouter();
   const { mutateAsync } = api.user.create.useMutation();
+  const { data, isLoading } = api.consejo.getAll.useQuery();
 
   const onSubmit: SubmitHandler<Inputs> = async (values) => {
     try {
-      const user = await mutateAsync(values);
+      const user = await mutateAsync({
+        ...values,
+        consejoId: parseInt(values.consejoId),
+      });
 
       reset(
         { password: "", username: "", lastName: "", name: "" },
         { keepErrors: true }
       );
 
-      await signIn("credentials", {
-        username: values.username,
-        password: values.password,
-        redirect: true,
-        callbackUrl: "/",
-      });
+      router.push("/users");
     } catch (error) {
       if (error instanceof Error) {
         setError("root", { message: error.message });
       }
     }
   };
+
+  const userRoles = [
+    { value: ROLE.ADMIN, label: "Administrador" },
+    { value: ROLE.LIDER_COMUNIDAD, label: "Lider de comunidad" },
+    { value: ROLE.LIDER_CALLE, label: "Lider de calle" },
+  ];
+
+  if (isLoading) return <CustomLoading />;
 
   return (
     <Card
@@ -59,7 +74,7 @@ export const RegisterForm = () => {
       className="container mx-auto max-w-lg shadow-lg"
     >
       <CardHeader>
-        <h3 className="text-2xl">Formulario de registro.</h3>
+        <h3 className="text-2xl">Formulario de registro de usuario.</h3>
       </CardHeader>
       <Divider />
       <CardBody>
@@ -109,6 +124,69 @@ export const RegisterForm = () => {
               errorMessage={errors.lastName?.message}
             />
           </div>
+
+          <div className="col-span-4">
+            <Controller
+              name="role_user"
+              control={control}
+              rules={{
+                required: "El rol del usuario es requerido",
+              }}
+              render={({ field: { value, ...field }, fieldState }) => (
+                <Select
+                  label="Rol del usuario:"
+                  placeholder="Seleccione"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                  classNames={{
+                    value: "capitalize",
+                  }}
+                >
+                  {userRoles.map(({ value, label }) => (
+                    <SelectItem
+                      key={value}
+                      value={value}
+                      className="capitalize"
+                    >
+                      {label}
+                    </SelectItem>
+                  ))}
+                </Select>
+              )}
+            />
+          </div>
+          <div className="col-span-8">
+            <Controller
+              name="consejoId"
+              control={control}
+              rules={{
+                required: "El consejo comunal es requerido",
+              }}
+              render={({ field, fieldState }) => (
+                <Select
+                  isLoading={isLoading}
+                  label="Consejo Comunal:"
+                  placeholder="Seleccione un consejo"
+                  items={data}
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                >
+                  {(item) => (
+                    <SelectItem
+                      key={item.id}
+                      value={item.id}
+                      className="capitalize"
+                    >
+                      {item.nombre_consejo + " - " + item.nombre_clap}
+                    </SelectItem>
+                  )}
+                </Select>
+              )}
+            />
+          </div>
+
           <div className="col-span-12">
             <Input
               fullWidth

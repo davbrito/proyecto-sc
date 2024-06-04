@@ -20,11 +20,7 @@ const routesHref: Array<RouteHref> = [
     pathName: "Iniciar sesion",
     needAuth: false,
   },
-  {
-    href: "/register",
-    pathName: "Registrarse",
-    needAuth: false,
-  },
+
   {
     href: "/consejo-comunal",
     pathName: "Consejos Comunales",

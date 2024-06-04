@@ -195,7 +195,7 @@ export const PersonaForm = ({
           control={control}
           name="datosBasicos.telefono_habitacion"
           rules={{
-            required: { value: true, message: "Campo requerido" },
+            // required: { value: true, message: "Campo requerido" },
             pattern: {
               value: /^(02)(\d{1,2})[-]\d{7}$/,
               message: "El numero no es valido.",

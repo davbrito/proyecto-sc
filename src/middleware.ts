@@ -4,7 +4,9 @@ import { NextResponse } from "next/server";
 import { match } from "path-to-regexp";
 
 const profileMatch = match("/profile/:path*");
-const consejoComunalMatch = match("/consejo-comunal/:id?");
+const consejoComunalInforMatch = match("/consejo-comunal/:id?");
+const consejoComunalMatch = match("/consejo-comunal");
+const registerMatch = match("/register");
 const censoMatch = match(
   "/consejo-comunal/:id/censo/:tab(create|estadisticas)?"
 );
@@ -12,15 +14,17 @@ const censoJefeMatch = match("/consejo-comunal/:id/censo/:jefeId");
 
 const isLiderCalleRoutes = (url: string) => {
   if (profileMatch(url)) return true;
+  if (consejoComunalInforMatch(url)) return true;
   if (consejoComunalMatch(url)) return true;
   if (censoMatch(url)) return true;
   if (censoJefeMatch(url)) return true;
-
+  if (registerMatch(url)) return true;
   return false;
 };
 
 const isLiderComunidadRoutes = (url: string) => {
   if (consejoComunalMatch(url)) return true;
+  if (registerMatch(url)) return true;
 
   return false;
 };
@@ -35,11 +39,11 @@ export default withAuth(
 
     if (role_user === "ADMIN") return null;
 
-    if (isLiderCalleRoutes(pathname) && role_user !== "LIDER_CALLE") {
+    if (isLiderCalleRoutes(pathname) && role_user === "LIDER_CALLE") {
       return NextResponse.redirect(new URL(`/`, req.url));
     }
 
-    if (isLiderComunidadRoutes(pathname) && role_user !== "LIDER_COMUNIDAD") {
+    if (isLiderComunidadRoutes(pathname) && role_user === "LIDER_COMUNIDAD") {
       return NextResponse.redirect(new URL(`/`, req.url));
     }
   },
@@ -58,6 +62,7 @@ export default withAuth(
 export const config = {
   matcher: [
     "/",
+    "/register",
     "/consejo-comunal",
     "/consejo-comunal/:path*",
     "/consejo-comunal/(.*)",

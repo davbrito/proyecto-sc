@@ -143,6 +143,20 @@ export const ConsejoInfor = ({ consejoId, role }: Props) => {
             >
               Censados
             </Link>
+
+            <Link
+              href={`/consejo-comunal/${consejoId}/entrega/create`}
+              className="mx-auto h-fit w-fit rounded-md bg-green-600 px-4 py-3 text-white transition-colors hover:bg-green-700"
+            >
+              Registrar Entrega
+            </Link>
+
+            <Link
+              href={`/consejo-comunal/${consejoId}/entrega`}
+              className="mx-auto h-fit w-fit rounded-md bg-violet-600 px-4 py-3 text-white transition-colors hover:bg-violet-700"
+            >
+              Entregas de cajas registradas
+            </Link>
           </CardFooter>
         </Card>
 
