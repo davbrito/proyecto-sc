@@ -11,9 +11,18 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 import { CustomLoading } from "../Loading";
 import { ErrorMessage } from "../ErrorMessage";
+import { useEffect, useState } from "react";
+import DeleteConfirmation from "../DeleteConfirmation";
 
 export const ConsejosList = () => {
-  const { data, isLoading, error } = api.consejo.getAll.useQuery();
+  const { data, isLoading, error, refetch } = api.consejo.getAll.useQuery();
+  const { mutateAsync } = api.consejo.delete.useMutation()
+  const [deleteConsejo, setDeleteConsejo] = useState<number | null>(null);
+
+  useEffect(() => {
+    refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) return <CustomLoading />;
 
@@ -83,7 +92,7 @@ export const ConsejosList = () => {
                 <TableCell className="text-center text-sm uppercase">
                   {sector}
                 </TableCell>
-                <TableCell className="text-center text-sm">
+                <TableCell className="text-center text-sm flex gap-1" >
                   <Button
                     as={Link}
                     color="primary"
@@ -92,12 +101,39 @@ export const ConsejosList = () => {
                   >
                     Ver informacion
                   </Button>
+                  <Button color="danger" className="transition-colors hover:bg-red-700" onPress={() => setDeleteConsejo(id)} >
+                    Eliminar
+                  </Button>
                 </TableCell>
               </TableRow>
             )
           )}
         </TableBody>
       </Table>
+
+      <DeleteConfirmation
+        open={!!deleteConsejo}
+        onClose={() => {
+          setDeleteConsejo(null);
+        }}
+        onDelete={async () => {
+          if (deleteConsejo) {
+            await mutateAsync(
+              { id: deleteConsejo },
+              {
+                async onSuccess(data, variables, context) {
+                  console.log("eliminado")
+                  await refetch()
+                },
+                onError(error, variables, context) { },
+              }
+            );
+          }
+
+          // await mutateAsync({ id: deleteConsejo });
+        }}
+      />
+
       {/* <Modal
         closeButton
         aria-labelledby="modal-title2"
