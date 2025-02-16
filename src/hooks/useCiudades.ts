@@ -11,28 +11,43 @@ export const useCiudades = () => {
   const [municipios, setMunicipios] = useState<Municipio[]>([]);
   const [parroquias, setParroquias] = useState<Parroquia[]>([]);
 
-  const onChangeEstado = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newMunicipios = estados.find(
-      (estado) => estado.estado === event.target.value
-    )?.municipios;
-
-    if (!newMunicipios) return;
-    setMunicipios(newMunicipios);
-    setParroquias([]);
+  const onChangeEstado = (event: React.ChangeEvent<HTMLSelectElement> | string) => {
+    if (typeof event !== "string" ) {
+      const newMunicipios = estados.find(
+        (estado) => estado.estado === event.target.value
+      )?.municipios;
+      if (!newMunicipios) return;
+      setMunicipios(newMunicipios);
+      setParroquias([]);
+    } else if (typeof event === "string") {
+      const newMunicipios = estados.find(
+        (estado) => estado.estado === event
+      )?.municipios;
+      if (!newMunicipios) return;
+      setMunicipios(newMunicipios);
+      setParroquias([]);
+    }
   };
 
-  const onMunicipioChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(event.target.value);
-    const newParroquias = municipios.find(
-      (mun) => mun.municipio === event.target.value
-    )?.parroquias;
-    if (!newParroquias) return;
+  const onMunicipioChange = (event: React.ChangeEvent<HTMLSelectElement> | string) => {
+    if (typeof event !== "string") {
+      const newParroquias = municipios.find(
+        (mun) => mun.municipio === event.target.value
+      )?.parroquias;
+      if (!newParroquias) return;
+      setParroquias(newParroquias);
+    } else if (typeof event === "string") {
 
-    const objeto = {
-      parroquias: newParroquias,
-    };
-
-    setParroquias(newParroquias);
+      const newParroquias = municipios.find(
+        (mun) => {
+          console.log('UNIQUE',mun.municipio,event)
+          return mun.municipio === event
+        }
+      )?.parroquias;
+      if (!newParroquias) return;
+      setParroquias(newParroquias);
+      console.log("MUNICIPIO:",newParroquias)
+    }
   };
 
   return {

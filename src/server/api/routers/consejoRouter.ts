@@ -1,3 +1,4 @@
+import { TRPCClientError } from "@trpc/client";
 import { z } from "zod";
 
 import {
@@ -76,7 +77,7 @@ export const consejoRouter = createTRPCRouter({
 
       if (!casas) return null;
 
-      const estadistica = [];
+      const estadistica: { tipoFamilia: string[];[key: string]: any }[] = [];
 
       for (let i = 0; i < casas.length; i++) {
         const arrayTemporal = estadistica.filter(
@@ -127,4 +128,42 @@ export const consejoRouter = createTRPCRouter({
 
       return { casas, manzanas: estadistica };
     }),
+
+  updateById: protectedProcedure
+    .input(z.object({
+      id: z.number(),
+      data: z.object({
+        nombre_consejo: z.string().nullable(),
+        nombre_clap: z.string().nullable(),
+        circuito: z.number().nullable(),
+        bms: z.string().nullable(),
+        comunidad: z.string().nullable(),
+        sector: z.string().nullable(),
+        cod_siscod: z.string().nullable(),
+        estado: z.string().nullable(),
+        municipio: z.string().nullable(),
+        parroquia: z.string().nullable(),
+        rif: z.string().nullable(),
+        cantidad_combos: z.number().optional(),
+        cantidad_familias: z.number().optional(),
+      })
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const {data,id} = input
+
+      const consejo = await ctx.prisma.consejoComunal.findFirst({where:{id}})
+      if(!consejo)
+        throw new TRPCClientError(`id '${consejo}' is invalid`)
+
+      const filteredData = Object.fromEntries(
+        Object.entries(data).filter(([_, v]) => v !== undefined)
+      );
+
+      const updatedRecord = await ctx.prisma.consejoComunal.update({
+        where: { id },
+        data: filteredData,
+      });
+  
+      return updatedRecord;
+    })
 });

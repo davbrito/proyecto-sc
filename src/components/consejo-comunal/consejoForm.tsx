@@ -10,14 +10,15 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useCiudades } from "~/hooks/useCiudades";
 import { api } from "~/utils/api";
 
 interface FormState {
   nombre_consejo: string;
   nombre_clap: string;
-  circuito: number;
+  circuito: string;
   bms: string;
   comunidad: string;
   sector: string;
@@ -27,37 +28,83 @@ interface FormState {
   parroquia: string;
   rif: string;
 }
+interface Props {
+  consejoId?: number
+  onCloseModal?: () => void
+}
 
-export const ConsejoForm = () => {
+export const ConsejoForm = ({ consejoId, onCloseModal }: Props) => {
   const {
-    register,
     handleSubmit,
     formState: { errors },
-    watch,
     setValue,
+    control
   } = useForm<FormState>();
   const router = useRouter();
+
+  const { data, isLoading: isLoadingQuery } = api.consejo.getById.useQuery(
+    { id: consejoId || 0 },
+    { enabled: !!consejoId, refetchOnWindowFocus: false, cacheTime: 60 * 60 } // Solo se ejecuta si hay un ID
+  );
 
   const { estados, municipios, onChangeEstado, onMunicipioChange, parroquias } =
     useCiudades();
 
   const { mutate, isLoading } = api.consejo.create.useMutation();
+  const updateConsejo = api.consejo.updateById.useMutation()
 
   const onSubmit = handleSubmit(async (data, event) => {
     event?.preventDefault();
+    // const { parroquia, estado, municipio } = data
+    if (consejoId) {
+      await updateConsejo.mutateAsync({
+        id: consejoId,
+        data: {
+          ...data,
+          circuito: parseInt(data.circuito.toString()),
+        }
+      })
 
-    mutate({ ...data, circuito: parseInt(data.circuito.toString()) });
-    return router.push("/consejo-comunal");
+      onCloseModal && onCloseModal()
+    } else {
+      mutate({
+        ...data,
+        circuito: parseInt(data.circuito.toString()),
+      });
+      return router.push("/consejo-comunal");
+    }
+
   });
 
-  console.log(watch("estado"));
-  console.log(watch("municipio"));
+  useEffect(() => {
+    if (consejoId && data) {
+      console.log("update");
+      onChangeEstado(data.estado);
+      setValue("estado", data.estado);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [consejoId]);
+
+  useEffect(() => {
+    if (municipios.length > 0 && data?.municipio) {
+      onMunicipioChange(data.municipio);
+      setValue("municipio", data.municipio);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [municipios]);
+
+  useEffect(() => {
+    if (parroquias.length > 0 && data?.parroquia) {
+      setValue("parroquia", data.parroquia);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parroquias]);
 
   return (
     <Card as="form" onSubmit={onSubmit}>
       <CardHeader>
         <h3 className="mx-auto text-4xl font-light">
-          Datos del Consejo Comunal
+          {consejoId ? 'Editar datos del Consejo Comunal' : 'Datos del Consejo Comunal'}
         </h3>
       </CardHeader>
 
@@ -66,81 +113,107 @@ export const ConsejoForm = () => {
       <CardBody>
         <div className="grid grid-cols-12 gap-2">
           <div className="col-span-6">
-            <Input
-              {...register("nombre_consejo", {
-                required: { value: true, message: "El nombre es requerido" },
-              })}
-              id="nombre_consejo"
-              fullWidth
-              label="Nombre consejo comunal:"
-              type="text"
-              errorMessage={errors?.nombre_consejo?.message}
-              isInvalid={!!errors?.nombre_consejo}
+            <Controller
+              name="nombre_consejo"
+              control={control}
+              defaultValue={data?.nombre_consejo || ""}
+              rules={{ required: { value: true, message: "El nombre es requerido" } }}
+              render={({ field, fieldState }) => <Input
+                {...field}
+                fullWidth
+                label="Nombre consejo comunal:"
+                type="text"
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
+              />}
             />
           </div>
+
           <div className="col-span-6">
-            <Input
-              {...register("nombre_clap", {
-                required: {
-                  value: true,
-                  message: "El nombre de CLAP es requerido",
-                },
-              })}
-              id="nombre_clap"
-              fullWidth
-              label="Nombre CLAP:"
-              type="text"
-              errorMessage={errors?.nombre_consejo?.message}
-              isInvalid={!!errors?.nombre_consejo}
+            <Controller
+              name="nombre_clap"
+              control={control}
+              rules={{ required: { value: true, message: "El nombre de CLAP es requerido" } }}
+              defaultValue={data?.nombre_clap || ""}
+              render={({ field, fieldState }) => <Input
+                {...field}
+                fullWidth
+                label="Nombre CLAP:"
+                type="text"
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
+              />}
             />
           </div>
           <div className="col-span-8">
-            <Input
-              {...register("comunidad", {
+            <Controller
+              name="comunidad"
+              control={control}
+              rules={{
                 required: { value: true, message: "La comunidad es requerido" },
-              })}
-              fullWidth
-              label="Comunidad:"
-              type="text"
-              errorMessage={errors?.comunidad?.message}
-              isInvalid={!!errors?.comunidad}
+              }}
+              defaultValue={data?.comunidad || ""}
+              render={({ fieldState, field }) => (<Input
+                fullWidth
+                label="Comunidad:"
+                type="text"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
+              />)}
             />
           </div>
 
           <div className="col-span-4">
-            <Input
-              {...register("circuito", {
+            <Controller
+              name="circuito"
+              control={control}
+              rules={{
                 required: { value: true, message: "El circuito es requerido" },
                 pattern: {
                   value: /^\d+$/,
                   message: "El circuito debe ser un valor numerico",
                 },
-              })}
-              id="circuito"
-              fullWidth
-              label="Circuito:"
-              type="text"
-              errorMessage={errors?.circuito?.message}
-              isInvalid={!!errors?.circuito}
+              }}
+              defaultValue={data?.circuito?.toString() || ""}
+              render={({ field, fieldState }) => (
+                <Input
+                  fullWidth
+                  label="Circuito:"
+                  type="text"
+                  {...field}
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                />)
+              }
             />
           </div>
 
           <div className="col-span-6">
-            <Input
-              {...register("sector", {
+            <Controller
+              name="sector"
+              control={control}
+              rules={{
                 required: { value: true, message: "El sector es requerido" },
-              })}
-              id="sector"
-              fullWidth
-              label="Sector:"
-              type="text"
-              errorMessage={errors?.sector?.message}
-              isInvalid={!!errors?.sector}
+              }}
+              defaultValue={data?.sector || ""}
+              render={({ field, fieldState }) => (<Input
+                fullWidth
+                label="Sector:"
+                type="text"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
+              />)}
             />
+
           </div>
           <div className="col-span-6">
-            <Input
-              {...register("rif", {
+            <Controller
+              name="rif"
+              control={control}
+              defaultValue={data?.rif || ""}
+              rules={{
                 required: {
                   value: true,
                   message: "El nro de RIF es requerido",
@@ -149,175 +222,148 @@ export const ConsejoForm = () => {
                   value: /^[0-9]{5,9}$/,
                   message: "El nro de RIF no es valido",
                 },
-              })}
-              id="rif"
-              fullWidth
-              label="RIF:"
-              type="text"
-              errorMessage={errors?.rif?.message}
-              isInvalid={!!errors?.rif}
-            />
-          </div>
-          <div className="col-span-6">
-            <Input
-              {...register("bms")}
-              id="bms"
-              fullWidth
-              label="BMS:"
-              type="text"
-              errorMessage={errors?.bms?.message}
-              isInvalid={!!errors?.bms}
-            />
-          </div>
-          <div className="col-span-6">
-            <Input
-              {...register("cod_siscod")}
-              id="cod_siscod"
-              fullWidth
-              label="Codigo SISCOD:"
-              type="text"
-              errorMessage={errors?.nombre_consejo?.message}
-              isInvalid={!!errors?.nombre_consejo}
-            />
-          </div>
-
-          <div className="col-span-4">
-            <Select
-              label="Estado: "
-              items={estados}
-              {...register("estado", {
-                required: { value: true, message: "El Estado es requerido" },
-              })}
-              onChange={(event) => {
-                onChangeEstado(event);
-                setValue("estado", event.target.value);
               }}
-              placeholder="Seleccione una opcion"
-              errorMessage={errors.estado && errors.estado.message}
-            >
-              {(items) => (
-                <SelectItem key={items.estado} value={items.estado}>
-                  {items.estado}
-                </SelectItem>
-              )}
-            </Select>
-            {/* <div className="w-full">
-              <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
-                Estado:
-              </label>
-              <select
-                {...register("estado", {
-                  required: { value: true, message: "El Estado es requerido" },
-                })}
-                className="select-form"
-                onChange={onChangeEstado}
-              >
-                <option value="">Elija una opcion</option>
-                {estados.map((ciudad) => (
-                  <option value={ciudad.estado} key={ciudad.id_estado}>
-                    {ciudad.estado}
-                  </option>
-                ))}
-              </select>
-            </div> */}
+              render={({ field, fieldState }) => (<Input
+                fullWidth
+                label="RIF:"
+                type="text"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
+              />)}
+            />
+          </div>
+          <div className="col-span-6">
+            <Controller
+              name="bms"
+              control={control}
+              defaultValue={data?.bms || ""}
+              render={({ field, fieldState }) => (<Input
+                fullWidth
+                label="BMS:"
+                type="text"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
+              />)}
+            />
+          </div>
+          <div className="col-span-6">
+            <Controller
+              name="cod_siscod"
+              control={control}
+              defaultValue={data?.cod_siscod || ""}
+              render={({ field, fieldState }) => (<Input
+                fullWidth
+                label="Codigo SISCOD:"
+                type="text"
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
+              />)}
+            />
           </div>
 
           <div className="col-span-4">
-            <Select
-              label="Municipio: "
-              items={municipios}
-              placeholder="Seleccione una opcion"
-              {...register("municipio", {
+            <Controller
+              name="estado"
+              control={control}
+
+              rules={{ required: { value: true, message: "El Estado es requerido" } }}
+
+              render={({ field, fieldState }) => (
+                <Select
+                  label="Estado: "
+                  items={estados}
+                  {...field}
+                  selectedKeys={field.value ? new Set([field.value]) : new Set()}
+                  placeholder="Seleccione una opción"
+                  errorMessage={fieldState.error?.message}
+                  isInvalid={fieldState.invalid}
+                  onChange={(event) => {
+                    console.log("T")
+                    field.onChange(event.target.value);
+                    setValue("estado", event.target.value);
+                    setValue("municipio", "");
+                    setValue("parroquia", "");
+                    onChangeEstado(event);
+                  }}
+                >
+                  {(items) => (
+                    <SelectItem key={items.estado} value={items.estado}>
+                      {items.estado}
+                    </SelectItem>
+                  )}
+                </Select>
+              )}
+            />
+          </div>
+
+          <div className="col-span-4">
+            <Controller
+              name="municipio"
+              control={control}
+              rules={{
                 required: {
                   value: true,
                   message: "El municipio es requerido",
                 },
-              })}
-              errorMessage={errors.municipio && errors.municipio.message}
-              onChange={(event) => {
-                onMunicipioChange(event);
-                setValue("municipio", event.target.value);
               }}
-            >
-              {(items) => (
-                <SelectItem key={items.municipio} value={items.municipio}>
-                  {items.municipio}
-                </SelectItem>
-              )}
-            </Select>
 
-            {/* <div className="w-full">
-              <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
-                Municipio:
-              </label>
-              <select
-                {...register("municipio", {
-                  required: {
-                    value: true,
-                    message: "El municipio es requerido",
-                  },
-                })}
-                className="select-form"
-                onChange={onMunicipioChange}
+              render={({ field, fieldState }) => (<Select
+                label="Municipio: "
+                items={municipios}
+                placeholder="Seleccione una opcion"
+                {...field}
+                onChange={(event) => {
+                  console.log("D")
+                  field.onChange(event.target.value);
+                  setValue("parroquia", "");
+                  setValue("municipio", event.target.value);
+                  onMunicipioChange(event);
+                }}
+                selectedKeys={field.value ? new Set([field.value]) : new Set()}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
               >
-                <option value="">Elija una opcion</option>
-
-                {municipios.map((mun) => (
-                  <option value={mun.municipio} key={mun.municipio}>
-                    {mun.municipio}
-                  </option>
-                ))}
-              </select>
-            </div> */}
+                {(items) => (
+                  <SelectItem key={items.municipio} value={`${items.municipio}`}>
+                    {items.municipio}
+                  </SelectItem>
+                )}
+              </Select>)}
+            />
           </div>
 
           <div className="col-span-4">
-            <Select
-              label="Parroquia: "
-              items={parroquias}
-              placeholder="Seleccione una opcion"
-              {...register("parroquia", {
+            <Controller
+              name="parroquia"
+              control={control}
+              rules={{
                 required: {
                   value: true,
                   message: "La parroquia es requerido",
                 },
-              })}
-              errorMessage={errors.parroquia && errors.parroquia.message}
-            >
-              {(item) => {
-                return (
-                  <SelectItem key={item.nombre} value={item.nombre}>
-                    {item.nombre}
-                  </SelectItem>
-                );
               }}
-            </Select>
-            {errors.parroquia && errors.parroquia.message}
-            {errors.municipio && errors.municipio.message}
-            {errors.estado && errors.estado.message}
-
-            {/* <div className="w-full">
-              <label className="mb-2 block text-sm font-medium text-gray-50 dark:text-white">
-                Parroquia:
-              </label>
-              <select
-                {...register("parroquia", {
-                  required: {
-                    value: true,
-                    message: "La parroquia es requerido",
-                  },
-                })}
-                className="select-form"
+              render={({ field, fieldState }) => (<Select
+                label="Parroquia: "
+                items={parroquias}
+                placeholder="Seleccione una opcion"
+                {...field}
+                selectedKeys={field.value ? new Set([field.value]) : new Set()}
+                // errorMessage={errors.parroquia && errors.parroquia.message}
+                errorMessage={fieldState.error?.message}
+                isInvalid={fieldState.invalid}
               >
-                <option value="">Elija una opcion</option>
-
-                {parroquias.map((par) => (
-                  <option value={par} key={par}>
-                    {par}
-                  </option>
-                ))}
-              </select>
-            </div> */}
+                {(item) => {
+                  return (
+                    <SelectItem key={item.nombre} value={item.nombre}>
+                      {item.nombre}
+                    </SelectItem>
+                  );
+                }}
+              </Select>)}
+            />
           </div>
         </div>
       </CardBody>
@@ -326,11 +372,11 @@ export const ConsejoForm = () => {
       <CardFooter className="py-6">
         <Button
           fullWidth
-          className="mx-auto bg-blue-600 text-white hover:bg-blue-800 disabled:bg-slate-600"
+          className={`mx-auto text-white ${consejoId ? 'bg-orange-600 hover:bg-orange-800' : 'bg-blue-600 hover:bg-blue-800'} disabled:bg-slate-600`}
           type="submit"
           disabled={isLoading}
         >
-          Crear
+          {consejoId ? "Actualizar" : "Crear"}
         </Button>
       </CardFooter>
     </Card>

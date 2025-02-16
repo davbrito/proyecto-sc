@@ -5,9 +5,7 @@ import {
   CardHeader,
   Link,
   Modal,
-  ModalBody,
   ModalContent,
-  ModalHeader,
 } from "@nextui-org/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
@@ -19,13 +17,14 @@ import LiderComunidadList from "../lider-comunidad/LiderComunidadList";
 import { LiderComunidadForm } from "../lider-comunidad/LiderComunidadForm";
 import LiderCalle from "../lider-calle/LiderCalle";
 import LiderComunidad from "../lider-comunidad/LiderComunidad";
+import { ConsejoForm } from "./consejoForm";
 
 interface Props {
   consejoId: string;
   role: ROLE;
 }
 export const ConsejoInfor = ({ consejoId, role }: Props) => {
-  const { data, error, isLoading } = api.consejo.getById.useQuery(
+  const { data, error, isLoading, refetch } = api.consejo.getById.useQuery(
     {
       id: parseInt(consejoId),
     },
@@ -33,6 +32,7 @@ export const ConsejoInfor = ({ consejoId, role }: Props) => {
   );
 
   const [openJefeComunidad, setOpenJefeComunidad] = useState(false);
+  const [openEditarConsejo, setOpenEditarConsejo] = useState<number | null>(null);
 
   if (isLoading) return <CustomLoading className="place-content-center" />;
 
@@ -60,6 +60,14 @@ export const ConsejoInfor = ({ consejoId, role }: Props) => {
             </h2>
           </CardBody>
           <CardFooter className=" flex justify-center gap-4">
+            <button
+              color="warning"
+              className="rounded-lg border-solid border-orange-800 bg-orange-600 p-2 text-sm text-white transition-all hover:bg-orange-800 disabled:bg-orange-800"
+              onClick={() => {
+                setOpenEditarConsejo(parseInt(consejoId))
+                console.log(consejoId)
+              }}
+            >Editar</button>
             <Link
               href={`/consejo-comunal/${consejoId}/censo`}
               className="inline-block cursor-pointer rounded-md   bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
@@ -164,6 +172,26 @@ export const ConsejoInfor = ({ consejoId, role }: Props) => {
 
         <LiderComunidad role={role} consejoId={parseInt(consejoId)} />
       </div>
+      <Modal
+        closeButton
+        aria-labelledby="modal-consejo-edit"
+        size="2xl"
+        scrollBehavior="inside"
+        onOpenChange={() => {
+          setOpenEditarConsejo(null)
+        }}
+        hideCloseButton={false}
+        isOpen={!!openEditarConsejo}
+      >
+        {!!openEditarConsejo && (
+          <ModalContent>
+            <ConsejoForm consejoId={parseInt(consejoId)} onCloseModal={() => {
+              setOpenEditarConsejo(null)
+              refetch()
+            }} />
+          </ModalContent>
+        )}
+      </Modal>
     </>
   );
 };
