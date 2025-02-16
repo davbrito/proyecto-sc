@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -60,14 +61,15 @@ export const ConsejoInfor = ({ consejoId, role }: Props) => {
             </h2>
           </CardBody>
           <CardFooter className=" flex justify-center gap-4">
-            <button
+          {role === "ADMIN" &&  <Button
               color="warning"
               className="rounded-lg border-solid border-orange-800 bg-orange-600 p-2 text-sm text-white transition-all hover:bg-orange-800 disabled:bg-orange-800"
-              onClick={() => {
+              onPress={() => {
                 setOpenEditarConsejo(parseInt(consejoId))
                 console.log(consejoId)
               }}
-            >Editar</button>
+            >Editar</Button>}
+            
             <Link
               href={`/consejo-comunal/${consejoId}/censo`}
               className="inline-block cursor-pointer rounded-md   bg-blue-600 px-3 py-2 text-white transition-all hover:bg-blue-900"
