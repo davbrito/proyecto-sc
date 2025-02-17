@@ -66,7 +66,17 @@ export const jefeRouter = createTRPCRouter({
       });
 
       return await ctx.prisma.$transaction(async (prisma) => {
-        const newJefe = await ctx.prisma.jefeFamilia.create({
+        // Buscar si la casa ya existe
+        const existingCasa = await prisma.casa.findFirst({
+          where: {
+            calle: casa.calle,
+            manzana: casa.manzana,
+            casa: casa.casa,
+          },
+        });
+
+        // Crear el nuevo jefe de familia, conectando la casa existente o creando una nueva
+        const newJefe = await prisma.jefeFamilia.create({
           data: {
             nombres: jefe.primerNombre + " " + jefe.segundoNombre,
             apellidos: jefe.primerApellido + " " + jefe.segundoApellido,
@@ -88,15 +98,20 @@ export const jefeRouter = createTRPCRouter({
                 condicion_vivienda: casa.condicion_vivienda,
               },
             },
-            casa: {
-              create: {
-                calle: casa.calle,
-                manzana: casa.manzana,
-                casa: casa.casa,
+
+            casa: existingCasa
+              ? { connect: { id: existingCasa.id } } // Conectar la casa existente
+              : {
+                create: {
+                  calle: casa.calle,
+                  manzana: casa.manzana,
+                  casa: casa.casa,
+                },
               },
-            },
           },
         });
+
+        return newJefe;
       });
     }),
 
@@ -350,13 +365,13 @@ export const jefeRouter = createTRPCRouter({
           parentesco:
             infoFamiliar.parentesco.at(-1) === "o"
               ? infoFamiliar.parentesco.slice(
-                  0,
-                  infoFamiliar.parentesco.lastIndexOf("o")
-                ) + "a"
+                0,
+                infoFamiliar.parentesco.lastIndexOf("o")
+              ) + "a"
               : infoFamiliar.parentesco.slice(
-                  0,
-                  infoFamiliar.parentesco.lastIndexOf("a")
-                ) + "o",
+                0,
+                infoFamiliar.parentesco.lastIndexOf("a")
+              ) + "o",
         },
       });
 
