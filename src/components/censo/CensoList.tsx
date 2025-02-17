@@ -125,7 +125,8 @@ export const CensoList = ({
                   }
                   className="font-semibold text-blue-600 transition-all hover:text-gray-600 "
                 >
-                  {id.padStart(8, "0")}
+                   {jefeFamilia?.tipoDocumento.toUpperCase()}-
+                   {jefeFamilia?.numeroDocumento}
                 </Link>
               </TableCell>
               <TableCell className="text-center text-sm">

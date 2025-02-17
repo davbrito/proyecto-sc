@@ -167,4 +167,39 @@ export const lideresRouter = createTRPCRouter({
         where: { id: input.id },
       });
     }),
+
+  getByManzana: publicProcedure
+    .input(z.object({id:z.number()}))
+    .query(async ({ctx,input}) => {
+      const {id} =input
+
+      const lider = await ctx.prisma.lider.findFirstOrThrow({
+        where:{id},
+        include:{
+          jefeFamilia:true
+        }
+      })
+
+      const censados = await ctx.prisma.censo.findMany({
+          where:{
+            jefeFamilia:{
+              casa:{
+                manzana:lider.manzana
+              }
+            }
+          },
+          include:{
+            jefeFamilia:{
+              include:{
+                casa:true
+              }
+            }
+          }
+      })
+
+      return {
+        lider,
+        censados
+      }
+    })
 });

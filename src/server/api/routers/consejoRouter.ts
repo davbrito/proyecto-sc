@@ -9,7 +9,7 @@ import {
 
 export const consejoRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const consejos = await ctx.prisma.consejoComunal.findMany({});
+    const consejos = await ctx.prisma.consejoComunal.findMany({orderBy:{fecha_registro:"asc"}});
     return consejos;
   }),
 

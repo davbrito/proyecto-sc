@@ -9,6 +9,7 @@ import {
 } from "@nextui-org/react";
 
 import { type ROLE, type Casa } from "@prisma/client";
+import Link from "next/link";
 import { api } from "~/utils/api";
 
 interface JefeFamilia {
@@ -75,7 +76,7 @@ const LiderCalleList = ({ lideres, role = "LIDER_CALLE", update }: Props) => {
         <TableColumn className="text-center">Acciones</TableColumn>
       </TableHeader>
       <TableBody>
-        {lideres.map(({ jefeFamilia, id, cajasClaps, familias }, index) => (
+        {lideres.map(({ jefeFamilia, id, cajasClaps, familias,consejoComunalId }, index) => (
           <TableRow key={id} className="text-center uppercase">
             <TableCell>{index + 1}</TableCell>
             <TableCell>{jefeFamilia.numeroDocumento}</TableCell>
@@ -104,7 +105,7 @@ const LiderCalleList = ({ lideres, role = "LIDER_CALLE", update }: Props) => {
               {role === "LIDER_CALLE" ? (
                 <div></div>
               ) : (
-                <>
+                <div className="flex flex-col gap-1">
                   <Button
                     size={"sm"}
                     className="bg-red-600 text-white transition-all hover:bg-red-800 disabled:bg-red-800"
@@ -114,7 +115,14 @@ const LiderCalleList = ({ lideres, role = "LIDER_CALLE", update }: Props) => {
                   >
                     Eliminar
                   </Button>
-                </>
+                  <Link
+                    // size={"sm"}
+                    className="inline-block capitalize text-xs cursor-pointer rounded-md  px-3 py-2 bg-blue-600 text-white transition-all hover:bg-blue-800 disabled:bg-blue-800"
+                    href={`/consejo-comunal/${consejoComunalId}/lider/${id}`}
+                  >
+                    Ver
+                  </Link>
+                </div>
               )}
             </TableCell>
           </TableRow>

@@ -126,7 +126,7 @@ const JefeProfile = ({ id, role }: { id: string; role?: ROLE }) => {
     });
   };
 
-  if (isLoading) <CustomLoading />;
+  if (isLoading) return <CustomLoading />;
 
   if (!data || error)
     return (
