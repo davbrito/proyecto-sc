@@ -61,7 +61,7 @@ export const EstadisticaTable = ({ consejoId }: { consejoId: number }) => {
                 }
               </TableCell>
               <TableCell className="border-1 text-lg font-semibold">
-                {manzana.cajas.reduce((a, b) => a + b, 0)}
+                {manzana.cajas.reduce((a:number, b: number) => a + b, 0)}
               </TableCell>
 
               <TableCell className="border-1 ">Paused</TableCell>
