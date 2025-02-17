@@ -25,10 +25,10 @@ export const EstadisticaTable = ({ consejoId }: { consejoId: number }) => {
           <TableColumn className="text-center">FAMILIA</TableColumn>
           <TableColumn className="text-center">NO CARNET</TableColumn>
           <TableColumn className="text-center">UNIFAMILIAR</TableColumn>
-          <TableColumn className="text-center">EXTRA</TableColumn>
+          {/* <TableColumn className="text-center">EXTRA</TableColumn> */}
           <TableColumn className="text-center">MULTIFAMILIAR</TableColumn>
           <TableColumn className="text-center">ASIGNADAS</TableColumn>
-          <TableColumn className="text-center">ENTREGADA</TableColumn>
+          {/* <TableColumn className="text-center">ENTREGADA</TableColumn> */}
         </TableHeader>
         <TableBody>
           {data?.manzanas.map((manzana) => (
@@ -52,7 +52,7 @@ export const EstadisticaTable = ({ consejoId }: { consejoId: number }) => {
                   ).length
                 }
               </TableCell>
-              <TableCell className="border-1 ">Active</TableCell>
+              {/* <TableCell className="border-1 ">Active</TableCell> */}
               <TableCell className="border-1 text-lg font-semibold">
                 {
                   manzana.tipoFamilia.filter(
@@ -64,7 +64,7 @@ export const EstadisticaTable = ({ consejoId }: { consejoId: number }) => {
                 {manzana.cajas.reduce((a:number, b: number) => a + b, 0)}
               </TableCell>
 
-              <TableCell className="border-1 ">Paused</TableCell>
+              {/* <TableCell className="border-1 ">Paused</TableCell> */}
             </TableRow>
           ))}
 

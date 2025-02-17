@@ -34,6 +34,13 @@ const CensoIndex = () => {
             >
               Estadisticas
             </Link>
+            {/* <Link
+              // size={"sm"}
+              className="inline-block capitalize text-xs cursor-pointer rounded-md  px-3 py-2 bg-blue-600 text-white transition-all hover:bg-blue-800 disabled:bg-blue-800"
+              href={`/consejo-comunal/${consejoComunalId}/lider/${id}`}
+            >
+              Ver mi manzana
+            </Link> */}
           </Card>
           <SearchForm setSearchValue={setSearchValue} />
         </div>

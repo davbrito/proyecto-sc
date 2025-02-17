@@ -125,7 +125,7 @@ export const NavBar = () => {
                   className="text-danger"
                   onPress={() => {
                     signOut({ callbackUrl: "/login" })
-                      .then(() => {})
+                      .then(() => { })
                       .catch((err) => {
                         console.error(err);
                       });
@@ -139,14 +139,25 @@ export const NavBar = () => {
         )}
       </NavbarContent>
       <NavbarMenu>
+
         {status === "authenticated" &&
           routesHref
             .filter(({ needAuth }) => needAuth)
-            .filter((ruta) => ruta.role_user === role_user)
-            .map(({ href, pathName }) => {
+            // .filter((ruta) => ruta.role_user === role_user)
+            .filter((ruta) => {
+              if (!ruta.role_user) return true;
+              if (!role_user) return false;
+              return ruta.role_user.includes(role_user);
+            })
+            .map(({ href, pathName,needId }) => {
+              if (needId && !consejo) return null;
+              const route = !needId
+                ? href
+                : `${href.replace(":id", `${consejo}`)}`;
+
               return (
                 <NavbarMenuItem key={pathName}>
-                  <Link color="foreground" href={href} isBlock as={NextLink}>
+                  <Link color="foreground" href={route} isBlock as={NextLink} >
                     {pathName}
                   </Link>
                 </NavbarMenuItem>

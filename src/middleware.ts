@@ -13,12 +13,15 @@ const censoMatch = match(
 const censoJefeMatch = match("/consejo-comunal/:id/censo/:jefeId");
 
 const isLiderCalleRoutes = (url: string) => {
+    
+  if(match("/")) return true
   if (profileMatch(url)) return true;
   if (consejoComunalInforMatch(url)) return true;
   if (consejoComunalMatch(url)) return true;
   if (censoMatch(url)) return true;
   if (censoJefeMatch(url)) return true;
   if (registerMatch(url)) return true;
+
   return false;
 };
 
@@ -38,8 +41,8 @@ export default withAuth(
     const { pathname } = req.nextUrl;
 
     if (role_user === "ADMIN") return null;
-
-    if (isLiderCalleRoutes(pathname) && role_user === "LIDER_CALLE") {
+    console.log(role_user,isLiderCalleRoutes(pathname))
+    if (!isLiderCalleRoutes(pathname) && role_user === "LIDER_CALLE") {
       return NextResponse.redirect(new URL(`/`, req.url));
     }
 
