@@ -44,6 +44,10 @@ const CasaInfor = ({ casaId }: Prop) => {
                         <div className=" font-semibold">Casa:</div>
                         <div className="text-right uppercase">{data.casa}</div>
                     </div>
+                    <div className="grid grid-cols-2 gap-3  border-gray-500   px-3 py-2 lg:gap-0 lg:border-solid">
+                        <div className=" font-semibold">Nro Residentes:</div>
+                        <div className="text-right uppercase">{data.jefeFamilia.reduce((prev, current) => prev + current.censo.cargaFamiliar, 0)}</div>
+                    </div>
                 </div>
             </CardHeader>
             <CardBody>
@@ -71,7 +75,7 @@ const CasaInfor = ({ casaId }: Prop) => {
                             Edad
                         </TableColumn>
                         <TableColumn align="center" className="text-center">
-                            Familia
+                            Carga Familiar
                         </TableColumn>
                         <TableColumn align="center" className="text-center">
                             Genero
@@ -116,7 +120,7 @@ const CasaInfor = ({ casaId }: Prop) => {
                                     {getRelativeTime(fechaNacimiento)}
                                 </TableCell>
                                 <TableCell className="text-center text-sm">
-                                    {censo.tipoFamilia.toUpperCase()}
+                                    {censo.cargaFamiliar}
                                 </TableCell>
                                 <TableCell className="text-center text-sm">
                                     {genero.toUpperCase() === "F"
