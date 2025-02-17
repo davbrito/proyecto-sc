@@ -15,7 +15,7 @@ import Link from "next/link";
 export const CasaList = () => {
   const { data, isLoading, refetch } = api.casa.getAllCasas.useQuery();
   const deleteCasa = api.casa.deleteCasaById.useMutation();
-
+  
   const deleteById = (id: bigint) => {
     try {
       deleteCasa.mutate(
@@ -88,14 +88,15 @@ export const CasaList = () => {
                   <TableCell>{casa}</TableCell>
                   <TableCell className="uppercase">
                     {jefeFamilia.map(
-                      (jefe) => jefe.apellidos + " " + jefe.nombres
-                    )}
+                      (jefe) => jefe.apellidos + " " + jefe.nombres.split(" ")[0]
+                    ).join(", ")}
                     .
                   </TableCell>
                   <TableCell>
                     {jefeFamilia[0]?.id ? (
                       <Link
-                        href={`/consejo-comunal/id/censo/${jefeFamilia[0].censoId}`}
+                        // href={`/consejo-comunal/id/censo/${jefeFamilia[0].censoId}`}
+                        href={`/casas/${jefeFamilia[0]?.casaId}`}
                         className="block rounded-xl bg-blue-700 px-3 py-2 text-[0.875rem]  text-white transition-all hover:bg-blue-950"
                       >
                         Ver informacion

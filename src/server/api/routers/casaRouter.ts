@@ -29,9 +29,12 @@ export const casaRouter = createTRPCRouter({
     }),
   getAllCasas: publicProcedure.query(async ({ ctx }) => {
     const casas = await ctx.prisma.casa.findMany({
-      take: 100,
       include: {
-        jefeFamilia: true,
+        jefeFamilia: {
+          include:{
+            censo:true
+          }
+        },
       },
     });
 
@@ -66,4 +69,26 @@ export const casaRouter = createTRPCRouter({
 
       return casas;
     }),
+
+    getByCasaId: publicProcedure
+      .input(z.object({id:z.number()}))
+      .query(async ({ctx,input})=> {
+        const {id}=input
+        const casa = await ctx.prisma.casa.findUniqueOrThrow({
+          where: {id},
+          include:{
+            jefeFamilia:{
+              include:{
+                censo:true
+              },
+              orderBy:{
+                fechaRegistro:"asc"
+              }
+            }
+          }
+        })
+
+        return casa
+
+      })
 });

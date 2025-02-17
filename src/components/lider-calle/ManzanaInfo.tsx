@@ -19,7 +19,7 @@ const ManzanaInfo = ({ liderId }: Props) => {
         return (
             <div className="container mx-auto">
                 <ErrorMessage
-                    title="Error al recuperar la informacion del jefe de familia."
+                    title="Error al recuperar la informacion del lider de calle."
                     body="Revise su conexion de internet, e intente nuevamente."
                 />
             </div>
